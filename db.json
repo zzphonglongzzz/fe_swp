@@ -1,0 +1,111 @@
+{
+    "categories": [
+        {
+            "id": 13,
+            "name": "Lúa giống",
+            "description": "dummy",
+            "subCategory": [
+                {
+                    "id": 104,
+                    "name": "lúa thuần",
+                    "description": "dummy",
+                    "categoryName": "Lúa giống",
+                    "categoryId": 13
+                },
+                {
+                    "id": 105,
+                    "name": "lúa bản quyền",
+                    "description": "dummy",
+                    "categoryName": "Lúa giống",
+                    "categoryId": 13
+                }
+            ]
+        },
+        {
+            "id": 14,
+            "name": "Phân bón",
+            "description": "dummy",
+            "subCategory": [
+                {
+                    "id": 109,
+                    "name": "kali",
+                    "description": "dummy",
+                    "categoryName": "Phân bón",
+                    "categoryId": 14
+                },
+                {
+                    "id": 110,
+                    "name": "NPK",
+                    "description": "dummy",
+                    "categoryName": "Phân bón",
+                    "categoryId": 14
+                }
+            ]
+        },
+        {
+            "id": 15,
+            "name": "Thuốc bảo vệ thực vật",
+            "description": "dummy",
+            "subCategory": [
+                {
+                    "id": 106,
+                    "name": "Thuốc trừ sâu",
+                    "description": "dummy",
+                    "categoryName": "Thuốc bảo vệ thực vật",
+                    "categoryId": 15
+                },
+                {
+                    "id": 107,
+                    "name": "Thuốc trừ muỗi",
+                    "description": "dummy",
+                    "categoryName": "Thuốc bảo vệ thực vật",
+                    "categoryId": 15
+                },
+                {
+                    "id": 108,
+                    "name": "Thuốc trừ ốc",
+                    "description": "dummy",
+                    "categoryName": "Thuốc bảo vệ thực vật",
+                    "categoryId": 15
+                }
+            ]
+        }
+    ],
+    "manufacturer":[
+        {
+            "id":1,
+            "name":"Công Ty cổ phần tập đoàn giống cây trồng Việt Nam chi nhánh Hà Nam VINASEED",
+            "address":"Hà Nam",
+            "phone":"012345678",
+            "email":"abc@gmail.com"
+        },
+        {
+            "id":2,
+            "name":"Công Ty cổ phần tập đoàn THAIBINH SEED chi nhánh Thái Bình",
+            "address":"Thái Bình",
+            "phone":"012345678",
+            "email":"abc@gmail.com"
+        },
+        {
+            "id":3,
+            "name":"Công Ty CP Giống cây trồng Nam Định",
+            "address":"Nam Định",
+            "phone":"012345678",
+            "email":"abc@gmail.com"
+        },
+        {
+            "id":4,
+            "name":"CÔNG TY CỔ PHẦN GIỐNG CÂY TRỒNG MIỀN NAM - SSC",
+            "address":"TP.HCM",
+            "phone":"012345678",
+            "email":"abc@gmail.com"
+        },
+        {
+            "id":5,
+            "name":"Cty cổ phần bảo vệ thực vật 1 trung ương ",
+            "address":"Bắc Ninh",
+            "phone":"012345678",
+            "email":"abc@gmail.com"
+        }
+    ]
+}
