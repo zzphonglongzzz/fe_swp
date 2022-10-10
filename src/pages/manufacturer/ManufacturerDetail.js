@@ -18,9 +18,9 @@ const ManufacturerDetail = () => {
   const [manufacturer, setManufacturer] = useState([]);
   const navigate = useNavigate();
 
-  //   const handleOnClickEdit = () => {
-  //     navigate(`/manufacturer/edit/${manufacturerId}`);
-  //   };
+  const handleOnClickEdit = () => {
+      navigate(`/manufacturer/edit/${manufacturerId}`);
+  };
   useEffect(() => {
     console.log(manufacturerId);
     ManufacturerService.getManufacturerById(manufacturerId)
@@ -41,7 +41,7 @@ const ManufacturerDetail = () => {
           </Typography>
         </Stack>
         <Button
-          // onClick={() => handleOnClickEdit()}
+          onClick={() => handleOnClickEdit()}
           color="warning"
           variant="contained"
           startIcon={<CreateIcon />}

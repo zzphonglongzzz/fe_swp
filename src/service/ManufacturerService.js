@@ -9,7 +9,7 @@ class ManfacuturerService {
   getManufacturerById(manufacturerId) {
     return axios.get(`${Manufacturer_BASE_REST_API_URL}/${manufacturerId}`);
   }
-  createNewManfacturer(manufacturer) {
+  createNewManufacturer(manufacturer) {
     return axios.post(Manufacturer_BASE_REST_API_URL, manufacturer);
   }
   updateManufacturer(manufacturerId, manufacturer) {
