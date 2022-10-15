@@ -20,6 +20,9 @@ const Sidebar = () => {
   function handleChangeManufacturer() {
     navigate("/manufacturer");
   }
+  function handleChangeWarehouse(){
+    navigate("/warehouseList")
+  }
   return (
     <div className="sidebar">
       <div className="top">
@@ -47,7 +50,7 @@ const Sidebar = () => {
           </li>
           <li>
             <WarehouseIcon className="icon" />
-            <span>Nhà kho</span>
+            <span onClick={handleChangeWarehouse}>Nhà kho</span>
           </li>
           <p className="title">Quản lý nhập hàng</p>
           <li>

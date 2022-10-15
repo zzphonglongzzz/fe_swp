@@ -42,6 +42,7 @@ const AddEditManufacturer = () => {
   const isAdd = !manufacturerId;
   const [manufacturer, setManufacturer] = useState();
   const [loadingButton, setLoadingButton] = useState(false);
+  
 
   const initialManufacturerValue = {
     name: "",

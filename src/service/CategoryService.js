@@ -1,13 +1,26 @@
-import axios from 'axios'
+import axiosClient from "../utils/axiosClient";
+import axios from "axios";
 
-const CATEGORY_BASE_REST_API_URL = "http://localhost:3000/categories";
-
-class CategoryService{
-    getAllCategory(){
-        return axios.get(CATEGORY_BASE_REST_API_URL)
-    }
-    getAllCategoryDetail(CategoryId){
-        return axios.get(CATEGORY_BASE_REST_API_URL+ "/" + CategoryId)
-    }
+const CategoryService = {
+  getAll:() => {
+    const url = '/category';
+    return axiosClient.get(url);
+  },
+  getCategoryDetail: (params) => {
+    const url = `/category/${params.categoryId}`;
+    return axiosClient.get(url, {params});
+  },
+  saveSubCategory: (category) => {
+    const url = process.env.REACT_APP_API_URL + '/subCategory/add'
+    return axios.post(url, category);
+  },
+  updateSubCategory: (category) => {
+    const url = process.env.REACT_APP_API_URL + '/subCategory/update';
+    return axios.put(url, category);
+  },
+  getSubCategoryByCategoryId: (params) => {
+    const url = '/subCategory';
+    return axiosClient.get(url, { params });
+  },
 }
-export default new CategoryService()
+export default CategoryService;

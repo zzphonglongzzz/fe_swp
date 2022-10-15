@@ -38,17 +38,20 @@ export default function CategoryList() {
   const navigate = useNavigate();
 
   const handleOnClickDetailCategory = (categoryId) => {
-    navigate(`/category/detail/${categoryId}`)
+    navigate(`/category/detail/${categoryId}`);
+  };
+  const fetchCategoryList = async () => {
+    try {
+      const actionResult = await CategoryService.getAll();
+      if (actionResult.data) {
+        setCategoryList(actionResult.data.category);
+      }
+    } catch (error) {
+      console.log("Failed to fetch category list: ", error);
+    }
   };
   useEffect(() => {
-    CategoryService.getAllCategory()
-      .then((response) => {
-        setCategoryList(response.data);
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    fetchCategoryList();
   }, []);
   return (
     <Container maxWidth="xl">
@@ -62,7 +65,7 @@ export default function CategoryList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {categoryList.map((row) => (
+            {categoryList?.map((row) => (
               <StyledTableRow key={row.id}>
                 <StyledTableCell component="th" scope="row">
                   {row.name}
@@ -71,7 +74,12 @@ export default function CategoryList() {
                   {row.description}
                 </StyledTableCell>
                 <StyledTableCell align="right">
-                  <Button variant="contained" onClick={() => handleOnClickDetailCategory(row.id)}>Xem chi tiết</Button>
+                  <Button
+                    variant="contained"
+                    onClick={() => handleOnClickDetailCategory(row.id)}
+                  >
+                    Xem chi tiết
+                  </Button>
                 </StyledTableCell>
               </StyledTableRow>
             ))}

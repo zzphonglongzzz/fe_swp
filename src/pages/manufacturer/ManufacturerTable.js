@@ -24,6 +24,8 @@ import {
 } from "@mui/material";
 import { Add, Search } from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
+import usePagination from "../../utils/Pagination";
+import { Pagination } from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -39,6 +41,16 @@ const ManufacturerTable = () => {
   const navigate = useNavigate();
   const [manufacturerList, setManufactureList] = useState([]);
   const [keyword, setKeyword] = useState();
+  const [page, setPage] = useState(1);
+  const PER_PAGE = 2;
+
+  const count = Math.ceil(manufacturerList.length / PER_PAGE);
+  const _DATA = usePagination(manufacturerList, PER_PAGE);
+
+  const handleChange = (e, p) => {
+    setPage(p);
+    _DATA.jump(p);
+  };
 
   const handleOnClickDetailManufacturer = (manufacturerId) => {
     console.log("Id: ", manufacturerId);
@@ -83,7 +95,7 @@ const ManufacturerTable = () => {
                 id="outlined-basic"
                 name="keyword"
                 placeholder="Tìm kiếm theo tên nhà cung cấp..."
-                fullWidth
+                sx={{ width: '90%' }}
                 label={null}
                 variant="outlined"
                 InputProps={{
@@ -91,11 +103,12 @@ const ManufacturerTable = () => {
                     <InputAdornment position="start">
                       <Search />
                     </InputAdornment>
-                  ),
+                  )
                 }}
                 onChange={handleSearchChange}
               />
               <Button
+                sx={{ width: '10%' }}
                 variant="contained"
                 startIcon={<SearchIcon />}
                 className="btnSearch"
@@ -118,7 +131,7 @@ const ManufacturerTable = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {manufacturerList.map((row) => (
+                {_DATA.currentData().map((row) => (
                   <TableRow
                     hover
                     key={row.id}
@@ -160,6 +173,22 @@ const ManufacturerTable = () => {
               </TableBody>
             </Table>
           </TableContainer>
+        </Grid>
+        <Grid
+          xs={12}
+          item
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Pagination
+            count={count}
+            size="large"
+            page={page}
+            variant="outlined"
+            shape="rounded"
+            onChange={handleChange}
+          />
         </Grid>
       </Grid>
     </Container>
