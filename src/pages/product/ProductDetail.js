@@ -10,38 +10,35 @@ import {
   CardContent,
 } from "@mui/material";
 import CreateIcon from "@mui/icons-material/Create";
-import "./ManufacturerDetail.scss";
-import ManufacturerService from "../../service/ManufacturerService";
+import "./product.scss";
+import ProductService from "../../service/ProductService";
 
-const ManufacturerDetail = () => {
-  const { manufacturerId } = useParams();
-  const [manufacturer, setManufacturer] = useState([]);
+const ProductDetail = () => {
+  const { productId } = useParams();
+  const [product, setProduct] = useState({});
   const navigate = useNavigate();
 
   const handleOnClickEdit = () => {
-    navigate(`/manufacturer/edit/${manufacturerId}`);
+    navigate(`/product/edit/${productId}`);
   };
-  const getManufacturerdetail = async () => {
-    try {
-      const actionResult = await ManufacturerService.getManufacturerById(
-        manufacturerId
-      );
-      if (actionResult.data) {
-        setManufacturer(actionResult.data.manufacturer);
-      }
-    } catch (error) {
-      console.log("Failed to fetch category list: ", error);
-    }
-  };
+
   useEffect(() => {
-    getManufacturerdetail();
-  }, []);
+    ProductService.getProductbyId(productId)
+      .then((response) => {
+        console.log(response.data);
+        setProduct(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [productId]);
+
   return (
     <Grid>
       <Card className="CardHeader">
         <Stack>
           <Typography variant="h5" style={{ fontWeight: "bold" }}>
-            {manufacturer.name}
+            {product.name}
           </Typography>
         </Stack>
         <Button
@@ -59,26 +56,34 @@ const ManufacturerDetail = () => {
           <Stack paddingX={3} spacing={2}>
             <Grid container>
               <Grid xs={2} item>
-                <Typography color="#696969">Số điện thoại</Typography>
+                <Typography color="#696969">Mã sản phẩm</Typography>
               </Grid>
-              <Grid xs={10} item>
-                <Typography>{manufacturer.phone}</Typography>
+              <Grid xs={2} item>
+                <Typography>{product.productCode}</Typography>
               </Grid>
             </Grid>
             <Grid container>
               <Grid xs={2} item>
-                <Typography color="#696969">Email</Typography>
+                <Typography color="#696969">Nhà sản xuất</Typography>
               </Grid>
-              <Grid xs={10} item>
-                <Typography>{manufacturer.email}</Typography>
+              <Grid xs={2} item>
+                <Typography>{product.manufacturerName}</Typography>
               </Grid>
             </Grid>
             <Grid container>
               <Grid xs={2} item>
-                <Typography color="#696969"> Địa chỉ</Typography>
+                <Typography color="#696969">Danh mục</Typography>
               </Grid>
-              <Grid xs={10} item>
-                <Typography>{manufacturer.address}</Typography>
+              <Grid xs={2} item>
+                <Typography>{product.categoryName}</Typography>
+              </Grid>
+            </Grid>
+            <Grid container>
+              <Grid xs={2} item>
+                <Typography color="#696969">Mô tả sản phẩm</Typography>
+              </Grid>
+              <Grid xs={2} item>
+                <Typography>{product.description}</Typography>
               </Grid>
             </Grid>
           </Stack>
@@ -88,4 +93,4 @@ const ManufacturerDetail = () => {
   );
 };
 
-export default ManufacturerDetail;
+export default ProductDetail;

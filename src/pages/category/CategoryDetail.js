@@ -48,10 +48,9 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const CategoryDetail = () => {
   const { categoryId } = useParams();
   const [category,setCategory] =useState();
-  const [categoryList, setCategoryList] = useState([]);
   const [subCategoryList, setSubCategoryList] = useState([]);
   const [openPopup, setOpenPopup] = useState(false);
-  const [editCategory, setEditCategory] = useState();
+  const [editSubCategory, setSubEditCategory] = useState();
   const [openPopupEdit, setOpenPopupEdit] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState();
 
@@ -60,8 +59,8 @@ const CategoryDetail = () => {
     setOpenPopup(true);
   };
 
-  const handleOnClickEditSubCategory = (CategoryId) => {
-    setEditCategory(CategoryId);
+  const handleOnClickEditSubCategory = (Category) => {
+    setSubEditCategory(Category);
     setOpenPopupEdit(true);
   };
 
@@ -76,7 +75,6 @@ const CategoryDetail = () => {
       };
       const actionResult = await CategoryService.getCategoryDetail(params);
       if (actionResult.data) {
-        console.log(actionResult.data)
         setCategory(actionResult.data.category);
         setSubCategoryList(actionResult.data.subCategory);
       }
@@ -147,8 +145,8 @@ const CategoryDetail = () => {
       >
         <EditSubCategory
           closePopup={closePopup}
-          category={editCategory}
-          allCategoryList={categoryList}
+          Subcategory={editSubCategory}
+          categoryId={categoryId}
         />
       </Dialog>
       <Dialog

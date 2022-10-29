@@ -1,22 +1,34 @@
 import axios from "axios";
+import axiosClient from "../utils/axiosClient";
 
-const Manufacturer_BASE_REST_API_URL = "http://localhost:3000/manufacturer";
-
-class ManfacuturerService {
-  getAllManufacturer() {
-    return axios.get(Manufacturer_BASE_REST_API_URL);
-  }
-  getManufacturerById(manufacturerId) {
-    return axios.get(`${Manufacturer_BASE_REST_API_URL}/${manufacturerId}`);
-  }
-  createNewManufacturer(manufacturer) {
-    return axios.post(Manufacturer_BASE_REST_API_URL, manufacturer);
-  }
-  updateManufacturer(manufacturerId, manufacturer) {
-    return axios.put(
-      Manufacturer_BASE_REST_API_URL + "/" + manufacturerId,
-      manufacturer
-    );
-  }
-}
-export default new ManfacuturerService();
+const ManfacuturerService = {
+  getManufacturerList: () => {
+    const url = "/manufacturers";
+    return axiosClient.get(url);
+  },
+  getManufacturerById: (id) => {
+    const url = `/getAManufacturer`;
+    return axiosClient.get(url, { params: { id } });
+  },
+  addNewManufacturer: (manufacturer) => {
+    const url = process.env.REACT_APP_API_URL + "/addManufacturer";
+    return axios.post(url, {
+      id: manufacturer.id,
+      name: manufacturer.name,
+      email: manufacturer.email,
+      phone: manufacturer.phone,
+      address: manufacturer.address,
+    });
+  },
+  updateManufacturer: (manufacturer) => {
+    const url = process.env.REACT_APP_API_URL + "/editManufacturer";
+    return axios.put(url, {
+      id: manufacturer.id,
+      name: manufacturer.name,
+      email: manufacturer.email,
+      phone: manufacturer.phone,
+      address: manufacturer.address,
+    });
+  },
+};
+export default ManfacuturerService;

@@ -23,6 +23,12 @@ const Sidebar = () => {
   function handleChangeWarehouse(){
     navigate("/warehouseList")
   }
+  function handleChangeProduct(){
+    navigate("/product")
+  }
+  function handleCreateInport(){
+    navigate("/import/create-order")
+  }
   return (
     <div className="sidebar">
       <div className="top">
@@ -38,7 +44,7 @@ const Sidebar = () => {
           <p className="title">Quản lý kho hàng</p>
           <li>
             <ProductionQuantityLimitsIcon className="icon" />
-            <span>Sản phẩm</span>
+            <span onClick={handleChangeProduct}>Sản phẩm</span>
           </li>
           <li>
             <StoreMallDirectoryIcon className="icon" />
@@ -55,7 +61,7 @@ const Sidebar = () => {
           <p className="title">Quản lý nhập hàng</p>
           <li>
             <InputIcon className="icon" />
-            <span>Tạo phiếu nhập hàng</span>
+            <span onClick={handleCreateInport}>Tạo phiếu nhập hàng</span>
           </li>
           <li>
             <ListIcon className="icon" />

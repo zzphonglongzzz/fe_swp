@@ -10,13 +10,13 @@ import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import { useState, useEffect } from "react";
 import { Container } from "@mui/system";
-import { useNavigate } from "react-router-dom";
 import DiaLog from "../../component/common/dialog/index";
 import AddIcon from "@mui/icons-material/Add";
-import { toast } from "react-toastify";
 import WarehouseService from "../../service/WarehouseService";
-import { Stack } from "@mui/material";
-// import "./WarehouseList.scss";
+import { Stack, Tooltip, IconButton } from "@mui/material";
+import { Edit } from "@mui/icons-material";
+import AddWarehouse from "./AddWarehouse";
+import EditWarehouse from "./EditWarehouse";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -54,18 +54,14 @@ const WarehouseList = () => {
     setOpenPopup(false);
     setOpenPopupEdit(false);
   };
-  const getAllWarehouse = () => {
+  const getAllWarehouse = async () => {
     try {
-      WarehouseService.getlistWarehouse()
-        .then((response) => {
-          setWarehouseList(response.data);
-          console.log(response.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      const actionResult = await WarehouseService.getlistWarehouse();
+      if (actionResult.data) {
+        setWarehouseList(actionResult.data.warehouses);
+      }
     } catch (error) {
-      console.log("Failed to fetch warehouse list: ", error);
+      console.log("Failed to fetch category list: ", error);
     }
   };
   useEffect(() => {
@@ -74,16 +70,21 @@ const WarehouseList = () => {
   return (
     <Container>
       <Stack direction="row" justifyContent="flex-end" spacing={2} p={2}>
-        <Button color="warning" variant="contained" startIcon={<AddIcon />}>
+        {/* <Button
+          color="warning"
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => handleOnclickAddNewWareHouse()}
+        >
           Thêm mới nhà kho
-        </Button>
+        </Button> */}
       </Stack>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 200 }} aria-label="customized table">
           <TableHead>
             <TableRow>
-              <StyledTableCell>Tên danh mục</StyledTableCell>
-              <StyledTableCell align="right">Mô tả</StyledTableCell>
+              <StyledTableCell>Tên nhà kho</StyledTableCell>
+              <StyledTableCell align="right">Địa chỉ</StyledTableCell>
               <StyledTableCell align="right">Hành động</StyledTableCell>
             </TableRow>
           </TableHead>
@@ -94,16 +95,41 @@ const WarehouseList = () => {
                   {row.name}
                 </StyledTableCell>
                 <StyledTableCell align="right">
-                  {row.description}
+                  {row.address}
                 </StyledTableCell>
                 <StyledTableCell align="right">
-                  
+                  <Tooltip title="Chỉnh sửa" arrow>
+                    <IconButton
+                      color="warning"
+                      size="small"
+                      onClick={() => handleOnClickEdit(row.id)}
+                    >
+                      <Edit fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
                 </StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      <DiaLog
+        title="Thêm nhà kho"
+        openPopup={openPopup}
+        setOpenPopup={setOpenPopup}
+      >
+        <AddWarehouse closePopup={closePopup} />
+      </DiaLog>
+      <DiaLog
+        title="Chỉnh sửa thông tin nhà kho"
+        openPopup={openPopupEdit}
+        setOpenPopup={setOpenPopupEdit}
+      >
+        <EditWarehouse
+          closePopup={closePopup}
+          selectedWarehouse={selectedWarehouse}
+        />
+      </DiaLog>
     </Container>
   );
 };

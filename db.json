@@ -107,13 +107,77 @@
   "warehouse": [
     {
       "id": 1,
-      "name": "Kho A1",
+      "name": "Kho A5",
       "description": "dummy"
     },
     {
       "id": 2,
       "name": "Kho B1",
       "description": "dummy"
+    },
+    {
+      "name": "Kho C1",
+      "description": "dummy",
+      "id": 3
+    },
+    {
+      "name": "Kho D1",
+      "description": "dummy",
+      "id": 4
+    }
+  ],
+  "product": [
+    {
+      "id": 30,
+      "name": "Đạm Phú Mỹ",
+      "productCode": "DPM",
+      "unitMeasure": "kg",
+      "description": "dummy",
+      "categoryName": "Phân bón",
+      "categoryId": 14,
+      "manufacturerName": "Cty cổ phần bảo vệ thực vật 1 trung ương ",
+      "quantity": 100,
+      "manufactorId": 10,
+      "image": "api/product/download/image/30"
+    },
+    {
+      "id": 31,
+      "name": "Thái Xuyên 111",
+      "productCode": "TX111",
+      "unitMeasure": "kg",
+      "description": "dummy",
+      "categoryId": 13,
+      "categoryName": "Lúa giống",
+      "manufacturerName": "Cty cổ phần bảo vệ thực vật 1 trung ương ",
+      "quantity": 100,
+      "manufactorId": 10,
+      "image": "api/product/download/image/31"
+    },
+    {
+      "id": 32,
+      "name": "Thái Xuyên 112",
+      "productCode": "TX112",
+      "unitMeasure": "kg",
+      "description": "dummy",
+      "categoryId": 13,
+      "categoryName": "Lúa giống",
+      "manufacturerName": "Cty cổ phần bảo vệ thực vật 1 trung ương ",
+      "quantity": 100,
+      "manufactorId": 10,
+      "image": "api/product/download/image/31"
+    },
+    {
+      "id": 33,
+      "name": "Thái Xuyên 113",
+      "productCode": "TX113",
+      "unitMeasure": "kg",
+      "description": "dummy",
+      "categoryId": 13,
+      "categoryName": "Lúa giống",
+      "manufacturerName": "Cty cổ phần bảo vệ thực vật 1 trung ương ",
+      "quantity": 100,
+      "manufactorId": 10,
+      "image": "api/product/download/image/31"
     }
   ]
 }
