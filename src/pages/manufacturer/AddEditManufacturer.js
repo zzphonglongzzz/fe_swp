@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import { Form, Formik } from "formik";
 import ManufacturerService from "../../service/ManufacturerService";
 import { Container } from "@mui/system";
@@ -76,66 +76,39 @@ const AddEditManufacturer = () => {
   });
   const saveManufacturerDetail = async (manufacturer) => {
     setLoadingButton(true);
-   
-      // ManufacturerService.createNewManufacturer(manufacturer).then(
-      //   (response) => {
-      //     if (isAdd) {
-      //       toast.success("Thêm nhà sản xuất thành công!");
-      //       setLoadingButton(false);
-      //       navigate("/manufacturer");
-      //     } else {
-      //       ManufacturerService.updateManufacturer(manufacturer,).then(
-      //       toast.success("Sửa nhà sản xuất thành công!");
-      //       setLoadingButton(false);
-      //       navigate(`/manufacturer/detail/${manufacturerId}`);
-      //     }
-      //     return response.data;
-      //   },
-      //   (error) => {
-      //     if (isAdd) {
-      //       toast.error("Thêm nhà sản xuất thất bại!");
-      //       setLoadingButton(false);
-      //     } else {
-      //       toast.error("Sửa nhà sản xuất thất bại!");
-      //       setLoadingButton(false);
-      //     }
-      //     console.log(error);
-      //   }
-      // );
-      if (isAdd) {
-        ManufacturerService.createNewManufacturer(manufacturer)
-          .then((response) => {
-            toast.success("Thêm nhà sản xuất thành công!");
-            setLoadingButton(false);
-            navigate("/manufacturer");
-          })
-          .catch((error) => {
-            toast.error("Thêm nhà sản xuất thất bại!"); 
-            setLoadingButton(false);
-          });
-      }else{
-        ManufacturerService.updateManufacturer(manufacturerId,manufacturer)
-        .then((response) => {
-          toast.success("Sửa nhà sản xuất thành công!");
-          setLoadingButton(false);
-          navigate(`/manufacturer/detail/${manufacturerId}`);
-        })
-        .catch((error) => {
-          toast.error("Thêm nhà sản xuất thất bại!"); 
-          setLoadingButton(false);
-        });
+    if (isAdd) {
+      try {
+        await ManufacturerService.addNewManufacturer(manufacturer);
+        toast.success("Thêm nhà sản xuất thành công!");
+        setLoadingButton(false);
+        navigate("/manufacturer");
+      } catch (error) {
+        console.log(error);
+        toast.error("Thêm nhà sản xuất thất bại!");
+        setLoadingButton(false);
+      }
+    } else {
+      try {
+        await ManufacturerService.updateManufacturer(manufacturer);
+        toast.success("Sửa nhà sản xuất thành công!");
+        setLoadingButton(false);
+        navigate(`/manufacturer/detail/${manufacturerId}`);
+      } catch (error) {
+        console.log(error);
+        toast.error("Thêm nhà sản xuất thất bại!");
+        setLoadingButton(false);
       }
     }
-  
-
+  };
   const handleSubmit = (values) => {
     const newManufacturer = {
       id: isAdd ? "" : manufacturerId,
       name: values.name,
+      address: values.address,
       email: values.email,
       phone: values.phone,
-      address: values.address,
     };
+    console.log(newManufacturer);
     saveManufacturerDetail(newManufacturer);
   };
   const handleOnClickExit = () => {
@@ -143,19 +116,24 @@ const AddEditManufacturer = () => {
       isAdd ? "/manufacturer" : `/manufacturer/detail/${manufacturerId}`
     );
   };
+  const getManufacturerdetail = async () => {
+    try {
+      const actionResult = await ManufacturerService.getManufacturerById(
+        manufacturerId
+      );
+      if (actionResult.data) {
+        setManufacturer(actionResult.data.manufacturer);
+      }
+    } catch (error) {
+      console.log("Failed to fetch category list: ", error);
+    }
+  };
   useEffect(() => {
     if (!isAdd) {
       if (isNaN(manufacturerId)) {
         navigate("/404");
       } else {
-        ManufacturerService.getManufacturerById(manufacturerId)
-          .then((response) => {
-            setManufacturer(response.data);
-            console.log(response.data);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        getManufacturerdetail();
       }
     }
   }, []);

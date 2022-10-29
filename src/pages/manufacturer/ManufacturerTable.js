@@ -20,10 +20,11 @@ import {
   CardHeader,
   TextField,
   InputAdornment,
-  Box,
 } from "@mui/material";
 import { Add, Search } from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
+import usePagination from "../../utils/Pagination";
+import { Pagination } from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -38,30 +39,43 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 const ManufacturerTable = () => {
   const navigate = useNavigate();
   const [manufacturerList, setManufactureList] = useState([]);
-  const [keyword, setKeyword] = useState();
+  //const [keyword, setKeyword] = useState();
+  const [pageIndex, setPageIndex] = useState(1);
+  const pageSize = 5;
+
+  const count = Math.ceil(manufacturerList.length / pageSize);
+  const _DATA = usePagination(manufacturerList, pageSize);
+
+  const handleChange = (e, p) => {
+    console.log(p)
+    setPageIndex(p);
+    _DATA.jump(p);
+  };
 
   const handleOnClickDetailManufacturer = (manufacturerId) => {
-    console.log("Id: ", manufacturerId);
     navigate(`/manufacturer/detail/${manufacturerId}`);
   };
   const handleOnclickAddNewManufacturer = () => {
     navigate("/manufacturer/add");
   };
-  const handleSearch = (e) => {
-    setKeyword(e.target.value);
-  };
-  const handleSearchChange = (e) => {
-    console.log(e.target.value);
+  // const handleSearch = (e) => {
+  //   setKeyword(e.target.value);
+  // };
+  // const handleSearchChange = (e) => {
+  //   console.log(e.target.value);
+  // };
+  const fetchManufacturerList = async () => {
+    try {
+      const actionResult = await ManufacturerService.getManufacturerList();
+      if (actionResult.data) {
+        setManufactureList(actionResult.data.manufacturer);
+      }
+    } catch (error) {
+      console.log("Failed to fetch category list: ", error);
+    }
   };
   useEffect(() => {
-    ManufacturerService.getAllManufacturer()
-      .then((response) => {
-        setManufactureList(response.data);
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    fetchManufacturerList();
   }, []);
   return (
     <Container maxWidth="xl">
@@ -83,7 +97,7 @@ const ManufacturerTable = () => {
                 id="outlined-basic"
                 name="keyword"
                 placeholder="Tìm kiếm theo tên nhà cung cấp..."
-                fullWidth
+                sx={{ width: "80%" }}
                 label={null}
                 variant="outlined"
                 InputProps={{
@@ -93,13 +107,14 @@ const ManufacturerTable = () => {
                     </InputAdornment>
                   ),
                 }}
-                onChange={handleSearchChange}
+                //onChange={handleSearchChange}
               />
               <Button
+                sx={{ width: "20%" }}
                 variant="contained"
                 startIcon={<SearchIcon />}
                 className="btnSearch"
-                onClick={handleSearch}
+                //onClick={handleSearch}
               >
                 Tìm kiếm
               </Button>
@@ -118,7 +133,7 @@ const ManufacturerTable = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {manufacturerList.map((row) => (
+                {_DATA.currentData().map((row) => (
                   <TableRow
                     hover
                     key={row.id}
@@ -160,6 +175,22 @@ const ManufacturerTable = () => {
               </TableBody>
             </Table>
           </TableContainer>
+        </Grid>
+        <Grid
+          xs={12}
+          item
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Pagination
+            count={count}
+            size="large"
+            page={pageIndex}
+            variant="outlined"
+            shape="rounded"
+            onChange={handleChange}
+          />
         </Grid>
       </Grid>
     </Container>

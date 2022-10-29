@@ -1,0 +1,50 @@
+.cardHeader{
+    padding: 30px 20px;
+    margin-bottom: 20px;
+}
+.leftContainer{
+    padding: 20px
+}
+.rightContainer{
+    padding: 20px
+}
+.selectContainer{
+    width: 100%;
+    padding: 12px;
+    display: flex;
+    justify-content:space-between;
+}
+.selectBox {
+    width: 290px,
+  }
+.cardInfo{
+    margin-bottom: 24px;
+}
+.infoContainer{
+    display: flex;
+    vertical-align: center;
+    justify-content: center;
+    padding: 12px;
+}
+.wrapIcon{
+    vertical-align: middle;
+    display: inline-flex;
+    width: 200px;
+    color: black;
+}
+.textfieldStyle{
+    flex: 5;
+}
+.iconStyle{
+    font-size: small;
+    margin: 0 10px;
+}
+.phoneStyle{
+    padding-right: 12px;
+}
+.emailStyle{
+  padding-left: 12px;
+}
+.errorTextHelper{
+    padding-left: 15px;
+}

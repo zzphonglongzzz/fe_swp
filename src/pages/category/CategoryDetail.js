@@ -11,9 +11,20 @@ import Button from "@mui/material/Button";
 import { useState, useEffect } from "react";
 import CategoryService from "../../service/CategoryService";
 import { useNavigate, useParams } from "react-router-dom";
-import { Card, Grid, Stack, Typography } from "@mui/material";
+import {
+  Card,
+  Grid,
+  Stack,
+  Typography,
+  Tooltip,
+  IconButton,
+} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import './CategoryDetail.scss'
+import { Edit } from "@mui/icons-material";
+import Dialog from "../../component/common/dialog/index";
+import "./CategoryDetail.scss";
+import EditSubCategory from "./EditSubCategory";
+import AddSubCategory from "./AddSubCategory";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -36,33 +47,54 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 const CategoryDetail = () => {
   const { categoryId } = useParams();
-  const [categoryName, setCategoryName] = useState();
+  const [category,setCategory] =useState();
   const [subCategoryList, setSubCategoryList] = useState([]);
-  const navigate = useNavigate();
+  const [openPopup, setOpenPopup] = useState(false);
+  const [editSubCategory, setSubEditCategory] = useState();
+  const [openPopupEdit, setOpenPopupEdit] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState();
 
-  const handleOnClickAdd = () => {
-    console.log("Add new sub category");
+  const handleOnClickAddNewSubCategory = (categoryId) => {
+    setSelectedCategory(categoryId);
+    setOpenPopup(true);
+  };
+
+  const handleOnClickEditSubCategory = (Category) => {
+    setSubEditCategory(Category);
+    setOpenPopupEdit(true);
+  };
+
+  const closePopup = () => {
+    setOpenPopup(false);
+    setOpenPopupEdit(false);
+  };
+  const getCategoryDetail = async () => {
+    try {
+      const params = {
+        categoryId: categoryId
+      };
+      const actionResult = await CategoryService.getCategoryDetail(params);
+      if (actionResult.data) {
+        setCategory(actionResult.data.category);
+        setSubCategoryList(actionResult.data.subCategory);
+      }
+    } catch (error) {
+      console.log("Failed to fetch category list: ", error);
+    }
   };
   useEffect(() => {
-    CategoryService.getAllCategoryDetail(categoryId)
-      .then((response) => {
-        setCategoryName(response.data.name);
-        setSubCategoryList(response.data.subCategory);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [categoryId]);
+    getCategoryDetail();
+  }, []);
   return (
     <Grid>
       <Card className="cardHeader">
         <Stack>
           <Typography variant="h5" style={{ fontWeight: "bold" }}>
-            {categoryName}
+            {category?.name}
           </Typography>
         </Stack>
         <Button
-          onClick={() => handleOnClickAdd()}
+          onClick={() => handleOnClickAddNewSubCategory(categoryId)}
           color="warning"
           variant="contained"
           startIcon={<AddIcon />}
@@ -71,31 +103,62 @@ const CategoryDetail = () => {
         </Button>
       </Card>
       <Card>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 200 }} aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              <StyledTableCell>Tên danh mục</StyledTableCell>
-              <StyledTableCell align="right">Mô tả</StyledTableCell>
-              <StyledTableCell align="right">Hành động</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {subCategoryList.map((row) => (
-              <StyledTableRow key={row.id}>
-                <StyledTableCell component="th" scope="row">
-                  {row.name}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {row.description}
-                </StyledTableCell>
-                <StyledTableCell align="right"></StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 200 }} aria-label="customized table">
+            <TableHead>
+              <TableRow>
+                <StyledTableCell>Tên danh mục</StyledTableCell>
+                <StyledTableCell align="right">Mô tả</StyledTableCell>
+                <StyledTableCell align="right">Hành động</StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {subCategoryList?.map((row) => (
+                <StyledTableRow key={row.id}>
+                  <StyledTableCell component="th" scope="row">
+                    {row.name}
+                  </StyledTableCell>
+                  <StyledTableCell align="right">
+                    {row.description}
+                  </StyledTableCell>
+                  <StyledTableCell align="right">
+                    <Tooltip title="Chỉnh sửa" arrow>
+                      <IconButton
+                        color="warning"
+                        size="small"
+                        onClick={() => handleOnClickEditSubCategory(row)}
+                      >
+                        <Edit fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </StyledTableCell>
+                </StyledTableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Card>
+      <Dialog
+        title="Sửa danh mục"
+        openPopup={openPopupEdit}
+        setOpenPopup={setOpenPopupEdit}
+      >
+        <EditSubCategory
+          closePopup={closePopup}
+          Subcategory={editSubCategory}
+          categoryId={categoryId}
+        />
+      </Dialog>
+      <Dialog
+        title="Thêm danh mục phụ"
+        openPopup={openPopup}
+        setOpenPopup={setOpenPopup}
+      >
+        <AddSubCategory
+          closePopup={closePopup}
+          selectedCategory={categoryId}
+        />
+      </Dialog>
     </Grid>
   );
 };

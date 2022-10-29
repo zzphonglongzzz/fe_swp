@@ -1,0 +1,50 @@
+.cardHeader{
+    padding: 24px;
+}
+.cardImage{
+    min-height: 255px;
+    display: flex;
+}
+.infoContainer{
+    display: flex;
+    vertical-align: center;
+    justify-content: center;
+    padding: 12px;
+}
+.wrapIcon{
+    vertical-align: middle;
+    display: inline-flex;
+    width: 200px;
+}
+.textfieldStyle{
+    flex:5
+}
+.iconStyle{
+    font-size: small;
+    margin: 0 10px;
+    color: blue;
+}
+.preview{
+    width: 250px;
+    aspect-ratio: 1/1;
+   // border: 2px dashed black;
+   // border-radius: 5px;
+    //display: block;
+    font-size: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    cursor: pointer;
+    position: relative;
+}
+.iconUpload{
+   font-size: 50px;
+   margin-bottom: 20px;
+}
+.imgPreview{
+    width: 100%;
+    display: 100%;
+    position: absolute;
+    object-fit: cover;
+}

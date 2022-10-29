@@ -1,0 +1,46 @@
+.cardHeard{
+    padding: 30px 20px;
+    margin-bottom: 20px;
+}
+.leftContainer{
+    padding: 20px;
+}
+.rightContainer{
+    padding: 20px;
+}
+.infoContainer{
+    display: flex;
+    vertical-align: center;
+    justify-content: center;
+    padding: 12px;
+    padding-bottom: 25px;
+}
+.infoAddress{
+    display: block;
+    vertical-align: center;
+    justify-content: center;
+    padding: 18px 12px 0;
+}
+.wrapIcon{
+    vertical-align: middle;
+    display: inline-flex;
+    width: 200px;
+    padding-bottom: 10px;
+    padding: 10px 0;
+}
+.textfieldStyle{
+    flex: 5;
+}
+.iconStyle{
+    font-size: small;
+    margin: 0 10px;
+}
+.styleBox{
+    display: flex;
+}
+.infoBox{
+    text-align: center;
+}
+.styleInput{
+   padding: 10px 0;
+}
