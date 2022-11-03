@@ -1,0 +1,87 @@
+.container {
+    display: flex;
+    padding: 10px;
+  }
+  .left-container {
+    width: 100%;
+    margin-right: 8px;
+  }
+  .right-container {
+    width: 20%;
+    margin-left: 8px; 
+  }
+  .card-container {
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  .order-detail-container {
+    padding: 10px;
+    margin-bottom: 10px;
+    min-height: 88vh;
+  }
+  
+  .product-list-container {
+    padding: 10px;
+    margin-bottom: 10px;
+    min-height: 74vh;
+  }
+  
+  .label {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+  .label-field {
+    font-size: 10px;
+    margin-bottom: 8px;
+  }
+  hr {
+    margin: 10px;
+  }
+  .time {
+    color: #6c5f5f;
+    text-decoration: underline;
+    font-style: italic;
+    margin-bottom: 16px;
+  }
+  .selectbox-warehouse {
+    margin-bottom: 10px;
+  }
+  .text-area-note {
+    width: 100%;
+  }
+  .margin-bottom-16 {
+    margin-bottom: 10px;
+  }
+  .total-amount {
+    display: flex;
+    margin-top: 10px;
+    font-size: 24px;
+  }
+  .total-amount div {
+    width: 50%;
+  }
+  
+  .total-amount div:last-child {
+    text-align: right;
+  }
+  .button-import {
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+  }
+  .text-field-quantity {
+    width: 64px;
+  }
+  .text-field-unit-price {
+    width: 120px;
+  }
+  .date-picker {
+    width: 80px;
+  }
+  .popup-message-container {
+    width: 450px;
+    text-align: center;
+  }
+  .error-text-helper {
+    padding-left: 5px;
+  }
