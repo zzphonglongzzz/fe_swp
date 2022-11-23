@@ -1,5 +1,5 @@
-import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -21,11 +21,17 @@ import {
   TextField,
   InputAdornment,
   Box,
+  Toolbar,
 } from "@mui/material";
 import { Add, Search } from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
-import usePagination from "../../utils/Pagination";
-import { Pagination } from "@mui/material";
+import CustomTablePagination from "../../component/common/Pagination";
+import CategoryService from "../../service/CategoryService";
+import ManfacuturerService from "../../service/ManufacturerService";
+import FormatDataUtils from "../../utils/FormatDataUtils";
+import Select from "react-select";
+import { Form, Formik, useField } from "formik";
+import "./product.scss";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -36,23 +42,33 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     fontSize: 14,
   },
 }));
+const TextfieldWrapper = ({ name, ...otherProps }) => {
+  const [field, meta] = useField(name);
 
+  const configTextfield = {
+    ...field,
+    ...otherProps,
+  };
+
+  if (meta && meta.touched && meta.error) {
+    configTextfield.error = true;
+    configTextfield.helperText = meta.error;
+  }
+  return <TextField {...configTextfield} />;
+};
 const ProductList = () => {
   const navigate = useNavigate();
   const [productList, setProductList] = useState([]);
   const [categoryList, setCategoryList] = useState([]);
   const [manufacturerList, setManufactureList] = useState([]);
-  const [page, setPage] = useState(1);
-  const [keyword, setKeyword] = useState();
-  const PER_PAGE = 2;
+  const pages = [5, 10];
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
+  const [totalRecord, setTotalRecord] = useState(0);
+  const [searchParams, setSearchParams] = useState({});
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedManufactor, setSelectedManufactor] = useState(null);
 
-  const count = Math.ceil(productList.length / PER_PAGE);
-  const _DATA = usePagination(productList, PER_PAGE);
-
-  const handleChange = (e, p) => {
-    setPage(p);
-    _DATA.jump(p);
-  };
   const handleOnClickDetailProduct = (productId) => {
     navigate(`/product/detail/${productId}`);
   };
@@ -60,23 +76,119 @@ const ProductList = () => {
     navigate("/product/add");
   };
   const handleSearch = (e) => {
-    setKeyword(e.target.value);
+    if (e.keyCode === 13) {
+      let target = e.target;
+      console.log(e.target.value);
+      setPage(0);
+      setSearchParams({ ...searchParams, productName: target.value });
+      searchProduct({ ...searchParams, productName: target.value });
+    }
   };
-  const handleSearchChange = (e) => {
-    console.log(e.target.value);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+  const handleChangeCategory = (value) => {
+    setSelectedCategory(value);
+    setPage(0);
+    setSearchParams({
+      ...searchParams,
+      categoryId: value ? value?.value : value,
+    });
+    searchProduct({
+      ...searchParams,
+      categoryId: value ? value?.value : value,
+    });
+    console.log("changeCategory", value);
+  };
+  const handleChangeManufactor = (value) => {
+    setSelectedManufactor(value);
+    setPage(0);
+    setSearchParams({
+      ...searchParams,
+      manufactorId: value ? value?.value : value,
+    });
+    searchProduct({
+      ...searchParams,
+      manufactorId: value ? value?.value : value,
+    });
+    console.log("changeManufactor", value);
+  };
+  const fetchCategoryList = async () => {
+    try {
+      const params = {
+        categoryName: "",
+      };
+      const actionResult = await CategoryService.getCategoryList(params);
+      if (actionResult.data) {
+        setCategoryList(actionResult.data.category);
+      }
+    } catch (error) {
+      console.log("Failed to fetch category list: ", error);
+    }
+  };
+  const fetchManufacturerList = async () => {
+    try {
+      const params = {
+        manufactorName: "",
+      };
+      const actionResult = await ManfacuturerService.getManufacturerList(
+        params
+      );
+      if (actionResult.data) {
+        setManufactureList(actionResult.data.manufacturer);
+      }
+    } catch (error) {
+      console.log("Failed to fetch category list: ", error);
+    }
+  };
+  const fetchProductList = async () => {
+    try {
+      const params = {
+        pageIndex: page + 1,
+        pageSize: rowsPerPage,
+        ...searchParams,
+      };
+      const actionResult = await ProductService.getAllProductList(params);
+      if (actionResult.data) {
+        setTotalRecord(actionResult.data.totalRecord);
+        setProductList(actionResult.data.product);
+      }
+    } catch (error) {
+      console.log("Failed to fetch category list: ", error);
+    }
+  };
+  const searchProduct = async (searchParams) => {
+    try {
+      const params = {
+        pageIndex: page + 1,
+        pageSize: rowsPerPage,
+        productName: searchParams.productName
+          ? FormatDataUtils.removeExtraSpace(searchParams.productName)
+          : "",
+        productCode: searchParams.productCode,
+        manufactorId: searchParams.manufactorId,
+        categoryId: searchParams.categoryId,
+      };
+      const actionResult = await ProductService.getAllProductList(params);
+      if (actionResult.data) {
+        setTotalRecord(actionResult.data.totalRecord);
+        setProductList(actionResult.data.product);
+      }
+    } catch (error) {
+      console.log("Failed to fetch product list: ", error);
+    }
   };
   useEffect(() => {
-    ProductService.getAllProductList()
-      .then((response) => {
-        setProductList(response.data);
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+    fetchProductList();
+    fetchCategoryList();
+    fetchManufacturerList();
+  }, [page, rowsPerPage]);
 
-  return ( 
+  return (
     <Container maxWidth="xl">
       <Grid container spacing={2} justifyContent="flex-end">
         <Stack direction="row" spacing={1} paddingY={1}>
@@ -88,36 +200,104 @@ const ProductList = () => {
             Thêm sản phẩm mới
           </Button>
         </Stack>
-        <Grid xs={13} item>
-          <Card>
-            <CardHeader title="Tìm kiếm thông tin sản phẩm" />
-            <Stack direction="row" spacing={2} padding={2}>
-              <TextField
-                id="outlined-basic"
-                name="keyword"
-                placeholder="Tìm kiếm theo tên sản phẩm..."
-                sx={{ width: '30%' }}
-                label={null}
-                variant="outlined"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Search />
-                    </InputAdornment>
-                  )
-                }}
-                onChange={handleSearchChange}
-              />
-              <Button
-                sx={{ width: '10%' }}
-                variant="contained"
-                startIcon={<SearchIcon />}
-                className="btnSearch"
-                onClick={handleSearch}
-              >
-                Tìm kiếm
-              </Button>
-            </Stack>
+        <Grid xs={12} item>
+          <Card className="panelFilter">
+            <Box className="filterTitle">
+              <Typography variant="p">Tìm kiếm thông tin sản phẩm</Typography>
+            </Box>
+            <Formik
+              initialValues={{
+                productCode: "",
+                categoryId: "",
+                manufactorId: "1",
+                sort: "asc",
+              }}
+            >
+              <Form>
+                <Box className="toolbarContainer">
+                  <Box className="searchField">
+                    <TextfieldWrapper
+                      id="outlined-basic"
+                      name="productName"
+                      placeholder="Tìm kiếm theo tên sản phẩm"
+                      fullWidth
+                      label={null}
+                      variant="outlined"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Search />
+                          </InputAdornment>
+                        ),
+                      }}
+                      onKeyDown={handleSearch}
+                      // onChange={handleSearchChange}
+                    />
+                  </Box>
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    justifyContent="flex-end"
+                    className="selectBoxContainer"
+                  >
+                    {categoryList && (
+                      <Select
+                        classNamePrefix="select"
+                        className="selectBox"
+                        placeholder="Danh mục"
+                        noOptionsMessage={() => (
+                          <>Không có tìm thấy danh mục phù hợp</>
+                        )}
+                        isClearable={true}
+                        isSearchable={true}
+                        name="categoryId"
+                        value={selectedCategory}
+                        options={FormatDataUtils.getOptionWithIdandName(
+                          categoryList
+                        )}
+                        menuPortalTarget={document.body}
+                        styles={{
+                          menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                          control: (base) => ({
+                            ...base,
+                            height: 56,
+                            minHeight: 56,
+                          }),
+                        }}
+                        onChange={(e) => handleChangeCategory(e)}
+                      />
+                    )}
+                    {manufacturerList && (
+                      <Select
+                        classNamePrefix="select"
+                        className="selectBox"
+                        placeholder="Nhà cung cấp"
+                        noOptionsMessage={() => (
+                          <>Không có tìm thấy nhà cung cấp phù hợp</>
+                        )}
+                        isClearable={true}
+                        isSearchable={true}
+                        name="categoryId"
+                        value={selectedManufactor}
+                        options={FormatDataUtils.getOptionWithIdandName(
+                          manufacturerList
+                        )}
+                        menuPortalTarget={document.body}
+                        styles={{
+                          menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                          control: (base) => ({
+                            ...base,
+                            height: 56,
+                            minHeight: 56,
+                          }),
+                        }}
+                        onChange={(e) => handleChangeManufactor(e)}
+                      />
+                    )}
+                  </Stack>
+                </Box>
+              </Form>
+            </Formik>
           </Card>
         </Grid>
         <Grid xs={12} item>
@@ -134,7 +314,7 @@ const ProductList = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {_DATA.currentData().map((row) => (
+                {productList.map((row) => (
                   <TableRow
                     hover
                     key={row.id}
@@ -177,7 +357,7 @@ const ProductList = () => {
                         gutterBottom
                         noWrap
                       >
-                        {row.manufacturerName}
+                        {FormatDataUtils.truncate(row.manufactorName, 20)}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -213,18 +393,18 @@ const ProductList = () => {
           justifyContent="center"
           alignItems="center"
         >
-          <Pagination
-            count={count}
-            size="large"
+          <CustomTablePagination
             page={page}
-            variant="outlined"
-            shape="rounded"
-            onChange={handleChange}
+            pages={pages}
+            rowsPerPage={rowsPerPage}
+            totalRecord={totalRecord}
+            handleChangePage={handleChangePage}
+            handleChangeRowsPerPage={handleChangeRowsPerPage}
           />
         </Grid>
       </Grid>
     </Container>
   );
-}
- 
+};
+
 export default ProductList;

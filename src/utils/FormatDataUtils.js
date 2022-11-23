@@ -4,7 +4,7 @@ const formatCurrency = (value) =>
   value.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
 
 const formatDateTime = (date) => {
-  return format(new Date(date), 'dd/MM/yyyy HH:mm');
+  return format(new Date(date), 'dd/MM/yyyy HH:mm:ss');
 };
 
 const formatDateByFormat = (date, formatString) => {
@@ -103,7 +103,7 @@ const getSelectedOptionWithId = (array, id) => {
 // };
 
 const isEmptyObject = (obj) => {
-  return Object.keys(obj).length === 0
+  return Object.keys(obj).length == 0
 }
 
 const truncate = (str, n) => {

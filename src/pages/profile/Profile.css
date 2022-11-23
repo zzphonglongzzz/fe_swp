@@ -1,0 +1,10 @@
+.imgContainer{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-flow: wrap;
+}
+.imgProfile{
+    width: 100%;
+    aspect-ratio: 1/1;
+}

@@ -7,6 +7,10 @@ const CategoryService = {
     const url = "/category";
     return axiosClient.get(url, { headers: authHeader() });
   },
+  getCategoryList: () => {
+    const url = '/category/notPaging';
+    return axiosClient.get(url, { headers: authHeader() });
+  },
   getCategoryDetail: (params) => {
     const url = `/category/${params.categoryId}`;
     return axiosClient.get(url, { params, headers: authHeader() });

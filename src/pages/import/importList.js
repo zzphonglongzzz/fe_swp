@@ -2,15 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import {
-  Autocomplete,
   Card,
-  Checkbox,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  InputLabel,
-  MenuItem,
-  Select,
   Box,
   Button,
   Container,
@@ -21,25 +13,27 @@ import {
   Toolbar,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { Search } from '@mui/icons-material';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import CustomTablePagination from"../../component/common/Pagination/index"
-import ImportOrderTable from "./ImportOrder";
-import "./ImportList.scss"
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { Search } from "@mui/icons-material";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import CustomTablePagination from "../../component/common/Pagination/index";
+import ImportOrdersTable from "./ImportOrdersTable";
+import "./ImportList.scss";
+import importOrderService from "../../service/ImportOrderService";
 
 const ImportList = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [creatorId, setCreatorId] = useState("");
   const [staffList, setStaffList] = useState([]);
-  const pages = [10, 20, 50];
+  const pages = [5, 10, 20];
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [totalRecord, setTotalRecord] = useState();
-  const [importOrderList, setImportOrderList] = useState();
+  const [importOrderList, setImportOrderList] = useState([]);
   const navigate = useNavigate();
+
   const handleOnClickCreateImportOrder = () => {
     navigate("/import/create-order");
   };
@@ -72,7 +66,7 @@ const ImportList = () => {
     if (e.keyCode === 13) {
       console.log(e.target.value);
       setPage(0);
-      setSearchParams({ ...searchParams});
+      setSearchParams({ ...searchParams });
       //searchImportOrder({ ...searchParams});
     }
   };
@@ -108,26 +102,27 @@ const ImportList = () => {
   //     console.log("Failed to search export order list: ", error);
   //   }
   // };
-  // const fetchImportOrderList = async () => {
-  //   try {
-  //     const params = {
-  //       pageIndex: page,
-  //       pageSize: rowsPerPage,
-  //     };
-  //     const actionResult = await dispatch(getImportOrderList(params));
-  //     const dataResult = unwrapResult(actionResult);
-  //     console.log("dataResult", dataResult);
-  //     if (dataResult.data) {
-  //       setTotalRecord(dataResult.data.totalRecord);
-  //       setImportOrderList(dataResult.data.orderList);
-  //     }
-  //   } catch (error) {
-  //     console.log("Failed to fetch importOrder list: ", error);
-  //   }
-  // };
+  const fetchImportOrderList = async () => {
+    try {
+      const params = {
+        pageIndex: page,
+        pageSize: rowsPerPage,
+      };
+      const dataResult = await importOrderService.getImportOrderList1();
+      //const dataResult = unwrapResult(actionResult);
+      console.log("dataResult", dataResult);
+      if (dataResult.data) {
+        setTotalRecord(dataResult.data.totalRecord);
+        setImportOrderList(dataResult.data.orderList);
+        //console.log(dataResult.data.orderList);
+      }
+    } catch (error) {
+      console.log("Failed to fetch importOrder list: ", error);
+    }
+  };
   useEffect(() => {
-   // fetchImportOrderList();
-   // searchImportOrder(searchParams);
+    fetchImportOrderList();
+    // searchImportOrder(searchParams);
   }, [page, rowsPerPage]);
 
   return (
@@ -160,7 +155,10 @@ const ImportList = () => {
             }}
             onKeyDown={handleSearch}
             onChange={(e) => {
-              setSearchParams({ ...searchParams, billReferenceNumber: e.target.value });
+              setSearchParams({
+                ...searchParams,
+                billReferenceNumber: e.target.value,
+              });
             }}
           />
           <Box className="selectBox">
@@ -215,45 +213,29 @@ const ImportList = () => {
                 />
               </LocalizationProvider>
             </Toolbar>
-            
           </Stack>
         </div>
       </Card>
+      <Grid xs={12} item>
+         <ImportOrdersTable importOrderList={importOrderList} /> 
+      </Grid>
       <Grid
-        container
-        direction="row"
+        xs={12}
+        item
+        display="flex"
         justifyContent="center"
-        alignItems="stretch"
-        marginTop={1}
-        spacing={3}
+        alignItems="center"
       >
-        <Grid
-          item
-          xs={12}
-        >
-          <Card className="cardStyle">
-              <Box>
-                {totalRecord > 0 ? (
-                  <ImportOrderTable importOrders={importOrderList} />
-                ) : (
-                  <>Không tìm thấy phiếu nhập kho phù hợp</>
-                )}
-                {!!totalRecord && (
-                  <CustomTablePagination
-                    page={page}
-                    pages={pages}
-                    rowsPerPage={rowsPerPage}
-                    totalRecord={totalRecord}
-                    handleChangePage={handleChangePage}
-                    handleChangeRowsPerPage={handleChangeRowsPerPage}
-                  />
-                )}
-              </Box>
-          </Card>
-        </Grid>
+        {/* <CustomTablePagination
+          page={page}
+          pages={pages}
+          rowsPerPage={rowsPerPage}
+          totalRecord={totalRecord}
+          handleChangePage={handleChangePage}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+        /> */}
       </Grid>
     </Container>
-    
   );
 };
 

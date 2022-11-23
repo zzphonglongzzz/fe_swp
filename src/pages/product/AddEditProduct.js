@@ -29,6 +29,7 @@ import FormatDataUtils from "../../utils/FormatDataUtils";
 import { Close, CloudUpload, Done } from "@mui/icons-material";
 import "./AddEditProduct.scss";
 import Select from "react-select";
+import axios from "axios";
 
 const TextfieldWrapper = ({ name, ...otherProps }) => {
   const [field, meta] = useField(name);
@@ -61,6 +62,7 @@ function Dropzone(props) {
       setImageUrl(URL.createObjectURL(file));
       const formData = new FormData();
       formData.append("file", file);
+      console.log(formData);
       setFormData(formData);
     }
   }, []);
@@ -101,6 +103,39 @@ const AddEditProduct = () => {
   const [isAdd, setIsAdd] = useState(true);
   const navigate = useNavigate();
   const [formData, setFormData] = useState(new FormData());
+  const [file, setFile] = useState([]);
+
+  const onDrop = useCallback((acceptedFiles, fileRejections) => {
+    if (!!fileRejections[0]) {
+      if (fileRejections[0].errors[0].code === "file-invalid-type") {
+        console.log("Bạn vui lòng chọn file đuôi .jpg, .png để tải lên");
+        return;
+      }
+      if (fileRejections[0].errors[0].code === "file-too-large") {
+        console.log("Bạn vui lòng chọn file ảnh dưới 5MB để tải lên");
+      }
+    } else {
+      setFile(acceptedFiles[0]);
+      const file1 = acceptedFiles[0];
+      //console.log(file);
+      console.log(file1);
+      setImageUrl(URL.createObjectURL(file1));
+      //console.log(imageUrl)
+      const formData = new FormData();
+      formData.append("file", file1);
+      //console.log(formData);
+      setFormData(formData);
+    }
+  }, []);
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      "image/png": [".png"],
+      "image/jpeg": [".jpg"],
+    },
+    maxSize: 5 * 1024 * 1024, // 5MB
+    multiple: false,
+  });
 
   const initialFormValue = {
     productCode: "",
@@ -137,7 +172,7 @@ const AddEditProduct = () => {
   const onChangeCategory = (event) => {
     setSelectedSubCategory(null);
     setSelectedCategory(event);
-    // fetchSubCategoryByCategoryId(event.value);
+    fetchSubCategoryByCategoryId(event.value);
   };
   const fetchManufacturerList = async () => {
     try {
@@ -151,7 +186,7 @@ const AddEditProduct = () => {
   };
   const fetchCategoryList = async () => {
     try {
-      const actionResult = await CategoryService.getAll();
+      const actionResult = await CategoryService.getCategoryList();
       if (actionResult.data) {
         setCategoryList(actionResult.data.category);
       }
@@ -159,124 +194,104 @@ const AddEditProduct = () => {
       console.log("Failed to fetch category list: ", error);
     }
   };
-  // const saveProductDetail = async (product) => {
-  //   try {
-  //     if (!productId) {
-  //       const actionResult = await dispatch(saveProduct(product));
-  //       const dataResult = unwrapResult(actionResult);
-  //       if (dataResult.status === 200) {
-  //         if (formData.has("file")) {
-  //           // const uploadNewImage = await dispatch(
-  //           //   uploadNewImageProduct(formData)
-  //           // );
-  //           toast.success("Thêm sản phẩm thành công!");
-  //           navigate("/product");
-  //         } else {
-  //           navigate("/product");
-  //           toast.success("Thêm sản phẩm thành công!");
-  //         }
-  //       }
-  //     } else {
-  //       const actionResult = await dispatch(updateProduct(product));
-  //       const dataResult = unwrapResult(actionResult);
-  //       if (dataResult.status === 200) {
-  //         if (formData.has("file")) {
-  //           const uploadNewImage = productService
-  //             .updateImage(productId, formData)
-  //             .then(
-  //               (res) => {
-  //                 toast.success("Sửa sản phẩm thành công!");
-  //                 navigate(`/product/detail/${productId}`);
-  //               },
-  //               (err) => {
-  //                 console.log(err);
-  //               }
-  //             );
-  //         } else {
-  //           navigate(`/product/detail/${productId}`);
-  //           toast.success("Sửa sản phẩm thành công!");
-  //         }
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.log("Failed to save product: ", error);
-  //     if (error.message) {
-  //       toast.error(error.message);
-  //     } else {
-  //       if (isAdd) {
-  //         toast.error("Thêm sản phẩm thất bại");
-  //       } else {
-  //         toast.error("Sửa sản phẩm thất bại");
-  //       }
-  //     }
-  //   } finally {
-  //     setLoadingButton(false);
-  //   }
-  // };
+  const saveProductDetail = async (product) => {
+    try {
+      if (!productId) {
+        if (formData.has("file")) {
+          const actionResult = await ProductService.saveProduct(product);
+          if (actionResult.status === 200) {
+            toast.success("Thêm sản phẩm thành công!");
+            navigate("/product");
+          } else {
+            navigate("/product");
+            toast.success("Thêm sản phẩm thành công!");
+          }
+        }
+      } else {
+        if (formData.has("file")) {
+          const actionResult = await ProductService.updateProduct(product);
+          if (actionResult.status === 200) {
+            toast.success("Sửa sản phẩm thành công!");
+            navigate("/product");
+          } else {
+            navigate(`/product/detail/${productId}`);
+            toast.success("Sửa sản phẩm thành công!");
+          }
+        }
+      }
+    } catch (error) {
+      console.log("Failed to save product: ", error);
+      if (error.message) {
+        toast.error(error.message);
+      } else {
+        if (isAdd) {
+          toast.error("Thêm sản phẩm thất bại");
+        } else {
+          toast.error("Sửa sản phẩm thất bại");
+        }
+      }
+    } finally {
+      setLoadingButton(false);
+    }
+  };
   const handleSubmit = (values) => {
     setLoadingButton(true);
     const newProduct = {
       id: productId,
       name: FormatDataUtils.removeExtraSpace(values.name),
       productCode: FormatDataUtils.removeExtraSpace(values.productCode),
-      unitMeasure: FormatDataUtils.removeExtraSpace(values.unitMeasure),
-      color: FormatDataUtils.removeExtraSpace(values.color),
+      unit_measure: FormatDataUtils.removeExtraSpace(values.unitMeasure),
       description: FormatDataUtils.removeExtraSpace(values.description),
-      categoryId: values.categoryId,
-      manufactorId: values.manufactorId,
-      subCategoryId: values.subCategoryId,
+      category_id: values.categoryId,
+      manufacturer_id: values.manufactorId,
+      subCategory_id: values.subCategoryId,
+      image: file.path,
     };
-    //saveProductDetail(newProduct);
+    console.log(newProduct);
+    saveProductDetail(newProduct);
   };
   const handleOnClickExit = () => {
-    navigate(isAdd ? "/product" : `/product/detail/${productId}`);
+    navigate(isAdd ? "/getAllProducts" : `/product/detail/${productId}`);
   };
-  // const fetchSubCategoryByCategoryId = async (categoryId) => {
-  //   try {
-  //     const params = {
-  //       categoryId: categoryId,
-  //     };
-  //     const actionResult = await dispatch(getSubCategoryByCategoryId(params));
-  //     const dataResult = unwrapResult(actionResult);
-  //     if (dataResult.data) {
-  //       console.log(dataResult.data);
-  //       setSubCategoryList(dataResult.data.subCategory);
-  //     }
-  //   } catch (error) {
-  //     console.log("Failed to fetch subCategory list: ", error);
-  //   }
-  // };
-
+  const fetchSubCategoryByCategoryId = async (categoryId) => {
+    try {
+      const params = {
+        categoryId: categoryId,
+      };
+      const dataResult = await CategoryService.getSubCategoryByCategoryId(
+        params
+      );
+      if (dataResult.data) {
+        setSubCategoryList(dataResult.data.subCategory);
+      }
+    } catch (error) {
+      console.log("Failed to fetch subCategory list: ", error);
+    }
+  };
+  const fetchProductDetail = async () => {
+    try {
+      const params = {
+        productId: productId,
+      };
+      const dataResult = await ProductService.getProductById(params);
+      if (dataResult.data) {
+        setProduct(dataResult.data.product);
+        setSelectedCategory(dataResult.data.product.categoryId);
+        setSelectedSubCategory(dataResult.data.product.subCategoryId);
+        setSelectedManufacturer(dataResult.data.product.manufactorId);
+        fetchSubCategoryByCategoryId(dataResult.data.product.categoryId);
+        //console.log(dataResult.data.product.image)
+        if (dataResult.data.product.image) {
+          setImageUrl("/image/" + dataResult.data.product.image);
+        }
+      } else {
+        navigate("/404");
+      }
+    } catch (error) {
+      console.log("Failed to fetch product detail: ", error);
+    }
+  };
   useEffect(() => {
-    // const fetchProductDetail = async () => {
-    //   try {
-    //     const params = {
-    //       productId: productId,
-    //     };
-    //     const actionResult = await dispatch(getProductDetail(params));
-    //     const dataResult = unwrapResult(actionResult);
-    //     if (dataResult.data) {
-    //       console.log(dataResult);
-    //       setProduct(dataResult.data.product);
-    //       setSelectedCategory(dataResult.data.product.categoryId);
-    //       setSelectedSubCategory(dataResult.data.product.subCategoryId);
-    //       setSelectedManufacturer(dataResult.data.product.manufactorId);
-    //       fetchSubCategoryByCategoryId(dataResult.data.product.categoryId);
-    //       if (dataResult.data.product.image) {
-    //         setImageUrl(
-    //           process.env.REACT_APP_API_URL +
-    //             "/" +
-    //             dataResult.data.product.image
-    //         );
-    //       }
-    //     } else {
-    //       navigate("/404");
-    //     }
-    //     console.log("dataResult", dataResult);
-    //   } catch (error) {
-    //     console.log("Failed to fetch product detail: ", error);
-    //   }
-    // };
     fetchManufacturerList();
     fetchCategoryList();
     if (!!productId) {
@@ -285,13 +300,311 @@ const AddEditProduct = () => {
         if (isNaN(productId)) {
           navigate("/404");
         } else {
-          //fetchProductDetail();
+          fetchProductDetail();
         }
       }
     }
-  }, []);
+  }, [productId]);
   return (
     <Box padding="20px">
+      <Box>
+        {!!product && (
+          <Formik
+            initialValues={{ ...product, isUseWrapUnitMeasure: false }}
+            validationSchema={FORM_VALIDATION}
+            onSubmit={(values) => handleSubmit(values)}
+          >
+            {({ values, errors, setFieldValue }) => (
+              <Form>
+                <Grid container spacing={2}>
+                  <Grid xs={9} item>
+                    <Grid container spacing={2}>
+                      <Grid xs={12} item>
+                        <Card>
+                          <CardContent>
+                            <Typography variant="h6">
+                              Thông tin sản phẩm
+                            </Typography>
+                            <Grid container spacing={2}>
+                              <Grid xs={12} item>
+                                <Typography className="wrapIcon">
+                                  Tên sản phẩm:
+                                  {/* <Info className={classes.iconStyle} /> */}
+                                </Typography>
+                                <TextfieldWrapper
+                                  name="name"
+                                  fullWidth
+                                  id="name"
+                                  autoComplete="name"
+                                  autoFocus
+                                />
+                              </Grid>
+                              <Grid xs={6} item>
+                                <Typography className="wrapIcon">
+                                  Mã sản phẩm:
+                                  {/* <Info className={classes.iconStyle} /> */}
+                                </Typography>
+                                <TextfieldWrapper
+                                  name="productCode"
+                                  fullWidth
+                                  id="productCode"
+                                  autoComplete="productCode"
+                                />
+                              </Grid>
+                              <Grid xs={6} item>
+                                <Typography className="wrapIcon">
+                                  Đơn vị:
+                                  {/* <Info className={classes.iconStyle} /> */}
+                                </Typography>
+                                <TextfieldWrapper
+                                  name="unitMeasure"
+                                  fullWidth
+                                  id="unitMeasure"
+                                  autoComplete="unitMeasure"
+                                />
+                              </Grid>
+                              <Grid xs={12} item>
+                                <Typography className="wrapIcon">
+                                  Mô tả:
+                                </Typography>
+                                <TextfieldWrapper
+                                  name="description"
+                                  fullWidth
+                                  multiline
+                                  minRows={4}
+                                  id="description"
+                                  autoComplete="description"
+                                />
+                              </Grid>
+                            </Grid>
+                          </CardContent>
+                        </Card>
+                      </Grid>
+                      <Grid xs={12} item></Grid>
+                    </Grid>
+                  </Grid>
+                  <Grid xs={3} item>
+                    <Grid container spacing={2}>
+                      <Grid xs={12} item>
+                        <Card>
+                          <CardContent>
+                            <Typography variant="h6">Phân loại</Typography>
+                            <Grid container spacing={2}>
+                              <Grid xs={12} item>
+                                <Typography className="wrapIcon">
+                                  Danh mục:
+                                </Typography>
+                                {!!categoryList && selectedCategory && (
+                                  <Select
+                                    classNamePrefix="select"
+                                    placeholder="Chọn danh mục."
+                                    noOptionsMessage={() => (
+                                      <>Không có tìm thấy danh mục phù hợp</>
+                                    )}
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    name="categoryId"
+                                    value={FormatDataUtils.getSelectedOption(
+                                      categoryList,
+                                      selectedCategory
+                                    )}
+                                    options={FormatDataUtils.getOptionWithIdandName(
+                                      categoryList
+                                    )}
+                                    menuPortalTarget={document.body}
+                                    styles={{
+                                      menuPortal: (base) => ({
+                                        ...base,
+                                        zIndex: 9999,
+                                      }),
+                                      control: (base) => ({
+                                        ...base,
+                                        height: 56,
+                                        minHeight: 56,
+                                      }),
+                                    }}
+                                    onChange={(e) => {
+                                      setFieldValue("categoryId", e?.value);
+                                      onChangeCategory(e);
+                                    }}
+                                  />
+                                )}
+                                <FormHelperText
+                                  error={true}
+                                  className="errorTextHelper"
+                                >
+                                  {errors.categoryId}
+                                </FormHelperText>
+                              </Grid>
+                              <Grid xs={12} item>
+                                <Typography className="wrapIcon">
+                                  Danh mục phụ:
+                                </Typography>
+                                {!!subCategoryList && (
+                                  <Select
+                                    classNamePrefix="select"
+                                    placeholder="Chọn danh mục phụ"
+                                    noOptionsMessage={() => (
+                                      <>Không có tìm thấy danh mục phù hợp</>
+                                    )}
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    name="subCategoryId"
+                                    value={FormatDataUtils.getSelectedOption(
+                                      subCategoryList,
+                                      selectedSubCategory
+                                    )}
+                                    options={FormatDataUtils.getOptionWithIdandName(
+                                      subCategoryList
+                                    )}
+                                    menuPortalTarget={document.body}
+                                    styles={{
+                                      menuPortal: (base) => ({
+                                        ...base,
+                                        zIndex: 9999,
+                                      }),
+                                      control: (base) => ({
+                                        ...base,
+                                        height: 56,
+                                        minHeight: 56,
+                                      }),
+                                    }}
+                                    onChange={(e) => {
+                                      setFieldValue("subCategoryId", e?.value);
+                                      setSelectedSubCategory(e);
+                                    }}
+                                  />
+                                )}
+                              </Grid>
+                              <Grid xs={12} item>
+                                <Typography className="wrapIcon">
+                                  Nhà cung cấp:
+                                </Typography>
+                                {!!manufacturerList && selectedManufacuter && (
+                                  <Select
+                                    classNamePrefix="select"
+                                    placeholder="Chọn nhà cung cấp"
+                                    noOptionsMessage={() => (
+                                      <>
+                                        Không có tìm thấy nhà cung cấp phù hợp
+                                      </>
+                                    )}
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    name="manufacturerId"
+                                    value={FormatDataUtils.getSelectedOption(
+                                      manufacturerList,
+                                      selectedManufacuter
+                                    )}
+                                    options={FormatDataUtils.getOptionWithIdandName(
+                                      manufacturerList
+                                    )}
+                                    menuPortalTarget={document.body}
+                                    styles={{
+                                      menuPortal: (base) => ({
+                                        ...base,
+                                        zIndex: 9999,
+                                      }),
+                                      control: (base) => ({
+                                        ...base,
+                                        height: 56,
+                                        minHeight: 56,
+                                      }),
+                                    }}
+                                    onChange={(e) => {
+                                      setFieldValue("manufactorId", e?.value);
+                                    }}
+                                  />
+                                )}
+                                <FormHelperText
+                                  error={true}
+                                  className="errorTextHelper"
+                                >
+                                  {errors.manufactorId}
+                                </FormHelperText>
+                              </Grid>
+                            </Grid>
+                          </CardContent>
+                        </Card>
+                      </Grid>
+                      <Grid xs={12} item>
+                        <Card className="cardImage">
+                          <CardContent sx={{ width: "100%" }}>
+                            <Typography variant="h6">Ảnh sản phẩm</Typography>
+                            <Grid
+                              container
+                              spacing={0}
+                              direction="column"
+                              alignItems="center"
+                              justify="center"
+                            >
+                              <Grid xs={12} item>
+                                <div {...getRootProps()} className="preview">
+                                  <input {...getInputProps()} />
+                                  {imageUrl && (
+                                    // eslint-disable-next-line jsx-a11y/alt-text
+                                    <img
+                                      className="imgPreview"
+                                      src={imageUrl}
+                                      accept="image/*"
+                                    />
+                                  )}
+                                  <CloudUpload
+                                    fontSize="large"
+                                    className="iconUpload"
+                                  />
+
+                                  {isDragActive ? (
+                                    <span>Kéo ảnh vào đây</span>
+                                  ) : (
+                                    <span>Tải ảnh lên</span>
+                                  )}
+                                </div>
+                              </Grid>
+                            </Grid>
+                          </CardContent>
+                        </Card>
+                      </Grid>
+                      <Grid xs={12} item>
+                        <Card>
+                          <CardContent>
+                            <Grid container spacing={2}>
+                              <Grid xs={6} item>
+                                <LoadingButton
+                                  loading={loadingButton}
+                                  type="submit"
+                                  variant="contained"
+                                  fullWidth
+                                  loadingPosition="start"
+                                  startIcon={<Done />}
+                                  color="warning"
+                                >
+                                  Lưu chỉnh sửa
+                                </LoadingButton>
+                              </Grid>
+                              <Grid xs={6} item>
+                                <Button
+                                  onClick={() => handleOnClickExit()}
+                                  variant="contained"
+                                  fullWidth
+                                  startIcon={<Close />}
+                                  color="error"
+                                >
+                                  Huỷ chỉnh sửa
+                                </Button>
+                              </Grid>
+                            </Grid>
+                          </CardContent>
+                        </Card>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Form>
+            )}
+          </Formik>
+        )}
+      </Box>
       {!product && isAdd && (
         <Formik
           initialValues={{ ...initialFormValue }}
@@ -349,6 +662,7 @@ const AddEditProduct = () => {
                               <Typography className="wrapIcon">
                                 Danh mục:
                               </Typography>
+
                               <Select
                                 classNamePrefix="select"
                                 placeholder="Chọn danh mục."
@@ -360,6 +674,10 @@ const AddEditProduct = () => {
                                 name="categoryId"
                                 options={FormatDataUtils.getOptionWithIdandName(
                                   categoryList
+                                )}
+                                value={FormatDataUtils.getSelectedOption(
+                                  categoryList,
+                                  selectedCategory
                                 )}
                                 menuPortalTarget={document.body}
                                 styles={{
@@ -378,6 +696,7 @@ const AddEditProduct = () => {
                                   onChangeCategory(e);
                                 }}
                               />
+
                               <FormHelperText
                                 error={true}
                                 className="errorTextHelper"
@@ -494,11 +813,27 @@ const AddEditProduct = () => {
                             justify="center"
                           >
                             <Grid xs={12} item>
-                              <Dropzone
-                                imageUrl={imageUrl}
-                                setImageUrl={setImageUrl}
-                                setFormData={setFormData}
-                              />
+                              <div {...getRootProps()} className="preview">
+                                <input {...getInputProps()} />
+                                {imageUrl && (
+                                  // eslint-disable-next-line jsx-a11y/alt-text
+                                  <img
+                                    className="imgPreview"
+                                    src={imageUrl}
+                                    accept="image/*"
+                                  />
+                                )}
+                                <CloudUpload
+                                  fontSize="large"
+                                  className="iconUpload"
+                                />
+
+                                {isDragActive ? (
+                                  <span>Kéo ảnh vào đây</span>
+                                ) : (
+                                  <span>Tải ảnh lên</span>
+                                )}
+                              </div>
                             </Grid>
                           </Grid>
                         </CardContent>

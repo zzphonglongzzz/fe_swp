@@ -29,6 +29,15 @@ const Sidebar = () => {
   function handleCreateInport(){
     navigate("/import/create-order")
   }
+  function handleImportList(){
+    navigate("/import/list")
+  }
+  function handleExportList(){
+    navigate("/export/list")
+  }
+  function hanleCreateExport(){
+    navigate("/export/create-order")
+  }
   return (
     <div className="sidebar">
       <div className="top">
@@ -65,22 +74,22 @@ const Sidebar = () => {
           </li>
           <li>
             <ListIcon className="icon" />
-            <span>Danh sách nhập hàng</span>
+            <span onClick={handleImportList}>Danh sách nhập hàng</span>
           </li>
           <p className="title">Quản lý xuất hàng</p>
           <li>
             <OutputIcon className="icon" />
-            <span>Tạo phiếu xuất hàng</span>
+            <span onClick={hanleCreateExport}>Tạo phiếu xuất hàng</span>
           </li>
           <li>
             <ListIcon className="icon" />
-            <span>Danh sách xuất hàng</span>
+            <span onClick={handleExportList}>Danh sách nhập hàng</span>
           </li>
           <li>
             <KeyboardReturnIcon className="icon" />
             <span>Danh sách trả hàng</span>
           </li>
-          <p className="title">Trả hàng Lưu kho</p>
+          {/* <p className="title">Trả hàng Lưu kho</p>
           <li>
             <InventoryIcon className="icon" />
             <span>Tạo phiếu lưu kho</span>
@@ -88,7 +97,7 @@ const Sidebar = () => {
           <li>
             <ListIcon className="icon" />
             <span>Danh sách lưu kho</span>
-          </li>
+          </li> */}
           <p className="title">Kiểm kho</p>
           <li>
             <InventoryIcon className="icon" />
