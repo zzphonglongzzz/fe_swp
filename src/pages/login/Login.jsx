@@ -11,13 +11,45 @@ import {
 import { Field, Form, Formik } from "formik";
 import { object, string } from "yup";
 import LockIcon from "@mui/icons-material/Lock";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import AuthService from "../../service/AuthService";
+import { toast } from "react-toastify";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  // const [disabled, setDisabled] = useState(false);
   const initalValues = {
     username: "",
     password: "",
   };
-  
+  const handleLogin = (e) => {
+    setMessage("");
+    setLoading(true);
+    AuthService.login(e.username, e.password).then(
+      () => {
+        // setDisabled(true);
+        navigate("/dashboard");
+        toast.success("Đăng nhập thành công!");
+      },
+      (error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+        if (error.response.status !== 401) {
+          toast.error(resMessage);
+        }
+        setLoading(false);
+        setMessage(resMessage);
+      }
+    );
+  };
+
   return (
     <div className="MaterialForm">
       <Formik
@@ -26,9 +58,8 @@ const Login = () => {
           username: string().required("Vui lòng nhập tên đăng nhập"),
           password: string().required("Vui lòng nhập mật khẩu"),
         })}
-        onSubmit={(values, formikHelpers) => {
-          console.log(values);
-          formikHelpers.resetForm();
+        onSubmit={(e) => {
+          handleLogin(e);
         }}
       >
         {({ errors, isValid, touched, dirty }) => (
@@ -80,6 +111,7 @@ const Login = () => {
               variant="contained"
               color="primary"
               size="large"
+              loading={loading}
               disabled={!isValid || !dirty}
             >
               Đăng nhập

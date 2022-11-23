@@ -69,7 +69,7 @@ const EditSubCategory = (props) => {
     try {
       const response = await CategoryService.updateSubCategory(newCategory);
       if (response.data) {
-        toast.success("Thêm danh mục thành công!", { autoClose: 5000 });
+        toast.success("Sửa danh mục thành công!", { autoClose: 5000 });
         window.location.reload(true);
         window.close();
         setIsSubmitting(false);

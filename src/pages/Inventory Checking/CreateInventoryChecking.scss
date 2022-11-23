@@ -1,0 +1,45 @@
+.searchField{
+    width: 35%;
+}
+.selectBox{
+    width: 100%;
+}
+.table{
+    text-align: center;
+}
+.rowConsignment{
+    background-color: rgba(217, 217, 217, 0.5);
+    box-shadow: 15px;
+}
+.tableCellConsignment{
+    padding: 0 !important;
+}
+.tableColumnIcon{
+    padding: 15px 0 !important;
+}
+.cardTable{
+    min-height: 74vh;
+    position: relative;
+}
+.totalDifferentContainer{
+    min-height: 100px;
+    width: 35%;
+    position: absolute;
+    right:10;
+    bottom:10;
+}
+.tableContainer{
+    margin-bottom: 150px
+}
+.sortBy {
+    width: '35%',
+}
+.tableContainer {
+    margin-bottom: 60px;
+}
+.totalDifferent{
+    font-size: 20px !important;
+}
+.labelTotalDifferent {
+    font-size: 20px !important;
+}

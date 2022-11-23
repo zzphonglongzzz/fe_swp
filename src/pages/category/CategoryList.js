@@ -48,7 +48,7 @@ export default function CategoryList() {
   const navigate = useNavigate();
 
   const handleOnClickDetailCategory = (categoryId) => {
-    navigate(`/category/detail/${categoryId}`);
+    navigate(`/category/subCategory/${categoryId}`);
   };
   const handleOnclickAddNewCategory = () => {
     setOpenPopup(true);

@@ -1,29 +1,42 @@
 import CategoryDetail from "../pages/category/CategoryDetail";
 import CategoryList from "../pages/category/CategoryList";
+import ExportGood from "../pages/export/ExportGood";
 import CommonForgotPass from "../pages/forgotPassword/CommonForgotPassword";
 import Home from "../pages/home/Home";
 import ImportGoods from "../pages/import/importGood";
+import ImportList from "../pages/import/importList";
+import ImportOrderDetail from "../pages/import/ImportOrderDetail";
+import updateImportOrder from "../pages/import/UpdateImportOrder";
 import Login from "../pages/login/Login";
 import AddEditManufacturer from "../pages/manufacturer/AddEditManufacturer";
 import ManufacturerDetail from "../pages/manufacturer/ManufacturerDetail";
-import ManufacturerTable from "../pages/manufacturer/ManufacturerTable";
+import ManufacturerList from "../pages/manufacturer/ManufacturerList";
+import UpdateExportOrderDetail from "../pages/export/UpdateExportOrderDetail";
 import AddEditProduct from "../pages/product/AddEditProduct";
 import ProductDetail from "../pages/product/ProductDetail";
 import ProductList from "../pages/product/ProductList";
 import WarehouseList from "../pages/warehouse/WarehouseList";
+import ExportOrderDetail from "../pages/export/ExportOrderDetail"
+import ExportList from "../pages/export/ExportList"
+import InventoryCheckingList from "../pages/Inventory Checking/InventoryCheckingList";
+import InventoryCheckingDetail from "../pages/Inventory Checking/InventoryCheckingDetail";
+import CreateInventoryChecking from "../pages/Inventory Checking/CreateInventoryChecking";
+import Profile from "../pages/profile/Profile";
+import UpdateProfile from "../pages/profile/UpdateProfile";
+import NotFound from "../component/DefaultLayout/NotFound/NotFound";
 
-const publiRoutes = [
+const publicRoutes = [
   //public route
-  { path: "/", component: Home },
-  { path: "/home", component: Home },
+  { path: "/", component: Login, layout: null },
   { path: "/login", component: Login, layout: null },
   { path: "/forgotPassword", component: CommonForgotPass, layout: null },
-  //category
+];
+const privateRoutes = [
   { path: "/category", component: CategoryList },
-  { path: "/category/detail/:categoryId", component: CategoryDetail },
-  
+  { path: "/category/subCategory/:categoryId", component: CategoryDetail },
+
   //manufacturer
-  { path: "/manufacturer", component: ManufacturerTable },
+  { path: "/manufacturer", component: ManufacturerList },
   {
     path: "/manufacturer/detail/:manufacturerId",
     component: ManufacturerDetail,
@@ -56,6 +69,25 @@ const publiRoutes = [
     component: AddEditProduct,
   },
   //importOrder
-  { path: '/import/create-order', component: ImportGoods },
+  { path: "/import/create-order", component: ImportGoods },
+  { path: "/import/list", component: ImportList },
+  { path: "/import/detail/:importOrderId",component:ImportOrderDetail},
+  { path: "/import/edit/:importOrderId",component:updateImportOrder},
+  //exportOrder
+  {path:"/export/create-order",component:ExportGood},
+  {path:"/export/list",component:ExportList},
+  {path:"/export/detail/:exportOrderId",component:ExportOrderDetail},
+  {path:"/export/edit/:exportOrderId",component:UpdateExportOrderDetail},
+
+  // inventoryChecking route
+  {path:"/inventory-checking/list",component:InventoryCheckingList},
+  {path:"/inventory-checking/detail/:inventoryCheckingId",component:InventoryCheckingDetail},
+  {path:"/inventory-checking/create",component:CreateInventoryChecking},
+  
+  {path:'/profile',component:Profile},
+  {path: '/profile/edit',component:UpdateProfile},
+  //dashboard
+  { path: "/dashboard", component: Home },
+  { path: '*', component: NotFound, layout: null}
 ];
-export default publiRoutes;
+export { publicRoutes, privateRoutes };

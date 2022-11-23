@@ -22,16 +22,22 @@ const ProductDetail = () => {
     navigate(`/product/edit/${productId}`);
   };
 
+  const fetchProductDetail = async () => {
+    try {
+      const params ={
+        productId: productId
+      }
+      const actionResult = await ProductService.getProductById(params)
+      if (actionResult.data) {
+        setProduct(actionResult.data.product);
+      }
+    } catch (error) {
+      console.log("Failed to fetch category list: ", error);
+    }
+  };
   useEffect(() => {
-    ProductService.getProductbyId(productId)
-      .then((response) => {
-        console.log(response.data);
-        setProduct(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [productId]);
+    fetchProductDetail()
+  }, []);
 
   return (
     <Grid>
@@ -67,7 +73,7 @@ const ProductDetail = () => {
                 <Typography color="#696969">Nhà sản xuất</Typography>
               </Grid>
               <Grid xs={2} item>
-                <Typography>{product.manufacturerName}</Typography>
+                <Typography>{product.manufactorName}</Typography>
               </Grid>
             </Grid>
             <Grid container>

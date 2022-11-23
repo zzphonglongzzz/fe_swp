@@ -1,0 +1,42 @@
+.cardInfo{
+    min-height: 70vh;
+}
+.cardTable{
+    min-height: 90vh;
+}
+.totalAmount{
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+}
+.rowConsignment{
+    background-color: rgba(217, 217, 217, 0.5);
+    box-shadow: 15px;
+}
+.tableCellConsignment{
+    padding: 0 !important;
+}
+.tableColumnIcon{
+   padding: 15px 0 !important;
+}
+.selectBoxUnitMeasure{
+    max-width: 150px;
+}
+.buttonCreate{
+    display: flex;
+    justify-content: center;
+}
+.unitMeasureSelect{
+    width: 100px;
+}
+.table {
+    text-align:center;
+    th{
+         background-color: #DCF4FC;
+    } 
+}
+.tableCosignment{
+   th {
+    background-color: rgba(217, 217, 217, 0.5);
+   }
+}
