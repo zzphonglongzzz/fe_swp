@@ -9,34 +9,37 @@ import OutputIcon from "@mui/icons-material/Output";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import ListIcon from "@mui/icons-material/List";
-import PeopleIcon from '@mui/icons-material/People';
+import PeopleIcon from "@mui/icons-material/People";
 import { useNavigate } from "react-router-dom";
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
 const Sidebar = () => {
   const navigate = useNavigate();
+  function handleDashboard() {
+    navigate("/dashboard");
+  }
   function handleChangeCategory() {
     navigate("/category");
   }
   function handleChangeManufacturer() {
     navigate("/manufacturer");
   }
-  function handleChangeWarehouse(){
-    navigate("/warehouseList")
+  function handleChangeWarehouse() {
+    navigate("/warehouseList");
   }
-  function handleChangeProduct(){
-    navigate("/product")
+  function handleChangeProduct() {
+    navigate("/product");
   }
-  function handleCreateInport(){
-    navigate("/import/create-order")
+  function handleCreateInport() {
+    navigate("/import/create-order");
   }
-  function handleImportList(){
-    navigate("/import/list")
+  function handleImportList() {
+    navigate("/import/list");
   }
-  function handleExportList(){
-    navigate("/export/list")
+  function handleExportList() {
+    navigate("/export/list");
   }
-  function hanleCreateExport(){
-    navigate("/export/create-order")
+  function hanleCreateExport() {
+    navigate("/export/create-order");
   }
   return (
     <div className="sidebar">
@@ -48,7 +51,7 @@ const Sidebar = () => {
         <ul>
           <li>
             <DashboardIcon className="icon" />
-            <span>Trang chủ</span>
+            <span onClick={handleDashboard}>Trang chủ</span>
           </li>
           <p className="title">Quản lý kho hàng</p>
           <li>

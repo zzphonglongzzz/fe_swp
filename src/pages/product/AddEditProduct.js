@@ -50,10 +50,12 @@ function Dropzone(props) {
   const onDrop = useCallback((acceptedFiles, fileRejections) => {
     if (!!fileRejections[0]) {
       if (fileRejections[0].errors[0].code === "file-invalid-type") {
+        toast.success("Bạn vui lòng chọn file đuôi .jpg, .png để tải lên");
         console.log("Bạn vui lòng chọn file đuôi .jpg, .png để tải lên");
         return;
       }
       if (fileRejections[0].errors[0].code === "file-too-large") {
+        toast.success("Bạn vui lòng chọn file ảnh dưới 5MB để tải lên");
         console.log("Bạn vui lòng chọn file ảnh dưới 5MB để tải lên");
       }
     } else {
@@ -399,7 +401,7 @@ const AddEditProduct = () => {
                                     classNamePrefix="select"
                                     placeholder="Chọn danh mục."
                                     noOptionsMessage={() => (
-                                      <>Không có tìm thấy danh mục phù hợp</>
+                                      <>Không tìm thấy danh mục phù hợp</>
                                     )}
                                     isClearable={true}
                                     isSearchable={true}
@@ -445,7 +447,7 @@ const AddEditProduct = () => {
                                     classNamePrefix="select"
                                     placeholder="Chọn danh mục phụ"
                                     noOptionsMessage={() => (
-                                      <>Không có tìm thấy danh mục phù hợp</>
+                                      <>Không tìm thấy danh mục phù hợp</>
                                     )}
                                     isClearable={true}
                                     isSearchable={true}
@@ -486,7 +488,7 @@ const AddEditProduct = () => {
                                     placeholder="Chọn nhà cung cấp"
                                     noOptionsMessage={() => (
                                       <>
-                                        Không có tìm thấy nhà cung cấp phù hợp
+                                        Không tìm thấy nhà cung cấp phù hợp
                                       </>
                                     )}
                                     isClearable={true}
@@ -575,7 +577,7 @@ const AddEditProduct = () => {
                                   type="submit"
                                   variant="contained"
                                   fullWidth
-                                  loadingPosition="start"
+                                  loadingposition="start"
                                   startIcon={<Done />}
                                   color="warning"
                                 >
@@ -667,7 +669,7 @@ const AddEditProduct = () => {
                                 classNamePrefix="select"
                                 placeholder="Chọn danh mục."
                                 noOptionsMessage={() => (
-                                  <>Không có tìm thấy danh mục phù hợp</>
+                                  <>Không tìm thấy danh mục phù hợp</>
                                 )}
                                 isClearable={true}
                                 isSearchable={true}
@@ -713,7 +715,7 @@ const AddEditProduct = () => {
                                   classNamePrefix="select"
                                   placeholder="Chọn danh mục phụ"
                                   noOptionsMessage={() => (
-                                    <>Không có tìm thấy danh mục phù hợp</>
+                                    <>Không tìm thấy danh mục phù hợp</>
                                   )}
                                   isClearable={true}
                                   isSearchable={true}
@@ -843,12 +845,12 @@ const AddEditProduct = () => {
                       <Card>
                         <CardContent>
                           <Stack spacing={2}>
-                            <Grid xs={12} item>
+                            <Grid xs={8} item>
                               <Button
                                 loading={loadingButton}
                                 type="submit"
                                 variant="contained"
-                                loadingPosition="start"
+                                loadingposition="start"
                                 startIcon={<Done />}
                                 color="success"
                                 size="medium"
@@ -856,7 +858,7 @@ const AddEditProduct = () => {
                                 Thêm sản phẩm
                               </Button>
                             </Grid>
-                            <Grid xs={8} item>
+                            <Grid xs={4} item>
                               <Button
                                 onClick={() => handleOnClickExit()}
                                 variant="contained"

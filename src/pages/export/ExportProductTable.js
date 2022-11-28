@@ -8,6 +8,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import FormatDataUtils from "../../utils/FormatDataUtils";
 import Fragment from 'react'
+import { Typography } from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -18,7 +19,9 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     fontSize: 14,
   },
 }));
-const ExportProductTable = ({ productList }) => {
+const ExportProductTable = ({ listConsignment }) => {
+  const formatCurrency = (value) =>
+    value.toLocaleString("it-IT", { style: "currency", currency: "VND" });
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 200 }} aria-label="customized table">
@@ -27,6 +30,7 @@ const ExportProductTable = ({ productList }) => {
             <StyledTableCell>STT</StyledTableCell>
             <StyledTableCell>Mã sản phẩm</StyledTableCell>
             <StyledTableCell>Tên sản phẩm</StyledTableCell>
+            <StyledTableCell>Hạn Lưu kho</StyledTableCell>
             <StyledTableCell>Đơn vị</StyledTableCell>
             <StyledTableCell align="center">Số lượng</StyledTableCell>
             <StyledTableCell align="center">Đơn giá</StyledTableCell>
@@ -34,77 +38,96 @@ const ExportProductTable = ({ productList }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {productList.map((product, index) => {
-            return (
-              <Fragment key={index}>
-                <TableRow
-                  hover
-                  //   selected={islistProductselected}
-                  selected={false}
+        {listConsignment.map((consignment, index) => (
+            <TableRow
+              hover
+              key={index}
+              selected={false}
+            >
+              <TableCell>
+                <Typography
+                  variant="body1"
+                  color="text.primary"
+                  gutterBottom
+                  noWrap
                 >
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{product?.productCode}</TableCell>
-                  <TableCell>{product?.productName}</TableCell>
-                  <TableCell>
-                    {product?.unitMeasure}
-                  </TableCell>
-                  <TableCell align="center">{product?.quantity}</TableCell>
-                  <TableCell align="center">
-                    {FormatDataUtils.formatCurrency(product?.unitPrice)}
-                  </TableCell>
-                  <TableCell align="center">
-                    {FormatDataUtils.formatCurrency(
-                      product?.quantity * product?.unitPrice
-                    )}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  
-                  <TableCell
-                    colSpan={5}
-                  >
-                    <Table>
-                      <TableBody>
-                        <TableRow>
-                          <TableCell>Vị trí</TableCell>
-                          <TableCell>Ngày nhập</TableCell>
-                          <TableCell>Hạn lưu kho</TableCell>
-                          <TableCell align="center">Số lượng</TableCell>
-                        </TableRow>
-                        {product?.consignmentList.map(
-                          (consignment, indexConsignment) => (
-                            <TableRow
-                              key={indexConsignment}
-                              // hover
-                            >
-                              <TableCell>
-                                {consignment?.warehouseName}
-                              </TableCell>
-                              <TableCell>
-                                {FormatDataUtils.formatDate(
-                                  consignment?.importDate
-                                )}
-                              </TableCell>
-                              <TableCell>
-                                {consignment?.expirationDate
-                                  ? FormatDataUtils.formatDate(
-                                      consignment?.expirationDate
-                                    )
-                                  : "Không có"}
-                              </TableCell>
-                              <TableCell align="center">
-                                {consignment?.quantity}
-                              </TableCell>
-                            </TableRow>
-                          )
-                        )}
-                      </TableBody>
-                    </Table>
-                  </TableCell>
-                </TableRow>
-              </Fragment>
-            );
-          })}
+                  {index + 1}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography
+                  variant="body1"
+                  color="text.primary"
+                  gutterBottom
+                  noWrap
+                >
+                 {consignment?.product_code}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography
+                  variant="body1"
+                  color="text.primary"
+                  gutterBottom
+                  noWrap
+                >
+                  {consignment?.product_name}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography
+                  variant="body1"
+                  color="text.primary"
+                  gutterBottom
+                  noWrap
+                >
+                  {consignment?.expiration_date
+                    ? FormatDataUtils.formatDate(consignment?.expiration_date)
+                    : 'Không có'}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography
+                  variant="body1"
+                  color="text.primary"
+                  gutterBottom
+                  noWrap
+                >
+                  {consignment?.unit_measure}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography
+                  variant="body1"
+                  color="text.primary"
+                  gutterBottom
+                  noWrap
+                >
+                  {consignment?.quantity}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography
+                  variant="body1"
+                  color="text.primary"
+                  gutterBottom
+                  noWrap
+                >
+                  {formatCurrency(consignment?.unit_price)}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography
+                  variant="body1"
+                  color="text.primary"
+                  gutterBottom
+                  noWrap
+                >
+                  {formatCurrency(consignment?.quantity * consignment?.unit_price)}
+                </Typography>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </TableContainer>

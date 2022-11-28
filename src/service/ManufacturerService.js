@@ -7,13 +7,13 @@ const ManfacuturerService = {
     const url = "/manufacturers";
     return axiosClient.get(url, {params, headers: authHeader() });
   },
-  getAllManufacturer: (params) => {
-    const url = '/manufacturer/notPaging';
-    return axiosClient.get(url, { params, headers: authHeader() });
+  getAllManufacturer: () => {
+    const url = '/manufacturers/getManufacturerNotPagging';
+    return axiosClient.get(url, { headers: authHeader() });
   },
   getManufacturerById: (id) => {
-    const url = `/manufacturers/getAManufacturer`;
-    return axiosClient.get(url, { params: { id }, headers: authHeader() });
+    const url = `/manufacturers/getAManufacturer?id=${id}`;
+    return axiosClient.get(url, { headers: authHeader() });
   },
   searchManufacturer:(params) =>{
     const url = `/manufacturers/searchManufacturer`;

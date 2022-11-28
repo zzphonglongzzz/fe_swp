@@ -105,10 +105,10 @@ const ImportList = () => {
   const fetchImportOrderList = async () => {
     try {
       const params = {
-        pageIndex: page,
+        pageIndex: page + 1,
         pageSize: rowsPerPage,
       };
-      const dataResult = await importOrderService.getImportOrderList1();
+      const dataResult = await importOrderService.getImportOrderList(params);
       //const dataResult = unwrapResult(actionResult);
       console.log("dataResult", dataResult);
       if (dataResult.data) {
@@ -226,14 +226,14 @@ const ImportList = () => {
         justifyContent="center"
         alignItems="center"
       >
-        {/* <CustomTablePagination
+        <CustomTablePagination
           page={page}
           pages={pages}
           rowsPerPage={rowsPerPage}
           totalRecord={totalRecord}
           handleChangePage={handleChangePage}
           handleChangeRowsPerPage={handleChangeRowsPerPage}
-        /> */}
+        />
       </Grid>
     </Container>
   );

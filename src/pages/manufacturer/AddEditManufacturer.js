@@ -211,7 +211,7 @@ const AddEditManufacturer = () => {
                         variant="contained"
                         loading={loadingButton}
                         type="submit"
-                        loadingPosition="start"
+                        loadingposition="start"
                         startIcon={<CheckIcon />}
                       >
                         Lưu chỉnh sửa
@@ -302,7 +302,7 @@ const AddEditManufacturer = () => {
                         variant="contained"
                         loading={loadingButton}
                         type="submit"
-                        loadingPosition="start"
+                        loadingposition="start"
                         startIcon={<CheckIcon />}
                       >
                         Thêm nhà sản xuất

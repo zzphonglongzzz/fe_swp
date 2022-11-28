@@ -173,7 +173,7 @@ const ResetPassword = () => {
               <Stack>
                 <LoadingButton
                   variant="contained"
-                  loadingPosition="start"
+                  loadingposition="start"
                   startIcon={<LockReset />}
                   type="submit"
                 >

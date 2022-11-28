@@ -43,3 +43,10 @@
     padding: 0 24px;
     margin-bottom: 8px;
 }
+.imageStyle{
+    height: 250px;
+    object-fit: cover;
+    border-radius: 15px;
+    border: 1px solid black;
+    aspect-ratio: 1/1;
+}

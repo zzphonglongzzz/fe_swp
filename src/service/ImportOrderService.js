@@ -36,8 +36,8 @@ const importOrderService = {
     const url = process.env.REACT_APP_API_URL + `/import/cancel?orderId=${orderId}&confirmBy=${confirmBy}`;
     return axiosClient.get(url, {headers: authHeader() });
   },
-  updateImportOrder: (importOrder) => {
-    const url = process.env.REACT_APP_API_URL + `/import/editOrder`;
+  updateImportOrder: (orderId,importOrder) => {
+    const url = process.env.REACT_APP_API_URL + `/import/editOrder?orderId=${orderId}`;
     return axios.put(url, importOrder, { headers: authHeader() });
   },
 };

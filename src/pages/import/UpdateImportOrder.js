@@ -161,6 +161,7 @@ const UpdateImportOrder = () => {
         console.log(consignmentRequests);
         try {
           const actionResult = await importOrderService.updateImportOrder(
+            importOrderId,
             consignmentRequests
           );
           // const actionResult = unwrapResult(actionResult);

@@ -24,6 +24,9 @@ import CreateInventoryChecking from "../pages/Inventory Checking/CreateInventory
 import Profile from "../pages/profile/Profile";
 import UpdateProfile from "../pages/profile/UpdateProfile";
 import NotFound from "../component/DefaultLayout/NotFound/NotFound";
+import ReturnGoods from "../pages/return/ReturnGoods"
+import ReturnList from "../pages/return/ReturnList";
+import ReturnOrderDetail from "../pages/return/ReturnOrderDetail";
 
 const publicRoutes = [
   //public route
@@ -78,6 +81,9 @@ const privateRoutes = [
   {path:"/export/list",component:ExportList},
   {path:"/export/detail/:exportOrderId",component:ExportOrderDetail},
   {path:"/export/edit/:exportOrderId",component:UpdateExportOrderDetail},
+  { path: '/export/return/:exportOrderId', component: ReturnGoods},
+  { path: '/export/return/list', component: ReturnList},
+  { path: '/export/return/detail/:returnOrderId', component: ReturnOrderDetail },
 
   // inventoryChecking route
   {path:"/inventory-checking/list",component:InventoryCheckingList},
