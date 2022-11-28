@@ -25,9 +25,13 @@ import * as Yup from "yup";
 import { FieldArray, Form, Formik, useField } from "formik";
 import Popup from "../../component/common/dialog/index";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { Delete, Done} from "@mui/icons-material";
-import Select from 'react-select';
-import "./ExportGood.scss"
+import { Delete, Done } from "@mui/icons-material";
+import Select from "react-select";
+import "./ExportGood.scss";
+import ProductService from "../../service/ProductService";
+import ExportOrderService from "../../service/ExportOrderService";
+import AlertPopup from "../../component/common/AlertPopup";
+import moment from "moment";
 
 const TextfieldWrapper = ({ name, ...otherProps }) => {
   const [field, meta] = useField(name);
@@ -45,37 +49,39 @@ const TextfieldWrapper = ({ name, ...otherProps }) => {
 };
 const ExportGood = () => {
   const initialExportOrder = {
-    statusName: "",
-    creatorId: "",
-    createdDate: new Date(),
+    // statusName: "",
+    // creatorId: "",
+    // createdDate: new Date(),
     productList: [],
   };
   const [productList, setProductList] = useState([]);
   const [openPopup, setOpenPopup] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
-  const today = new Date();
   const currentUser = AuthService.getCurrentUser();
   const arrayHelpersRef = useRef(null);
   const valueFormik = useRef();
-
+  
+  const FORM_VALIDATION = Yup.object().shape({
+    //quantity: Yup.number().required("Bạn chưa số lượng ").min(1),
+    ///manufactorId: Yup.number().required("Bạn chưa chọn nhà cung cấp"),
+  });
   const handleOnChangeProduct = async (e) => {
     const isSelected = valueFormik.current.productList.some((element) => {
       if (element.productId === e.value.productId) {
         return true;
       }
-
       return false;
     });
     console.log("alo", e);
     const productSelected = {
-      productId: e.value.productId,
-      productName: e.value.productName,
+      productId: e.value.id,
+      productName: e.value.name,
       productCode: e.value.productCode,
       unitMeasure: e.value.unitMeasure,
       // wrapUnitMeasure: e.value.wrapUnitMeasure,
-      //  numberOfWrapUnitMeasure: e.value.numberOfWrapUnitMeasure,
-      expirationDate: e.value.expirationDate,
+      // numberOfWrapUnitMeasure: e.value.numberOfWrapUnitMeasure,
+      // expirationDate: e.value.expirationDate,
       quantity: "",
       unitPrice: e.value.unitPrice,
     };
@@ -109,18 +115,8 @@ const ExportGood = () => {
 
     if (product !== undefined && product?.consignments?.length > 0) {
       product?.consignments.forEach((consignment) => {
-        let quantity =
-          product.selectedUnitMeasure !== product.unitMeasure
-            ? FormatDataUtils.getRoundFloorNumber(
-                consignment.quantity * product.numberOfWrapUnitMeasure
-              )
-            : consignment.quantity;
-        let unitPrice =
-          product.selectedUnitMeasure !== product.unitMeasure
-            ? FormatDataUtils.getRoundFloorNumber(
-                product.unitPrice / product.numberOfWrapUnitMeasure
-              )
-            : product.unitPrice;
+        let quantity = consignment.quantity;
+        let unitPrice = product.unitPrice;
         totalAmount = +totalAmount + +quantity * +unitPrice;
       });
     }
@@ -139,21 +135,11 @@ const ExportGood = () => {
             product.consignments?.length > 0
           ) {
             product.consignments?.forEach((consignment) => {
-              const quantity =
-                product.selectedUnitMeasure !== product.unitMeasure
-                  ? FormatDataUtils.getRoundFloorNumber(
-                      consignment.quantity * product.numberOfWrapUnitMeasure
-                    )
-                  : consignment.quantity;
+              const quantity = consignment.quantity;
               totalQuantity = +totalQuantity + quantity;
             });
           }
-          const unitPrice =
-            product.selectedUnitMeasure !== product.unitMeasure
-              ? FormatDataUtils.getRoundFloorNumber(
-                  product.unitPrice / product.numberOfWrapUnitMeasure
-                )
-              : product.unitPrice;
+          const unitPrice = product.unitPrice;
           totalAmount = totalAmount + totalQuantity * unitPrice;
         });
       }
@@ -163,19 +149,20 @@ const ExportGood = () => {
   const handleSubmit = async (values) => {
     console.log("submit value", values);
     let productList = values.productList;
-    let consignmentExports = [];
+    //let consignmentProductExportList = [];
+    //let productForExport = [];
     if (productList.length === 0) {
       setErrorMessage(" Vui lòng chọn ít nhất 1 sản phẩm để xuất hàng");
       setOpenPopup(true);
       return;
     }
+
     for (let index = 0; index < productList.length; index++) {
       if (calculateTotalQuantityOfProduct(productList[index]) === 0) {
         setErrorMessage("Bạn có sản phẩm chưa nhập số lượng");
         setOpenPopup(true);
         return;
       }
-
       const product = productList[index];
       const consignments = productList[index]?.consignments;
       for (
@@ -196,39 +183,106 @@ const ExportGood = () => {
           setOpenPopup(true);
           return;
         }
-        if (consignment.quantity > 0) {
-          consignmentExports.push({
-            id: consignment.id,
-            quantity: product.selectedUnitMeasure
-              ? product.selectedUnitMeasure === product.unitMeasure
-                ? consignment.quantity
-                : FormatDataUtils.getRoundFloorNumber(
-                    consignment.quantity * product.numberOfWrapUnitMeasure
-                  )
-              : consignment.quantity,
-            unitPrice: product.selectedUnitMeasure
-              ? product.selectedUnitMeasure === product.unitMeasure
-                ? product.unitPrice
-                : FormatDataUtils.getRoundFloorNumber(
-                    product.unitPrice / product.numberOfWrapUnitMeasure
-                  )
-              : product.unitPrice,
-          });
-        }
       }
     }
+    const productForExport = values.productList.reduce(
+      (exportProductResult, productListItem) => {
+        const productForExportItem = {
+          product_id: productListItem.productId,
+          consignmentProductExportList: productListItem.consignments.reduce(
+            (returnConsignments, consignmentItem) => {
+              const consignmentProductExportListItem = {
+                consignment_id: consignmentItem.id,
+                wareHouseId: consignmentItem.warehouseId,
+                expirationDate: moment(consignmentItem.expirationDate)
+                  .utc()
+                  .format("YYYY-MM-DD hh:mm:ss"),
+                quantity: consignmentItem.quantity,
+              };
+              returnConsignments.push(consignmentProductExportListItem);
+              return returnConsignments;
+            },
+            []
+          ),
+        };
+        exportProductResult.push(productForExportItem);
+        return exportProductResult;
+      },
+      []
+    );
+    console.log(productForExport);
+    // const productForExport = productList.reduce((consignmentProductExportList, index) => {
+    //   const product = productList[index];
+    //   const consignments = productList[index]?.consignments;
+    //   let consignment = consignments[indexConsignment];
+    //   consignmentProductExportList.push({
+    //     consignment_id: consignment.id,
+    //     wareHouseId: consignment.warehouseId,
+    //     expirationDate: moment(consignment.expirationDate)
+    //       .utc()
+    //       .format("YYYY-MM-DD hh:mm:ss"),
+    //     quantity: consignment.quantity,
+    //   })
+    //   return consignmentProductExportList;
+    // } , {})
+    // for (let index = 0; index < productList.length; index++) {
+    //   if (calculateTotalQuantityOfProduct(productList[index]) === 0) {
+    //     setErrorMessage("Bạn có sản phẩm chưa nhập số lượng");
+    //     setOpenPopup(true);
+    //     return;
+    //   }
+    //   const product = productList[index];
+    //   const consignments = productList[index]?.consignments;
+    //   productForExport.push({
+    //     product: product.productId,
+    //     consignmentProductExportList: consignmentProductExportList,
+    //   });
+    //   for (
+    //     let indexConsignment = 0;
+    //     indexConsignment < consignments.length;
+    //     indexConsignment++
+    //   ) {
+    //     let consignment = consignments[indexConsignment];
+    //     if (consignment.quantity > consignment.quantityInstock) {
+    //       setErrorMessage(
+    //         "Bạn không thể nhập số lượng lớn hơn số lượng tồn kho của lô hàng"
+    //       );
+    //       setOpenPopup(true);
+    //       return;
+    //     }
+    //     if (consignment.quantity < 0) {
+    //       setErrorMessage("Bạn không thể nhập số lượng nhỏ hơn 0");
+    //       setOpenPopup(true);
+    //       return;
+    //     }
+    //     if (consignment.quantity > 0) {
+    //       consignmentProductExportList.push({
+    //         consignment_id: consignment.id,
+    //         wareHouseId: consignment.warehouseId,
+    //         expirationDate: moment(consignment.expirationDate)
+    //           .utc()
+    //           .format("YYYY-MM-DD hh:mm:ss"),
+    //         quantity: consignment.quantity,
+    //       });
+    //     }
+    //     // productForExport.push({
+    //     //   product: product.productId,
+    //     //   consignmentProductExportList: consignmentProductExportList,
+    //     // });
+    //   }
+    // }
+
     const dataSubmit = {
-      createdDate: new Date(
-        today.getTime() - today.getTimezoneOffset() * 60 * 1000
-      ).toJSON(),
-      userId: currentUser.id,
-      consignmentExports: consignmentExports,
+      user_Id: currentUser.id,
+      productForExport: productForExport,
     };
     console.log("create new export", dataSubmit);
-    if (consignmentExports.length > 0) {
+    if (productForExport.length > 0) {
       try {
-        const response = await dispatch(createExportOrder(dataSubmit));
-        const resultResponse = unwrapResult(response);
+        const resultResponse = await ExportOrderService.createExportOrder(
+          dataSubmit
+        );
+        //const resultResponse = unwrapResult(response);
         if (resultResponse) {
           toast.success("Tạo phiếu xuất hàng thành công");
           console.log(resultResponse);
@@ -251,12 +305,13 @@ const ExportGood = () => {
         // pageSize: rowsPerPage,
         // ...searchProductParams,
       };
-      const actionResult = await dispatch(getListProductInStock(params));
-      const dataResult = unwrapResult(actionResult);
-      console.log("dataResult", dataResult);
-      if (dataResult.data) {
+      const actionResult = await ProductService.getAllProductList();
+      //const dataResult = unwrapResult(actionResult);
+      console.log("dataResult", actionResult);
+      if (actionResult.data.product) {
         // setTotalRecord(dataResult.data.totalRecord);
-        setProductList(dataResult.data);
+        setProductList(actionResult.data.product);
+        // console.log(actionResult.data.product);
       }
     } catch (error) {
       console.log("Failed to fetch product list instock: ", error);
@@ -267,18 +322,14 @@ const ExportGood = () => {
     productSelected
   ) => {
     try {
-      const params = {
-        productId: productId,
-      };
-      const actionResult = await dispatch(
-        getListConsiggnmentOfProductInStock(params)
-      );
-      const dataResult = unwrapResult(actionResult);
-      console.log("consignment", dataResult);
-      if (dataResult) {
-        productSelected = dataResult.productList;
-        productSelected.consignments = dataResult.productList?.consignmentList;
-        // productSelected.selectedUnitMeasure = dataResult.productList.unitMeasure;
+      const dataResult =
+        await ExportOrderService.getListConsignmentOfProductInStock(productId);
+      //console.log("consignment", dataResult.data.listProduct.consignmentList);
+      if (dataResult.data) {
+        productSelected = dataResult.data.listProduct;
+        productSelected.consignments =
+          dataResult.data.listProduct.consignmentList;
+        // console.log(productSelected.consignmentList);
         delete productSelected.consignmentList;
         return productSelected;
       }
@@ -288,10 +339,12 @@ const ExportGood = () => {
   };
   useEffect(() => {
     fetchProductInstock();
+    fetchConsignmentOfProductInstock();
   }, []);
   return (
     <Box>
       <Formik
+        validationSchema={FORM_VALIDATION}
         enableReinitialize={true}
         initialValues={initialExportOrder}
         onSubmit={(values) => handleSubmit(values)}
@@ -373,7 +426,15 @@ const ExportGood = () => {
                                           {product?.productName}
                                         </TableCell>
                                         <TableCell>
-                                          {product?.unitPrice}
+                                          {product?.unitMeasure}
+                                        </TableCell>
+                                        <TableCell align="center">
+                                          {FormatDataUtils.getRoundFloorNumber(
+                                            calculateTotalQuantityOfProduct(
+                                              product
+                                            ),
+                                            0
+                                          )}
                                         </TableCell>
                                         <TableCell align="center">
                                           {FormatDataUtils.formatCurrency(
@@ -456,7 +517,9 @@ const ExportGood = () => {
                                                       </Stack>
                                                     </TableCell>
                                                     <TableCell align="center">
-                                                      {consignment?.quantityInstock}
+                                                      {
+                                                        consignment?.quantityInstock
+                                                      }
                                                     </TableCell>
                                                   </TableRow>
                                                 )
@@ -512,7 +575,7 @@ const ExportGood = () => {
                 </Card>
               </Grid>
             </Grid>
-            <Popup
+            <AlertPopup
               title="Chú ý"
               openPopup={openPopup}
               setOpenPopup={setOpenPopup}
@@ -520,7 +583,7 @@ const ExportGood = () => {
               <Box component={"span"} className="popup-message-container">
                 {errorMessage}
               </Box>
-            </Popup>
+            </AlertPopup>
           </Form>
         )}
       </Formik>

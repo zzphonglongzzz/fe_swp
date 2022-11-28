@@ -1,10 +1,10 @@
-import { format } from 'date-fns';
+import { format } from "date-fns";
 
 const formatCurrency = (value) =>
-  value.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+  value.toLocaleString("it-IT", { style: "currency", currency: "VND" });
 
 const formatDateTime = (date) => {
-  return format(new Date(date), 'dd/MM/yyyy HH:mm:ss');
+  return format(new Date(date), "dd/MM/yyyy HH:mm:ss");
 };
 
 const formatDateByFormat = (date, formatString) => {
@@ -12,10 +12,10 @@ const formatDateByFormat = (date, formatString) => {
 };
 
 const formatDate = (date) => {
-  return new Date(date).toLocaleDateString('en-GB', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
+  return new Date(date).toLocaleDateString("en-GB", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
   });
 };
 
@@ -62,7 +62,7 @@ const getOptionProduct = (listData) => {
   return listData.map((data) => {
     return {
       value: data,
-      label: data.productName,
+      label: data.name,
     };
   });
 };
@@ -103,14 +103,14 @@ const getSelectedOptionWithId = (array, id) => {
 // };
 
 const isEmptyObject = (obj) => {
-  return Object.keys(obj).length == 0
-}
-
-const truncate = (str, n) => {
-  return (str.length > n) ? str.slice(0, n-1) + '...' : str;
+  return Object.keys(obj).length === 0;
 };
 
-const removeExtraSpace = (s) => s.trim().split(/ +/).join(' ');
+const truncate = (str, n) => {
+  return str.length > n ? str.slice(0, n - 1) + "..." : str;
+};
+
+const removeExtraSpace = (s) => s.trim().split(/ +/).join(" ");
 
 const FormatDataUtils = {
   formatCurrency,

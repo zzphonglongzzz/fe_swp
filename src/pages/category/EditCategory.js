@@ -148,7 +148,7 @@ const EditCategory = (props) => {
                   color="success"
                   type="submit"
                   loading={isSubmitting}
-                  loadingPosition="start"
+                  loadingposition="start"
                   variant="contained"
                   startIcon={<CheckIcon />}
                 >

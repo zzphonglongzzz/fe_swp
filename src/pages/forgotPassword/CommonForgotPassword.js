@@ -164,7 +164,7 @@ export default function CommonForgotPass() {
                     }
                   }}
                   loading={loading}
-                  loadingPosition="center"
+                  loadingposition="center"
                   sx={{
                     mt: 3,
                     ml: 1,

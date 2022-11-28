@@ -129,7 +129,7 @@ const EditWarehouse = (props) => {
                     />
                   </Box>
                   <Box className="infoContainer">
-                    <Typography className="wrapIcon">Mô tả chi tiết</Typography>
+                    <Typography className="wrapIcon">Địa chỉ</Typography>
                     <TextfieldWrapper
                       className="styleInput"
                       name="address"
@@ -150,7 +150,7 @@ const EditWarehouse = (props) => {
                   color="success"
                   type="submit"
                   loading={isSubmitting}
-                  loadingPosition="start"
+                  loadingposition="start"
                   variant="contained"
                   startIcon={<CheckIcon />}
                 >

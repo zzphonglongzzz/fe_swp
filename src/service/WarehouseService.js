@@ -12,7 +12,7 @@ const WarehouseService = {
     return axiosClient.get(url, { params: { id }, headers: authHeader() });
   },
   createNewWarehouse: (warehouse) => {
-    const url = process.env.REACT_APP_API_URL + "/warehouses/addManufacturer";
+    const url = process.env.REACT_APP_API_URL + "/warehouses/addWarehouse";
     return axios.post(
       url,
       {

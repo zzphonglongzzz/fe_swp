@@ -233,7 +233,7 @@ const ImportGoods = () => {
   };
   const fetchManufacturerList = async () => {
     try {
-      const actionResult = await ManfacuturerService.getManufacturerList();
+      const actionResult = await ManfacuturerService.getAllManufacturer();
       if (actionResult.data) {
         setManufacturerList(actionResult.data.manufacturer);
       }
@@ -324,7 +324,6 @@ const ImportGoods = () => {
                       )}
                       isClearable={true}
                       isSearchable={true}
-                      //isLoading={manufacturerState.loading}
                       name="manufacturer"
                       options={FormatDataUtils.getOptionWithIdandName(
                         manufacturerList
@@ -353,7 +352,6 @@ const ImportGoods = () => {
                     noOptionsMessage={() => <>Không có tìm thấy sản phẩm nào</>}
                     isClearable={true}
                     isSearchable={true}
-                    // isLoading={loading}
                     loadingMessage={() => <>Đang tìm kiếm sản phẩm...</>}
                     name="product"
                     value={null}
@@ -505,7 +503,7 @@ const ImportGoods = () => {
                       variant="contained"
                       size="large"
                       loading={loadingButton}
-                      loadingPosition="start"
+                      loadingposition="start"
                       startIcon={<CheckIcon />}
                       color="success"
                     >

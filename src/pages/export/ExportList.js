@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import AuthService from "../../service/AuthService";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import {
   Grid,
   Container,
@@ -21,6 +21,8 @@ import { Add, Search } from "@mui/icons-material";
 import CustomTablePagination from "../../component/common/Pagination";
 import ExportOrderTable from "./ExportOrderTable";
 import './ExportList.scss'
+import ExportOrderService from "../../service/ExportOrderService";
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 const ExportList = () => {
   const [startDate, setStartDate] = useState(null);
@@ -117,31 +119,31 @@ const ExportList = () => {
   //     console.log("Failed to search export order list: ", error);
   //   }
   // };
-  // const fetchExportOrderList = async () => {
-  //   try {
-  //     const params = {
-  //       pageIndex: page,
-  //       pageSize: rowsPerPage,
-  //     };
-  //     const actionResult = await dispatch(getExportOrderList(params));
-  //     const dataResult = unwrapResult(actionResult);
-  //     console.log("dataResult", dataResult);
-  //     if (dataResult.data) {
-  //       setTotalRecord(dataResult.data.totalRecord);
-  //       setExportOrderList(dataResult.data.orderList);
-  //     }
-  //   } catch (error) {
-  //     console.log("Failed to fetch exportOrder list: ", error);
-  //   }
-  // };
+  const fetchExportOrderList = async () => {
+    try {
+      const params = {
+        pageIndex: page + 1,
+        pageSize: rowsPerPage,
+      };
+      const dataResult = await ExportOrderService.getExportOrderList(params)
+      //const dataResult = unwrapResult(actionResult);
+      console.log("dataResult", dataResult);
+      if (dataResult.data) {
+        setTotalRecord(dataResult.data.totalRecord);
+        setExportOrderList(dataResult.data.orderList);
+      }
+    } catch (error) {
+      console.log("Failed to fetch exportOrder list: ", error);
+    }
+  };
   useEffect(() => {
     //searchExportOrder(searchParams);
-   // fetchExportOrderList();
+   fetchExportOrderList();
   }, [page, rowsPerPage]);
 
   return (
     <Container maxWidth="xl">
-      <Stack direction="row" justifyContent="flex-end" spacing={2} p={2}>
+      {/* <Stack direction="row" justifyContent="flex-end" spacing={2} p={2}>
           <Button
             variant="contained"
             color="success"
@@ -150,9 +152,9 @@ const ExportList = () => {
           >
             Tạo phiếu xuất kho
           </Button>
-        </Stack>
-      {/* {(currentUserRole === "ROLE_OWNER" ||
-        currentUserRole === "ROLE_SELLER") && (
+        </Stack> */}
+      {(currentUserRole === "ROLE_ADMIN" ||
+        currentUserRole === "ROLE_USER") && (
         <Stack direction="row" justifyContent="flex-end" spacing={2} p={2}>
           <Button
             variant="contained"
@@ -163,7 +165,7 @@ const ExportList = () => {
             Tạo phiếu xuất kho
           </Button>
         </Stack>
-      )} */}
+      )}
       <Card className="panelFilter">
         <div className="labelPanelFilter">Tìm kiếm theo thông tin</div>
         <Toolbar className="toolbar">
@@ -196,7 +198,7 @@ const ExportList = () => {
             alignItems="center"
           >
             <Toolbar>
-              <LocalizationProvider dateAdapter="AdapterDateFns">
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DatePicker
                   id="startDate"
                   label="Ngày bắt đầu"

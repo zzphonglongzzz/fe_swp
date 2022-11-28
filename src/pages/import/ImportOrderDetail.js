@@ -52,7 +52,7 @@ const ImportOrderDetail = () => {
   const calculateTotalAmount = () => {
     let totalAmount = 0;
     if (importOrder !== undefined && importOrder?.length > 0) {
-      console.log(listConsignments);
+     // console.log(listConsignments);
       for (let index = 0; index < importOrder.length; index++) {
         totalAmount =
           totalAmount +

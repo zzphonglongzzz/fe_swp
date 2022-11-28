@@ -132,12 +132,7 @@ const ProductList = () => {
   };
   const fetchManufacturerList = async () => {
     try {
-      const params = {
-        manufactorName: "",
-      };
-      const actionResult = await ManfacuturerService.getManufacturerList(
-        params
-      );
+      const actionResult = await ManfacuturerService.getAllManufacturer();
       if (actionResult.data) {
         setManufactureList(actionResult.data.manufacturer);
       }

@@ -284,7 +284,6 @@ const CreateInventoryChecking = () => {
                               noOptionsMessage={() => <>Không có tìm thấy kho nào</>}
                               isClearable={true}
                               isSearchable={true}
-                              //isLoading={warehouseState.loading}
                               loadingMessage={() => <>Đang tìm kiếm kho...</>}
                               name="warehouse"
                               // value={warehouseId}
@@ -327,7 +326,6 @@ const CreateInventoryChecking = () => {
                         noOptionsMessage={() => <>Không có tìm thấy sản phẩm nào</>}
                         isClearable={true}
                         isSearchable={true}
-                        //isLoading={loading}
                         loadingMessage={() => <>Đang tìm kiếm sản phẩm...</>}
                         name="product"
                         value={selectedProduct}
@@ -517,7 +515,7 @@ const CreateInventoryChecking = () => {
                             color="success"
                             startIcon={<Done />}
                             loading={isSubmitting}
-                            loadingPosition="start"
+                            loadingposition="start"
                             type="submit"
                           >
                             Xác nhận kiểm kho

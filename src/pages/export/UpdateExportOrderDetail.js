@@ -16,37 +16,37 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-
   Typography,
-  TextField
+  TextField,
 } from "@mui/material";
 import FormatDataUtils from "../../utils/FormatDataUtils";
-import { Close, Done,} from "@mui/icons-material";
-import { Form, Formik,useField } from "formik";
-import Popup from "../../component/common/dialog";
+import { Close, Done } from "@mui/icons-material";
+import { Form, Formik, useField } from "formik";
 import * as Yup from "yup";
-import './UpdateExportTable.scss'
+import ExportOrderService from "../../service/ExportOrderService";
+import "./UpdateExportTable.scss";
+import AlertPopup from "../../component/common/AlertPopup/index";
 
 const TextfieldWrapper = ({ name, ...otherProps }) => {
-    const [field, meta] = useField(name);
-  
-    const configTextfield = {
-      ...field,
-      ...otherProps,
-    };
-  
-    if (meta && meta.touched && meta.error) {
-      configTextfield.error = true;
-      configTextfield.helperText = meta.error;
-    }
-    return <TextField {...configTextfield} />;
+  const [field, meta] = useField(name);
+
+  const configTextfield = {
+    ...field,
+    ...otherProps,
   };
+
+  if (meta && meta.touched && meta.error) {
+    configTextfield.error = true;
+    configTextfield.helperText = meta.error;
+  }
+  return <TextField {...configTextfield} />;
+};
 const UpdateExportOrderDetail = () => {
   const { exportOrderId } = useParams();
   const navigate = useNavigate();
-  const [exportOrder, setExportOrder] = useState();
+  //const [exportOrder, setExportOrder] = useState();
   const [productList, setProductList] = useState([]);
-  const [addressWarehouse, setAddressWarehouse] = useState([]);
+  //const [addressWarehouse, setAddressWarehouse] = useState([]);
   const [openPopup, setOpenPopup] = useState(false);
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
@@ -114,15 +114,7 @@ const UpdateExportOrderDetail = () => {
           indexConsignment++
         ) {
           let consignment = consignments[indexConsignment];
-          const quantity = productList[index].selectedUnitMeasure
-            ? productList[index].selectedUnitMeasure ===
-              productList[index].unitMeasure
-              ? consignment.quantity
-              : FormatDataUtils.getRoundFloorNumber(
-                  consignment.quantity *
-                    productList[index].numberOfWrapUnitMeasure
-                )
-            : consignment.quantity;
+          const quantity = consignment.quantity;
           if (quantity > consignment.quantityInstock) {
             setErrorMessage(
               "Bạn không thể nhập số lượng lớn hơn số lượng tồn kho của lô hàng"
@@ -166,7 +158,9 @@ const UpdateExportOrderDetail = () => {
       if (consignmentExports.length > 0) {
         console.log(editedExportOrder);
         try {
-          const resultResponse = await dispatch(updateExportOrder(editedExportOrder));
+          const resultResponse = await ExportOrderService.updateExportOrder(
+            editedExportOrder
+          );
           console.log(resultResponse);
           if (resultResponse) {
             if (resultResponse.data.message) {
@@ -193,29 +187,29 @@ const UpdateExportOrderDetail = () => {
       navigate(`/export/detail/${exportOrderId}`);
     }
   };
-  const fetchExportOrderDetail = async () => {
-    try {
-      // const params = {
-      //   orderId: importOrderId,
-      // };
-      const dataResult = await dispatch(getExportOrderById(exportOrderId));
-      if (
-        dataResult.data &&
-        !FormatDataUtils.isEmptyObject(dataResult.data.inforExportDetail)
-      ) {
-        setExportOrder(dataResult.data.inforExportDetail);
+  // const fetchExportOrderDetail = async () => {
+  //   try {
+  //     // const params = {
+  //     //   orderId: importOrderId,
+  //     // };
+  //     const dataResult = await dispatch(getExportOrderById(exportOrderId));
+  //     if (
+  //       dataResult.data &&
+  //       !FormatDataUtils.isEmptyObject(dataResult.data.inforExportDetail)
+  //     ) {
+  //       setExportOrder(dataResult.data.inforExportDetail);
 
-        if (dataResult.data.inforExportDetail?.statusName !== "pending") {
-          navigate(`/export/detail/${exportOrderId}`);
-        }
-      } else {
-        navigate("/404");
-      }
-      console.log("Export Order Detail", dataResult);
-    } catch (error) {
-      console.log("Failed to fetch exportOrder detail: ", error);
-    }
-  };
+  //       if (dataResult.data.inforExportDetail?.statusName !== "pending") {
+  //         navigate(`/export/detail/${exportOrderId}`);
+  //       }
+  //     } else {
+  //       navigate("/404");
+  //     }
+  //     console.log("Export Order Detail", dataResult);
+  //   } catch (error) {
+  //     console.log("Failed to fetch exportOrder detail: ", error);
+  //   }
+  // };
   const fetchConsignmentsByExportOrderId = async () => {
     try {
       const params = {
@@ -223,12 +217,12 @@ const UpdateExportOrderDetail = () => {
         // pageSize: rowsPerPage,
         orderId: exportOrderId,
       };
-      const dataResult = await dispatch(
-        getConsignmentsByExportOrderId(params)
+      const dataResult = await ExportOrderService.getExportOrderById(
+        exportOrderId
       );
       if (dataResult.data) {
         setProductList(dataResult.data.productList);
-        setAddressWarehouse(dataResult.data.addressWarehouse);
+        //setAddressWarehouse(dataResult.data.addressWarehouse);
         // setTotalRecord(dataResult.data.totalRecord);
       }
       console.log("consignments List", dataResult);
@@ -241,15 +235,15 @@ const UpdateExportOrderDetail = () => {
     if (isNaN(exportOrderId)) {
       navigate("/404");
     } else {
-      fetchExportOrderDetail();
+      //fetchExportOrderDetail();
       fetchConsignmentsByExportOrderId();
     }
   }, []);
   return (
     <Box>
-      {!!exportOrder && productList.length > 0 && (
+      {productList.length > 0 && (
         <Formik
-          initialValues={{ ...exportOrder, productList: [...productList] }}
+          initialValues={{ productList: [...productList] }}
           onSubmit={(values) => handleConfirm(values)}
         >
           {({ values, errors, setFieldValue }) => {
@@ -271,7 +265,7 @@ const UpdateExportOrderDetail = () => {
                             {"XUAT" + exportOrderId}
                           </Typography>
                         </Box>
-                        {exportOrder.statusName === "pending" && (
+                        {productList.confirm_by == null && (
                           <Stack
                             direction="row"
                             justifyContent="flex-end"
@@ -342,7 +336,6 @@ const UpdateExportOrderDetail = () => {
                                           {calculateTotalAmount(
                                             values.productList[index]
                                           )}
-
                                         </TableCell>
                                         <TableCell align="center">
                                           {FormatDataUtils.formatCurrency(
@@ -351,16 +344,14 @@ const UpdateExportOrderDetail = () => {
                                         </TableCell>
                                         <TableCell align="center">
                                           {FormatDataUtils.formatCurrency(
-                                            (calculateTotalQuantityOfProduct(
-                                                  values.productList[index]
-                                                )) * product.unitPrice
+                                            calculateTotalQuantityOfProduct(
+                                              values.productList[index]
+                                            ) * product.unitPrice
                                           )}
                                         </TableCell>
                                       </TableRow>
                                       <TableRow>
-                                        <TableCell
-                                          colSpan={5}
-                                        >
+                                        <TableCell colSpan={5}>
                                           <Table>
                                             <TableBody>
                                               <TableRow>
@@ -376,7 +367,7 @@ const UpdateExportOrderDetail = () => {
                                                   Tồn kho
                                                 </TableCell>
                                               </TableRow>
-                                              {product?.consignmentList.map(
+                                              {/* {product?.consignmentList.map(
                                                 (
                                                   consignment,
                                                   indexConsignment
@@ -417,18 +408,20 @@ const UpdateExportOrderDetail = () => {
                                                             inputProps: {
                                                               min: 0,
                                                               max: consignment?.quantityInstock,
-                                                              step: 1 
+                                                              step: 1,
                                                             },
                                                           }}
                                                         />
                                                       </Stack>
                                                     </TableCell>
                                                     <TableCell align="center">
-                                                      {consignment?.quantityInstock}
+                                                      {
+                                                        consignment?.quantityInstock
+                                                      }
                                                     </TableCell>
                                                   </TableRow>
                                                 )
-                                              )}
+                                              )} */}
                                             </TableBody>
                                           </Table>
                                         </TableCell>
@@ -453,66 +446,36 @@ const UpdateExportOrderDetail = () => {
                             <Stack spacing={2}>
                               <Box>
                                 <Typography>
-                                  Người tạo đơn:{" "}
-                                  <i>
-                                    {exportOrder.createdFullName +
-                                      "(" +
-                                      exportOrder.createBy +
-                                      ")"}
-                                  </i>
+                                  Người tạo đơn: <i>{productList.creator}</i>
                                 </Typography>
-                                <Typography>Ngày tạo đơn:</Typography>
+                                {/* <Typography>Ngày tạo đơn:</Typography>
                                 <Typography>
                                   {FormatDataUtils.formatDateTime(
                                     exportOrder.createDate
                                   )}
-                                </Typography>
+                                </Typography> */}
                               </Box>
-                              <Typography>
-                                Tham chiếu: <i>{exportOrder.billRefernce}</i>
-                              </Typography>
                             </Stack>
                           </CardContent>
                         </Card>
                       </Grid>
                       <Grid xs={12} item>
                         <Card>
-                          <CardContent>
+                          <CardContent className="warehourseInfo">
                             <Typography variant="h6">Kho lấy hàng</Typography>
                             <Stack spacing={2}>
-                              {addressWarehouse.length > 0 &&
-                                addressWarehouse.map((address) => (
+                              {productList.length > 0 &&
+                                productList.map((address, index) => (
                                   <Box
-                                    key={address.id}
+                                    key={index}
+                                    className="warehouseContainer"
                                   >
-                                    <Typography>{address.name}</Typography>
-                                    <Divider />
                                     <Typography>
-                                      {address.detailAddress}
-                                    </Typography>
-                                    <Typography>
-                                      {address.wardName} -{" "}
-                                      {address.districtName} -{" "}
-                                      {address.provinceName}
+                                      {address.warehouse_name}
                                     </Typography>
                                   </Box>
                                 ))}
                             </Stack>
-                          </CardContent>
-                        </Card>
-                      </Grid>
-                      <Grid xs={12} item>
-                        <Card>
-                          <CardContent className="orderNote">
-                            <Typography variant="h6">Ghi chú</Typography>
-                            <TextfieldWrapper
-                              id="description"
-                              name="description"
-                              variant="outlined"
-                              multiline
-                              rows={6}
-                              fullWidth
-                            />
                           </CardContent>
                         </Card>
                       </Grid>
@@ -533,7 +496,7 @@ const UpdateExportOrderDetail = () => {
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Popup
+                  <AlertPopup
                     maxWidth="sm"
                     title={errorMessage ? "Chú ý" : title}
                     openPopup={openPopup}
@@ -544,8 +507,7 @@ const UpdateExportOrderDetail = () => {
                     <Box component={"span"} className="popupMessageContainer">
                       {errorMessage ? errorMessage : message}
                     </Box>
-                  </Popup>
-                  {/* <pre>{JSON.stringify(values, null, 2)}</pre> */}
+                  </AlertPopup>
                 </Grid>
               </Form>
             );

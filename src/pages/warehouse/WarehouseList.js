@@ -70,14 +70,14 @@ const WarehouseList = () => {
   return (
     <Container>
       <Stack direction="row" justifyContent="flex-end" spacing={2} p={2}>
-        {/* <Button
+        <Button
           color="warning"
           variant="contained"
           startIcon={<AddIcon />}
           onClick={() => handleOnclickAddNewWareHouse()}
         >
           Thêm mới nhà kho
-        </Button> */}
+        </Button>
       </Stack>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 200 }} aria-label="customized table">

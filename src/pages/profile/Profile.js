@@ -15,6 +15,7 @@ import { LockReset, ManageAccounts, PhotoCamera } from "@mui/icons-material";
 import { toast } from 'react-toastify';
 import FormatDataUtils from "../../utils/FormatDataUtils";
 import "./Profile.css"
+import AlertPopup from "../../component/common/AlertPopup/index"
 
 
 const Profile = () => {
@@ -111,16 +112,16 @@ const Profile = () => {
                 <Card>
                   <CardContent className="imgContainer">
                     <Stack spacing={2}>
-                      <img
+                      {/* <img
                         className="imgProfile"
                         accept="image/*"
                         src={
                           image
                             ? image
-                            : require("/image/default-avatar.jpg")
+                            : require("/public/image/default-avatar.jpg")
                             
                         }
-                      />
+                      /> */}
                       <Button
                         variant="outlined"
                         startIcon={<PhotoCamera />}
@@ -178,7 +179,7 @@ const Profile = () => {
                       <Typography>Số điện thoại</Typography>
                     </Grid>
                     <Grid xs={9} item>
-                      <Typography>{staff.phone}</Typography>
+                      <Typography>{staff?.phone}</Typography>
                     </Grid>
                   </Grid>
                   <Grid container>
@@ -186,7 +187,7 @@ const Profile = () => {
                       <Typography>Email</Typography>
                     </Grid>
                     <Grid xs={9} item>
-                      <Typography>{staff.email}</Typography>
+                      <Typography>{staff?.email}</Typography>
                     </Grid>
                   </Grid>
                   <Grid container>
@@ -194,7 +195,7 @@ const Profile = () => {
                       <Typography>Số CCCD/CMND</Typography>
                     </Grid>
                     <Grid xs={9} item>
-                      <Typography>{staff.identityCard}</Typography>
+                      <Typography>{staff?.identityCard}</Typography>
                     </Grid>
                   </Grid>
                   <Grid container>
@@ -250,7 +251,7 @@ const Profile = () => {
               </CardContent>
             </Card>
           </Grid>
-          {/* <AlertPopup
+          <AlertPopup
             maxWidth="sm"
             title={errorMessage ? "Chú ý" : title}
             openPopup={openPopup}
@@ -261,7 +262,7 @@ const Profile = () => {
             <Box component={"span"} className="popupMessageContainer">
               {errorMessage ? errorMessage : message}
             </Box>
-          </AlertPopup> */}
+          </AlertPopup>
         </Grid>
       )}
     </Box>
