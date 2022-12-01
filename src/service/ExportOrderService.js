@@ -27,6 +27,10 @@ const ExportOrderService = {
     const url = process.env.REACT_APP_API_URL + `/export/editOrder`;
     return axios.put(url, exportOrder, { headers: authHeader() });
   },
+  getListProductInStock: () => {
+    const url = '/export/listProduct';
+    return axiosClient.get(url, { headers: authHeader() });
+  },
   getListConsignmentOfProductInStock: (id) => {
     const url = `/export/export-product?id=${id}`;
     return axiosClient.get(url, { headers: authHeader() });
@@ -35,25 +39,21 @@ const ExportOrderService = {
     const url = '/export/list';
     return axiosClient.get(url, { params, headers: authHeader() });
   },
-  getExportOrderById: (orderId) => {
-    const url = `/export/getOrderDetail?orderId=${orderId}`;
-    return axiosClient.get(url, { headers: authHeader() });
+  getExportOrderById: (params) => {
+    const url = `/export/getOrderDetail`;
+    return axiosClient.get(url, {params, headers: authHeader() });
   },
   getReturnOrderList: (params) => {
-    const url = '/return-order/list';
+    const url = '/return/list';
     return axiosClient.get(url, { params, headers: authHeader() });
   },
-
   getReturnOrderDetail: (params) => {
-    console.log(params)
-    const url = `/return-order/detail`;
+    const url = `/return/getOrderDetail`;
     return axiosClient.get(url, { params, headers: authHeader() });
   },
-
   createReturnOrder: (params) => {
-    const {returnOrder, exportOrderId} = params
-    const url = process.env.REACT_APP_API_URL + `/return-order/return/${exportOrderId}`;
-    return axios.post(url, returnOrder, { headers: authHeader() });
-  }
+    const url = process.env.REACT_APP_API_URL + `/return/createReturnOrder`;
+    return axios.post(url, params, { headers: authHeader() });
+  },
 };
 export default ExportOrderService;

@@ -46,8 +46,8 @@ const ExportOrderDetail = () => {
     return totalAmount;
   };
   const handleOnClickConfirm = () => {
-    setTitle("Bạn có chắc chắn muốn xác nhận xuất hàng thành công?");
-    setMessage("Hãy kiểm tra kỹ hàng hóa trước khi xác nhận.");
+    setTitle("Bạn có chắc chắn muốn xác nhận xuất hàng hay không?");
+    //setMessage("Hãy kiểm tra kỹ hàng hóa trước khi xác nhận.");
     setIsConfirm(true);
     setOpenPopup(true);
   };
@@ -121,8 +121,13 @@ const ExportOrderDetail = () => {
   };
   const fetchExportOrderDetail = async () => {
     try {
+      const params = {
+        // pageIndex: page,
+        // pageSize: rowsPerPage,
+        orderId: exportOrderId,
+      };
       const dataResult = await ExportOrderService.getExportOrderById(
-        exportOrderId
+        params
       );
       //const dataResult = unwrapResult(actionResult);
       if (

@@ -300,18 +300,11 @@ const ExportGood = () => {
   };
   const fetchProductInstock = async () => {
     try {
-      const params = {
-        // pageIndex: page + 1,
-        // pageSize: rowsPerPage,
-        // ...searchProductParams,
-      };
-      const actionResult = await ProductService.getAllProductList();
-      //const dataResult = unwrapResult(actionResult);
+      const actionResult = await ExportOrderService.getListProductInStock();
       console.log("dataResult", actionResult);
-      if (actionResult.data.product) {
-        // setTotalRecord(dataResult.data.totalRecord);
-        setProductList(actionResult.data.product);
-        // console.log(actionResult.data.product);
+      if (actionResult.data.listProductInWarehouse) {
+        setProductList(actionResult.data.listProductInWarehouse);
+        console.log(actionResult.data.listProductInWarehouse);
       }
     } catch (error) {
       console.log("Failed to fetch product list instock: ", error);
@@ -543,13 +536,6 @@ const ExportGood = () => {
               </Grid>
               <Grid xs={3} item>
                 <Card>
-                  <CardHeader title="Thông tin đơn xuất hàng" />
-                  <CardContent className="cardInfo">
-                    <Typography>
-                      {FormatDataUtils.formatDateTime(new Date())}
-                    </Typography>
-                    <br />
-                  </CardContent>
                   <CardContent>
                     <Box className="totalAmount">
                       <Typography variant="h5" align="center">

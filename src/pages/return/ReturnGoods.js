@@ -1,10 +1,30 @@
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import { Fragment, useEffect, useRef, useState } from "react";
-import { Form, Formik } from "formik";
-import FormatDataUtils from "../../utils/FormatDataUtils";
 import * as Yup from "yup";
+import FormatDataUtils from "../../utils/FormatDataUtils";
+import { toast } from "react-toastify";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Divider,
+  Grid,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { Close, KeyboardReturn } from "@mui/icons-material";
+import { FieldArray, Form, Formik, useField } from "formik";
+import AlertPopup from "../../component/common/AlertPopup";
 import ExportOrderService from "../../service/ExportOrderService";
+import moment from "moment";
 
 const ReturnGoods = () => {
   const { exportOrderId } = useParams();
@@ -15,14 +35,29 @@ const ReturnGoods = () => {
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState();
   const [isConfirm, setIsConfirm] = useState(false);
+  //const [listConsignment, setListConsignment] = useState([]);
+  const arrayHelpersRef = useRef(null);
   const valueFormik = useRef();
   const errorFormik = useRef();
-  const [listConsignment,setListConsignment] = useState([]);
+  
 
+  const TextfieldWrapper = ({ name, ...otherProps }) => {
+    const [field, meta] = useField(name);
+
+    const configTextfield = {
+      ...field,
+      ...otherProps,
+    };
+
+    if (meta && meta.touched && meta.error) {
+      configTextfield.error = true;
+      configTextfield.helperText = meta.error;
+    }
+    return <TextField {...configTextfield} />;
+  };
   const FORM_VALIDATION = Yup.object().shape({
     description: Yup.string().max(255, "Mô tả không thể dài quá 255 kí tự"),
   });
-  
 
   const handleOnClickConfirm = () => {
     setTitle("Bạn có chắc chắn muốn xác nhận trả hàng không?");
@@ -40,137 +75,389 @@ const ReturnGoods = () => {
     setIsConfirm(false);
     setOpenPopup(true);
   };
-  const calculateTotalQuantityOfProduct = (product) => {
-    let totalQuantity = 0;
-    if (product.consignmentList !== undefined && product.consignmentList?.length > 0) {
-      product?.consignmentList.forEach((consignment) => {
-        const quantity = consignment.quantityReturn;
-        totalQuantity = +totalQuantity + quantity;
-      });
-    }
-    return FormatDataUtils.getRoundFloorNumber(totalQuantity);
-  };
   const calculateTotalAmount = () => {
-    let totalAmount = 0;
-    const productList = valueFormik.current.productList;
-    if (productList) {
-      for (let index = 0; index < productList.length; index++) {
-        const product = productList[index];
-        const quantity = calculateTotalQuantityOfProduct(product)
-        totalAmount = totalAmount + quantity * +product?.unitPrice;
+    let totalAmout = 0;
+    if (valueFormik.current !== undefined) {
+      const consignments = valueFormik.current.consignments;
+      for (let index = 0; index < consignments.length; index++) {
+        totalAmout =
+          totalAmout +
+          consignments[index].quantityReturn * consignments[index].unit_price;
       }
     }
-    return totalAmount;
+    return totalAmout;
   };
   const handleConfirm = async () => {
     if (isConfirm) {
       const values = valueFormik.current;
-      let productList = values.productList;
-      let consignmentReturns = [];
-      console.log('xác nhận', values);
+      let productList = values.consignments;
+      let consignmentProductDTOs = [];
+      console.log("xác nhận", values);
 
       for (let index = 0; index < productList.length; index++) {
-        const consignments = productList[index]?.consignmentList;
-        for (
-          let indexConsignment = 0;
-          indexConsignment < consignments.length;
-          indexConsignment++
-        ) {
-          let consignment = consignments[indexConsignment];
-          const quantityReturn = consignment.quantityReturn
-          if (consignment.quantityReturn > consignment.quantity) {
-            setErrorMessage(
-              'Bạn không thể trả về số lượng lớn hơn số lượng trên đơn hàng',
-            );
-            setOpenPopup(true);
-            return;
-          }
-          if (consignment.quantityReturn < 0) {
-            setErrorMessage('Bạn không thể nhập số lượng nhỏ hơn 0');
-            setOpenPopup(true);
-            return;
-          }
-
-          if (!Number.isInteger(quantityReturn)) {
-            setErrorMessage(
-              'Vui lòng nhập số lượng trả về với đơn vị nhỏ nhất là số nguyên',
-            );
-            setOpenPopup(true);
-            return;
-          }
-
-          if (consignment.quantityReturn > 0) {
-            consignmentReturns.push({
-              id: consignment.id,
-              productId: productList[index].productId,
-              quantity: quantityReturn,
-              unitPrice: productList[index].unitPrice,
-            });
-          }
+        if (productList[index].quantityReturn > productList[index].quantity) {
+          setErrorMessage(
+            "Bạn không thể nhập số lượng lớn hơn số lượng tồn kho của lô hàng"
+          );
+          setOpenPopup(true);
+          return;
         }
+        if (productList.quantityReturn < 0) {
+          setErrorMessage("Bạn không thể nhập số lượng nhỏ hơn 0");
+          setOpenPopup(true);
+          return;
+        }
+        if (!Number.isInteger(productList[index]?.quantityReturn)) {
+          setErrorMessage("Vui lòng nhập số lượng sản phẩm là số nguyên");
+          setOpenPopup(true);
+          return;
+        }
+        if (productList[index]?.quantityReturn === "") {
+          setErrorMessage("Bạn có sản phẩm chưa nhập số lượng");
+          setOpenPopup(true);
+          return;
+        }
+        consignmentProductDTOs.push({
+          consignment_id: productList[index]?.consignment_id,
+          productId: productList[index]?.product_id,
+          unitPrice: productList[index]?.unit_price,
+          expirationDate: moment(productList[index]?.expiration_date)
+            .utc()
+            .format("YYYY-MM-DD hh:mm:ss"),
+          quantity: productList[index]?.quantityReturn,
+        });
       }
       const returnOrder = {
-        //billReferenceNumber: 'XUAT' + exportOrderId,
-        //createdDate: new Date().toJSON(),
+        orderId:productList[0].order_id,
+        orderCode:productList[0].order_id,
+        confirmBy: productList[0].confirm_by_id,
+        warehouseId: productList[0].warehouse_id,
         description: values.description,
-        userId: values.userId,
-        consignmentReturns: consignmentReturns,
+        consignmentProductDTOs: consignmentProductDTOs,
       };
-      console.log('return', returnOrder);
-      if (consignmentReturns.length > 0) {
+      console.log("return", returnOrder);
+      if (consignmentProductDTOs.length > 0) {
         try {
-          const resultResponse = await ExportOrderService.createReturnOrder(returnOrder);
+          const resultResponse = await ExportOrderService.createReturnOrder(
+            returnOrder
+          );
           //const resultResponse = unwrapResult(response);
           console.log(resultResponse);
           if (resultResponse) {
             if (resultResponse.data.message) {
               toast.success(resultResponse.data.message);
             } else {
-              toast.success('Tạo phiếu trả hàng thành công');
+              toast.success("Tạo phiếu trả hàng thành công");
             }
             console.log(resultResponse);
             navigate(`/export/detail/${exportOrderId}`);
           }
         } catch (error) {
-          console.log('Failed to save return order: ', error);
+          console.log("Failed to save return order: ", error);
           if (error.message) {
             toast.error(error.message);
           } else {
-            toast.error('Lỗi! Trả hàng thất bại!');
+            toast.error("Lỗi! Trả hàng thất bại!");
           }
         }
       } else {
-        setErrorMessage('Bạn không thể trả hàng nếu không có bất kì số lượng trả về nào');
+        setErrorMessage(
+          "Bạn không thể trả hàng nếu không có bất kì số lượng trả về nào"
+        );
         setOpenPopup(true);
         return;
       }
     } else {
-      console.log('Huỷ');
+      console.log("Huỷ");
       navigate(`/export/detail/${exportOrderId}`);
     }
   };
   const fetchConsignmentsByExportOrderId = async () => {
     try {
-    //   const params = {
-    //     // pageIndex: page,
-    //     // pageSize: rowsPerPage,
-    //     orderId: exportOrderId,
-    //   };
-      const dataResult = await ExportOrderService.getExportOrderById(exportOrderId);
-      //const dataResult = unwrapResult(actionResult);
+      const params = {
+        // pageIndex: page,
+        // pageSize: rowsPerPage,
+        orderId: exportOrderId,
+      };
+      const dataResult = await ExportOrderService.getExportOrderById(params);
       if (dataResult.data) {
-        setProductList(dataResult.data.productList);
-       // setAddressWarehouse(dataResult.data.addressWarehouse);
-        // setTotalRecord(dataResult.data.totalRecord);
+        setProductList(dataResult.data.listExportProduct);
+        console.log(dataResult.data.listExportProduct);
+        // if (dataResult.data.productList?.status_id === 4) {
+        //   navigate(`/export/detail/${exportOrderId}`);
+        // }
       }
-      console.log('consignments List', dataResult);
     } catch (error) {
-      console.log('Failed to fetch consignment list by exportOder: ', error);
+      console.log("Failed to fetch consignment list by exportOder: ", error);
     }
   };
-  
-  
-  return <h1>Hello</h1>;
+  useEffect(() => {
+    if (isNaN(exportOrderId)) {
+      navigate("/404");
+    } else {
+      //getAllWarehouse();
+      //fetchImportOrderDetail();
+      fetchConsignmentsByExportOrderId();
+    }
+  }, []);
+
+  return (
+    <>
+      <Formik
+        enableReinitialize={true}
+        initialValues={{ consignments: [...productList] }}
+        onSubmit={(values) => handleConfirm(values)}
+        validationSchema={FORM_VALIDATION}
+      >
+        {({ values, errors, setFieldValue }) => (
+          <Form>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Card>
+                  <Stack direction="row" justifyContent="space-between" p={2}>
+                    <Box>
+                      <Typography variant="span">
+                        <strong>Phiếu nhập kho số:</strong>
+                        {/* {"NHAP" + listConsignments[0]?.order_id} */}
+                      </Typography>{" "}
+                      {/* <span>
+                            {FormatDataUtils.getStatusLabel(listConsignments.statusName)}
+                          </span> */}
+                    </Box>
+                    {/* {importOrder[0].confirm_by == null && ( */}
+                    <Stack
+                      direction="row"
+                      justifyContent="flex-end"
+                      spacing={2}
+                    >
+                      <Button
+                        variant="contained"
+                        startIcon={<KeyboardReturn />}
+                        color="warning"
+                        onClick={() => handleOnClickConfirm()}
+                      >
+                        Trả hàng
+                      </Button>
+                      <Button
+                        variant="contained"
+                        startIcon={<Close />}
+                        color="error"
+                        onClick={() => handleOnClickCancel()}
+                      >
+                        Huỷ phiếu trả hàng
+                      </Button>
+                    </Stack>
+                  </Stack>
+                  {/* )} */}
+                </Card>
+              </Grid>
+              <Grid xs={9} item>
+                <Grid container spacing={2}>
+                  {/* <Grid xs={12} item>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6">
+                        Thông tin nhà cung cấp
+                      </Typography>
+                      <Box className="manufacturer-info">
+                        {listConsignments[0]?.manufactorName}
+                      </Box>
+                      <br />
+                      <Divider />
+                      <br />
+                      <Typography variant="h6"></Typography>
+                      <br />
+                      <Box className="selectbox-warehouse">
+                        {listConsignments[0]?.warehouse_name}
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid> */}
+                  <Grid xs={12} item>
+                    <Card>
+                      {!!productList && productList?.length > 0 ? (
+                        <Box>
+                          <TableContainer>
+                            <Table>
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell>STT</TableCell>
+                                  <TableCell>Mã sản phẩm</TableCell>
+                                  <TableCell>Tên sản phẩm</TableCell>
+                                  <TableCell>Vị trí</TableCell>
+                                  <TableCell>Đơn vị</TableCell>
+                                  <TableCell>Đơn giá</TableCell>
+                                  <TableCell>Trả về</TableCell>
+                                  <TableCell align="center">
+                                    Số lượng trên đơn hàng
+                                  </TableCell>
+                                  <TableCell>Thành tiền</TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                <FieldArray
+                                  name="consignments"
+                                  render={(arrayHelpers) => {
+                                    arrayHelpersRef.current = arrayHelpers;
+                                    valueFormik.current = values;
+                                    errorFormik.current = errors;
+                                    return (
+                                      <>
+                                        {values.consignments.map(
+                                          (consignment, index) => (
+                                            <TableRow
+                                              hover
+                                              key={index}
+                                              //   selected={islistConsignmentselected}
+                                              selected={false}
+                                            >
+                                              <TableCell>{index + 1}</TableCell>
+                                              <TableCell>
+                                                {consignment?.product_code}
+                                              </TableCell>
+                                              <TableCell>
+                                                {consignment?.product_name}
+                                              </TableCell>
+                                              <TableCell>
+                                                {consignment?.warehouse_name}
+                                              </TableCell>
+                                              <TableCell>
+                                                {consignment?.unit_measure}
+                                              </TableCell>
+                                              <TableCell>
+                                                {consignment?.unit_price}
+                                              </TableCell>
+                                              <TableCell>
+                                                <TextfieldWrapper
+                                                  name={`consignments[${index}].quantityReturn`}
+                                                  variant="standard"
+                                                  className="text-field-quantityReturn"
+                                                  type={"number"}
+                                                  InputProps={{
+                                                    inputProps: {
+                                                      min: 0,
+                                                      max: consignment?.quantity,
+                                                      step: 1,
+                                                    },
+                                                  }}
+                                                />
+                                              </TableCell>
+                                              <TableCell align="center">
+                                                {consignment?.quantity}
+                                              </TableCell>
+                                              <TableCell>
+                                                {FormatDataUtils.formatCurrency(
+                                                  values.consignments[index]
+                                                    .quantityReturn *
+                                                    values.consignments[index]
+                                                      .unit_price
+                                                )}
+                                              </TableCell>
+                                            </TableRow>
+                                          )
+                                        )}
+                                      </>
+                                    );
+                                  }}
+                                />
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        </Box>
+                      ) : (
+                        <Box> Phiếu nhập chưa có lô hàng nào </Box>
+                      )}
+                    </Card>
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid xs={3} item>
+                <Grid container spacing={2}>
+                  <Grid xs={12} item>
+                    <Card>
+                      {/* <CardContent>
+                      <Typography variant="h6">Thông tin xác nhận</Typography>
+                      <br />
+                      <Typography>
+                        Người tạo đơn:{" "}
+                        <i>{"(" + listConsignments[0]?.creator + ")"}</i>
+                      </Typography>
+                      <Typography>Ngày tạo đơn:</Typography>
+                      <Typography>
+                        {FormatDataUtils.formatDateTime(
+                          listConsignments[0]?.createDate
+                        )}
+                      </Typography>
+                      <br />
+                      {listConsignments[0]?.confirmDate && (
+                        <Box>
+                          <Typography>
+                            Người xác nhận:{" "}
+                            <i>
+                              {"(" + listConsignments[0]?.confirm_by + ")"}
+                            </i>
+                          </Typography>
+                          <Typography>Ngày xác nhận:</Typography>
+                          <Typography>
+                            {FormatDataUtils.formatDateTime(
+                              listConsignments[0]?.confirmDate
+                            )}
+                          </Typography>
+                        </Box>
+                      )}
+                    </CardContent> */}
+                    </Card>
+                  </Grid>
+                  <Grid xs={12} item>
+                    <Card>
+                      <CardContent>
+                        <Typography variant="h6">Ghi chú</Typography>
+                        <TextfieldWrapper
+                          id="description"
+                          name="description"
+                          variant="outlined"
+                          multiline
+                          rows={6}
+                          fullWidth
+                        />
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                  <Grid xs={12} item>
+                    <Card>
+                      <CardContent>
+                        <Typography variant="h6">
+                          Tổng giá trị đơn hàng
+                        </Typography>
+                        <br />
+                        <Typography align="right">
+                          {FormatDataUtils.formatCurrency(
+                            calculateTotalAmount()
+                          )}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                </Grid>
+              </Grid>
+              <AlertPopup
+                maxWidth="sm"
+                title={errorMessage ? "Chú ý" : title}
+                openPopup={openPopup}
+                setOpenPopup={setOpenPopup}
+                isConfirm={!errorMessage}
+                handleConfirm={handleConfirm}
+              >
+                <Box component={"span"} className="popupMessageContainer">
+                  {errorMessage ? errorMessage : message}
+                </Box>
+              </AlertPopup>
+            </Grid>
+          </Form>
+        )}
+      </Formik>
+    </>
+  );
 };
 
 export default ReturnGoods;

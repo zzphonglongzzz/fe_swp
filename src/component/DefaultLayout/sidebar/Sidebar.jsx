@@ -41,6 +41,15 @@ const Sidebar = () => {
   function hanleCreateExport() {
     navigate("/export/create-order");
   }
+  function handleClickListReturn(){
+    navigate("/export/return/list")
+  }
+  function handleClickListInventoryChecking(){
+    navigate('/inventory-checking/list')
+  }
+  function handleClickCreateInventoryChecking(){
+    navigate('/inventory-checking/create')
+  }
   return (
     <div className="sidebar">
       <div className="top">
@@ -90,7 +99,7 @@ const Sidebar = () => {
           </li>
           <li>
             <KeyboardReturnIcon className="icon" />
-            <span>Danh sách trả hàng</span>
+            <span onClick={handleClickListReturn}>Danh sách trả hàng</span>
           </li>
           {/* <p className="title">Trả hàng Lưu kho</p>
           <li>
@@ -104,11 +113,11 @@ const Sidebar = () => {
           <p className="title">Kiểm kho</p>
           <li>
             <InventoryIcon className="icon" />
-            <span>Tạo phiếu kiểm kho</span>
+            <span onClick={handleClickCreateInventoryChecking}>Tạo phiếu kiểm kho</span>
           </li>
           <li>
             <ListIcon className="icon" />
-            <span>Lịch sử kiểm kho</span>
+            <span onClick={handleClickListInventoryChecking}>Lịch sử kiểm kho</span>
           </li>
           <p className="title">Nhân viên</p>
           <li>

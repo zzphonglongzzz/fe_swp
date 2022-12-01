@@ -37,6 +37,7 @@ import ProductService from "../../service/ProductService";
 import Popup from "../../component/common/dialog/index";
 import AuthService from "../../service/AuthService";
 import moment from "moment";
+import AlertPopup from "../../component/common/AlertPopup";
 
 const TextfieldWrapper = ({ name, ...otherProps }) => {
   const [field, meta] = useField(name);
@@ -512,26 +513,18 @@ const ImportGoods = () => {
                   </div>
                 </Stack>
               </div>
-              {/* <Card className="order-detail-container">
-                  <div className="label">Ghi chú</div>
-                  <TextfieldWrapper
-                    id="description"
-                    className="text-area-note"
-                    name="description"
-                    variant="outlined"
-                    rows={3}
-                    multiline
-                  />
-                </Card> */}
-              <Popup
+              <AlertPopup
                 title="Chú ý"
                 openPopup={openPopup}
                 setOpenPopup={setOpenPopup}
               >
-                <Box component={"span"} className="popup-message-container">
+                <Box
+                  component={'span'}
+                  className="popup-message-container"
+                >
                   {errorMessage}
                 </Box>
-              </Popup>
+              </AlertPopup>
             </div>
           </Form>
         )}

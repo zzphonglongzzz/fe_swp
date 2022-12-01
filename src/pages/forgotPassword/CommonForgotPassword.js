@@ -13,6 +13,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./CommonForgotPassword.scss";
+import AuthService from "../../service/AuthService";
 function getStepContent(step) {
   switch (step) {
     case 0:
@@ -52,88 +53,88 @@ export default function CommonForgotPass() {
     ),
   });
 
-  // const sendMailForgotPassword = (values) => {
-  //   const email = { email: values.email };
-  //   AuthService.forgotPassword(email).then(
-  //     (response) => {
-  //       console.log(response);
-  //       if (response.status1 === 200) {
-  //         toast.success(response.message);
-  //       } else {
-  //         toast.error(response.message);
-  //       }
-  //     },
-  //     (error) => {
-  //       toast.error(error.response.data.message);
-  //     },
-  //   );
-  // };
+  const sendMailForgotPassword = (values) => {
+    const email = { email: values.email };
+    AuthService.forgotPassword(email).then(
+      (response) => {
+        console.log(response);
+        if (response.status1 === 200) {
+          toast.success(response.message);
+        } else {
+          toast.error(response.message);
+        }
+      },
+      (error) => {
+        toast.error(error.response.data.message);
+      },
+    );
+  };
 
-  // const handleNext = (values) => {
-  //   console.log(values);
-  //   switch (activeStep) {
-  //     case 0:
-  //       const email = { email: values.email };
-  //       setLoading(true);
-  //       AuthService.forgotPassword(email).then(
-  //         (response) => {
-  //           console.log(response);
-  //           if (response.status1 === 200) {
-  //             toast.success(response.message);
-  //             setLoading(false);
-  //             setActiveStep(activeStep + 1);
-  //           } else {
-  //             setLoading(false);
-  //             toast.error(response.message);
-  //           }
-  //         },
-  //         (error) => {
-  //           toast.error(error.response.data.message);
-  //           setLoading(false);
-  //         },
-  //       );
-  //       break;
-  //     case 1:
-  //       const userOtp = { email: values.email, otp: values.otp };
-  //       setLoading(true);
-  //       AuthService.checkOtp(userOtp).then(
-  //         (response) => {
-  //           console.log(response);
-  //           if (response.status === 500) {
-  //             toast.error(response.message);
-  //             setLoading(false);
-  //           } else {
-  //             toast.success(response.message);
-  //             setLoading(false);
-  //             setActiveStep(activeStep + 1);
-  //           }
-  //         },
-  //         (error) => {
-  //           toast.error(error.response.data.message);
-  //           setLoading(false);
-  //         },
-  //       );
-  //       break;
-  //     case 2:
-  //       const userInfo = { email: values.email, newPassword: values.password };
-  //       setLoading(true);
-  //       AuthService.setNewPassword(userInfo).then(
-  //         (response) => {
-  //           console.log(response);
-  //           toast.success(response.message);
-  //           setLoading(false);
-  //           navigate('/');
-  //         },
-  //         (error) => {
-  //           toast.error(error.response.data.message);
-  //           setLoading(false);
-  //         },
-  //       );
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
+  const handleNext = (values) => {
+    console.log(values);
+    switch (activeStep) {
+      case 0:
+        const email = { email: values.email };
+        setLoading(true);
+        AuthService.forgotPassword(email).then(
+          (response) => {
+            console.log(response);
+            if (response.status1 === 200) {
+              toast.success(response.message);
+              setLoading(false);
+              setActiveStep(activeStep + 1);
+            } else {
+              setLoading(false);
+              toast.error(response.message);
+            }
+          },
+          (error) => {
+            toast.error(error.response.data.message);
+            setLoading(false);
+          },
+        );
+        break;
+      case 1:
+        const userOtp = { email: values.email, otp: values.otp };
+        setLoading(true);
+        AuthService.checkOtp(userOtp).then(
+          (response) => {
+            console.log(response);
+            if (response.status === 500) {
+              toast.error(response.message);
+              setLoading(false);
+            } else {
+              toast.success(response.message);
+              setLoading(false);
+              setActiveStep(activeStep + 1);
+            }
+          },
+          (error) => {
+            toast.error(error.response.data.message);
+            setLoading(false);
+          },
+        );
+        break;
+      case 2:
+        const userInfo = { email: values.email, newPassword: values.password };
+        setLoading(true);
+        AuthService.setNewPassword(userInfo).then(
+          (response) => {
+            console.log(response);
+            toast.success(response.message);
+            setLoading(false);
+            navigate('/');
+          },
+          (error) => {
+            toast.error(error.response.data.message);
+            setLoading(false);
+          },
+        );
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
     <Grid item component="main">
@@ -160,7 +161,7 @@ export default function CommonForgotPass() {
                   type={activeStep === 2 ? "submit" : "button"}
                   onClick={() => {
                     if (activeStep < 2) {
-                      // handleNext(values);
+                      handleNext(values);
                     }
                   }}
                   loading={loading}
@@ -187,7 +188,7 @@ export default function CommonForgotPass() {
                         variant="body2"
                         onClick={() => {
                           if (activeStep < 2) {
-                            // sendMailForgotPassword(values);
+                            sendMailForgotPassword(values);
                           }
                         }}
                       >

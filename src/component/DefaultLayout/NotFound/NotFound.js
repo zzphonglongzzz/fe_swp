@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const NotFound = () => {
   const navigate = useNavigate();
   return (
-    <div className="not-found">
+    <Stack className="not-found" justifyContent='center' alignItems='center' spacing={3}>
       <img
         src="https://www.pngitem.com/pimgs/m/561-5616833_image-not-found-png-not-found-404-png.png"
         alt="not-found"
@@ -12,7 +12,7 @@ const NotFound = () => {
       <Button variant="contained" onClick={() => navigate("/")}>
         Đi đến trang chủ
       </Button>
-    </div>
+    </Stack>
   );
 };
 

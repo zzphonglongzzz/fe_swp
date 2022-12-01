@@ -64,8 +64,8 @@ const ResetPassword = () => {
           newPassword: values.newPassword,
         };
         try {
-          const actionResult = await dispatch(setNewPassword(newPassword));
-          const dataResult = unwrapResult(actionResult);
+          const dataResult = await AuthService.setNewPassword(newPassword);
+          //const dataResult = unwrapResult(actionResult);
           console.log(dataResult);
           if (dataResult) {
             if (dataResult.data.code === 500) {
@@ -182,7 +182,6 @@ const ResetPassword = () => {
               </Stack>
             </Stack>
           </Card>
-          {/* <pre>{JSON.stringify(values, null, 2)}</pre> */}
         </Form>
       )}
     </Formik>
