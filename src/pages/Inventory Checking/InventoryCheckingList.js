@@ -26,7 +26,8 @@ import { format } from "date-fns";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import CustomTablePagination from "../../component/common/Pagination/index";
-import "./CreateInventoryChecking.scss"
+import "./CreateInventoryChecking.scss";
+import InventoryCheckingService from "../../service/InventoryCheckingService";
 
 const sortByList = [
   { id: 1, name: "Ngày tạo mới nhất" },
@@ -60,18 +61,7 @@ const InventoryCheckingList = () => {
     setPage(0);
   };
 
-  const handleChangeCreator = (staff) => {
-    setPage(0);
-    setCreatorId(staff ? staff.id : "");
-    setSearchParams({
-      ...searchParams,
-      userId: staff?.id > 0 ? staff.id : "",
-    });
-    searchInventoryChecking({
-      ...searchParams,
-      userId: staff?.id > 0 ? staff.id : "",
-    });
-  };
+  
   const handleChangeWarehouse = (event) => {
     setPage(0);
     setWarehouseId(event.target.value);
@@ -172,28 +162,11 @@ const InventoryCheckingList = () => {
       console.log("warehouse list", dataResult.data);
       if (dataResult.data) {
         setWarehouseList(
-          [{ id: 0, name: "Tất cả" }].concat(dataResult.data.warehouse)
+          [{ id: 0, name: "Tất cả" }].concat(dataResult.data.warehouses)
         );
       }
     } catch (error) {
       console.log("Failed to fetch warehouse list: ", error);
-    }
-  };
-  const getAllStaff = async () => {
-    const params = {
-      // pageIndex: page + 1,
-      // pageSize: rowsPerPage,
-      keyWords: "",
-    };
-    try {
-      const dataResult = await dispatch(getCreaterList(params));
-      //const dataResult = unwrapResult(actionResult);
-      console.log("staff list", dataResult);
-      if (dataResult) {
-        setStaffList([{ id: 0, name: "Tất cả" }].concat(dataResult));
-      }
-    } catch (error) {
-      console.log("Failed to fetch staff list: ", error);
     }
   };
   const searchInventoryChecking = async (searchParams) => {
@@ -205,12 +178,12 @@ const InventoryCheckingList = () => {
         order: "desc",
         ...searchParams,
       };
-      const dataResult = await dispatch(getListInventoryChecking(params));
+      const dataResult = await InventoryCheckingService.getListInventoryChecking();
       // const dataResult = unwrapResult(actionResult);
       console.log("dataResult", dataResult);
       if (dataResult.data) {
         setTotalRecord(dataResult.data.totalRecord);
-        setInventoryCheckingList(dataResult.data.listInventoryCheckingHistory);
+        setInventoryCheckingList(dataResult.data.listStockTakingHistory);
       }
     } catch (error) {
       console.log("Failed to fetch inventoryChecking list: ", error);
@@ -224,12 +197,12 @@ const InventoryCheckingList = () => {
         order: "desc",
         orderBy: "createDate",
       };
-      const dataResult = await dispatch(getListInventoryChecking(params));
+      const dataResult = await InventoryCheckingService.getListInventoryChecking();
       //const dataResult = unwrapResult(actionResult);
       console.log("dataResult", dataResult);
       if (dataResult.data) {
         setTotalRecord(dataResult.data.totalRecord);
-        setInventoryCheckingList(dataResult.data.listInventoryCheckingHistory);
+        setInventoryCheckingList(dataResult.data.listStockTakingHistory);
       }
     } catch (error) {
       console.log("Failed to fetch inventoryChecking list: ", error);
@@ -240,7 +213,6 @@ const InventoryCheckingList = () => {
   }, [page, rowsPerPage]);
 
   useEffect(() => {
-    getAllStaff();
     getAllWarehouse();
     fetchInventoryCheckingList();
   }, []);
@@ -269,23 +241,6 @@ const InventoryCheckingList = () => {
                     </Select>
                   )}
                 </FormControl>
-              </Box>
-              <Box className="selectBox">
-                {staffList && (
-                  <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    options={staffList}
-                    getOptionLabel={(staff) => staff.name || ""}
-                    noOptionsText="Không tìm thấy người tạo đơn"
-                    onChange={(event, newInputValue) => {
-                      handleChangeCreator(newInputValue);
-                    }}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Người tạo đơn" />
-                    )}
-                  />
-                )}
               </Box>
             </Stack>
             <Stack direction="row" justifyContent="space-between">
@@ -376,14 +331,11 @@ const InventoryCheckingList = () => {
                             )}
                           </TableCell>
                           <TableCell align="center">
-                            {inventoryChecking.fullName +
-                              " (" +
-                              inventoryChecking.userName +
-                              ")"}
+                            {inventoryChecking.userName}
                           </TableCell>
                           <TableCell align="center">
                             {FormatDataUtils.formatCurrency(
-                              inventoryChecking.differentAmout
+                              inventoryChecking.differentAmount
                             )}
                           </TableCell>
                         </TableRow>
