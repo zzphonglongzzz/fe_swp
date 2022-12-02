@@ -49,6 +49,7 @@ const titles = [
   { url: '/export/return', title: 'Trả hàng', backUrl: null },
   { url: '/export/return/list', title: 'Phiếu trả hàng', backUrl: null },
   { url: '/export/return/detail', title: 'Thông tin phiếu trả hàng', backUrl: null },
+  { url: '/export/cancel', title: 'Phiếu hủy xuất hàng', backUrl: null },
   { url: '/inventory-checking/create', title: 'Kiểm kho', backUrl: '' },
   { url: '/inventory-checking/list', title: 'Lịch sử kiểm kho', backUrl: null },
   { url: '/inventory-checking/detail', title: 'Chi tiết kiểm kho', backUrl: null },

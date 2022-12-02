@@ -31,9 +31,8 @@ const ExportList = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalRecord, setTotalRecord] = useState();
-  const [creatorId, setCreatorId] = useState("");
   const [exportOrderList, setExportOrderList] = useState();
-  const [staffList, setStaffList] = useState([]);
+
   const [selectPending, setSelectPending] = useState(false);
   const navigate = useNavigate();
   const currentUserRole = AuthService.getCurrentUser().roles[0];
@@ -58,10 +57,10 @@ const ExportList = () => {
       ...searchParams,
       status: selectPending === false ? 1 : "",
     });
-    // searchExportOrder({
-    //   ...searchParams,
-    //   status: selectPending === false ? 1 : "",
-    // });
+    searchExportOrder({
+      ...searchParams,
+      status: selectPending === false ? 1 : "",
+    });
     setSelectPending(!selectPending);
   };
 
@@ -71,54 +70,53 @@ const ExportList = () => {
       console.log(e.target.value);
       setPage(0);
       setSearchParams({ ...searchParams });
-     // searchExportOrder({ ...searchParams });
+      searchExportOrder({ ...searchParams });
     }
   };
   const handleChangeStartDate = (value) => {
     setStartDate(value);
     setPage(0);
-    console.log("startDate", format(new Date(value), "dd-MM-yyyy"));
+    console.log("startDate", format(new Date(value), "yyyy-MM-dd HH:mm:ss"));
     setSearchParams({
       ...searchParams,
-      startDate: value !== null ? format(new Date(value), "dd-MM-yyyy") : null,
+      dateFrom: value !== null ? format(new Date(value), "yyyy-MM-dd HH:mm:ss") : null,
     });
-    // searchExportOrder({
-    //   ...searchParams,
-    //   startDate: value !== null ? format(new Date(value), "dd-MM-yyyy") : null,
-    // });
+    searchExportOrder({
+      ...searchParams,
+      dateFrom: value !== null ? format(new Date(value), "yyyy-MM-dd HH:mm:ss") : null,
+    });
   };
 
   const handleChangeEndDate = (value) => {
     setEndDate(value);
     setPage(0);
-    console.log("endDate", format(new Date(value), "dd-MM-yyyy"));
+    console.log("endDate", format(new Date(value), "yyyy-MM-dd HH:mm:ss"));
     setSearchParams({
       ...searchParams,
-      endDate: value !== null ? format(new Date(value), "dd-MM-yyyy") : null,
+      dateTo: value !== null ? format(new Date(value), "yyyy-MM-dd HH:mm:ss") : null,
     });
-    // searchExportOrder({
-    //   ...searchParams,
-    //   endDate: value !== null ? format(new Date(value), "dd-MM-yyyy") : null,
-    // });
+    searchExportOrder({
+      ...searchParams,
+      dateTo: value !== null ? format(new Date(value), "yyyy-MM-dd HH:mm:ss") : null,
+    });
   };
-  // const searchExportOrder = async (searchParams) => {
-  //   try {
-  //     const params = {
-  //       pageIndex: page,
-  //       pageSize: rowsPerPage,
-  //       ...searchParams,
-  //     };
-  //     const actionResult = await dispatch(getExportOrderList(params));
-  //     const dataResult = unwrapResult(actionResult);
-  //     console.log("dataResult", dataResult);
-  //     if (dataResult.data) {
-  //       setTotalRecord(dataResult.data.totalRecord);
-  //       setExportOrderList(dataResult.data.orderList);
-  //     }
-  //   } catch (error) {
-  //     console.log("Failed to search export order list: ", error);
-  //   }
-  // };
+  const searchExportOrder = async (searchParams) => {
+    try {
+      const params = {
+        pageIndex: page + 1,
+        pageSize: rowsPerPage,
+        ...searchParams,
+      };
+      const dataResult = await ExportOrderService.getExportOrderList(params)
+      console.log("dataResult", dataResult);
+      if (dataResult.data) {
+        setTotalRecord(dataResult.data.totalRecord);
+        setExportOrderList(dataResult.data.orderList);
+      }
+    } catch (error) {
+      console.log("Failed to search export order list: ", error);
+    }
+  };
   const fetchExportOrderList = async () => {
     try {
       const params = {
@@ -137,7 +135,7 @@ const ExportList = () => {
     }
   };
   useEffect(() => {
-    //searchExportOrder(searchParams);
+    searchExportOrder(searchParams);
    fetchExportOrderList();
   }, [page, rowsPerPage]);
 

@@ -12,7 +12,7 @@ const importOrderService = {
     return axiosClient.get(url, { headers: authHeader() });
   },
   getImportOrderById: (params) => {
-    const url = `/import/getOrderDetail`;
+    const url = process.env.REACT_APP_API_URL +`/import/getOrderDetail`;
     return axiosClient.get(url, { params, headers: authHeader() });
   },
 
@@ -29,12 +29,12 @@ const importOrderService = {
   confirmImportOrder: (params) => {
     const {orderId, confirmBy} = params
     const url = process.env.REACT_APP_API_URL + `/import/confirm?orderId=${orderId}&confirmBy=${confirmBy}`;
-    return axiosClient.get(url, { headers: authHeader() });
+    return axios.put(url, { headers: authHeader() });
   },
   cancelImportOrder: (params) => {
     const {orderId, confirmBy} = params
     const url = process.env.REACT_APP_API_URL + `/import/cancel?orderId=${orderId}&confirmBy=${confirmBy}`;
-    return axiosClient.get(url, {headers: authHeader() });
+    return axios.put(url, {headers: authHeader() });
   },
   updateImportOrder: (orderId,importOrder) => {
     const url = process.env.REACT_APP_API_URL + `/import/editOrder?orderId=${orderId}`;

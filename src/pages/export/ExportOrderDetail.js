@@ -13,24 +13,67 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import AlertPopup from "../../component/common/AlertPopup";
+import AlertPopup from "../../component/common/AlertPopup/index";
 import { Close, Done, Edit, KeyboardReturn } from "@mui/icons-material";
 import ExportProductTable from "./ExportProductTable";
 import ExportOrderService from "../../service/ExportOrderService";
+import Label from "../../component/common/Label";
+import AlertPopup1 from "../../component/common/AlertPopup1/index";
 
+const getStatusLabel = (exportOrderStatus) => {
+  const map = {
+    3: {
+      text: "Đã huỷ",
+      color: "error",
+    },
+    2: {
+      text: "Đã xuất kho",
+      color: "success",
+    },
+    1: {
+      text: "Đang chờ xử lý",
+      color: "warning",
+    },
+    4: {
+      text: "Đã đã trả hàng",
+      color: "primary",
+    },
+  };
+
+  const { text, color } = map[exportOrderStatus];
+
+  return <Label color={color}>{text}</Label>;
+};
+const getStatusDeliver = (exportOrderStatus) => {
+  const map = {
+    null: {
+      text: "Đang giao hàng",
+      color: "warning",
+    },
+    1: {
+      text: "Đã giao hàng",
+      color: "success",
+    },
+    0: {
+      text: "Đã hủy giao hàng",
+      color: "error",
+    },
+  };
+  const { text, color } = map[exportOrderStatus];
+  return <Label color={color}>{text}</Label>;
+};
 const ExportOrderDetail = () => {
   const { exportOrderId } = useParams();
   const navigate = useNavigate();
   const [exportOrder, setExportOrder] = useState();
-  const [listConsignment, setListConsignment] = useState([]);
   const [openPopup, setOpenPopup] = useState(false);
+  const [openPopup1, setOpenPopup1] = useState(false);
   const [title, setTitle] = useState("");
+  const [title1, setTitle1] = useState("");
   const [message, setMessage] = useState("");
+  const [message1, setMessage1] = useState("");
   const [isConfirm, setIsConfirm] = useState(false);
-  const pages = [5, 10, 15];
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
-  const [totalRecord, setTotalRecord] = useState(0);
+  const [isConfirmdelivered, setIsConfirmdelivered] = useState(false);
   const currentUserRole = AuthService.getCurrentUser().roles[0];
 
   const calculateTotalAmount = () => {
@@ -45,6 +88,14 @@ const ExportOrderDetail = () => {
     }
     return totalAmount;
   };
+
+  const handleOnClickConfirmDeliveredExport = () => {
+    setTitle1("Bạn có chắc chắn muốn xác nhận giao hàng hay không?");
+    setMessage1("Hãy kiểm tra kỹ hàng hóa trước khi xác nhận.");
+    setIsConfirmdelivered(true);
+    setOpenPopup1(true);
+  };
+
   const handleOnClickConfirm = () => {
     setTitle("Bạn có chắc chắn muốn xác nhận xuất hàng hay không?");
     //setMessage("Hãy kiểm tra kỹ hàng hóa trước khi xác nhận.");
@@ -60,82 +111,102 @@ const ExportOrderDetail = () => {
   };
   const handleConfirm = async () => {
     if (isConfirm) {
-      console.log('Xác nhận');
+      console.log("Xác nhận");
       try {
         const confirmUserId = AuthService.getCurrentUser().id;
-        const params = { 
-          orderId:exportOrderId, 
-          confirmBy:confirmUserId 
+        const params = {
+          orderId: exportOrderId,
+          confirmBy: confirmUserId,
         };
         const result = await ExportOrderService.confirmExportOrder(params);
-        //const result = unwrapResult(actionResult);
         console.log(result);
         if (!!result) {
           if (!!result.message) {
             toast.success(result.message);
           } else {
-            toast.success('Xác nhận xuất kho thành công!');
+            toast.success("Xác nhận xuất kho thành công!");
           }
           fetchExportOrderDetail();
-          //fetchConsignmentsByExportOrderId();
           setOpenPopup(false);
         }
       } catch (error) {
-        console.log('Failed to confirm importOder: ', error);
+        console.log("Failed to confirm importOder: ", error);
         if (error.message) {
           toast.error(error.message);
         } else {
-          toast.error('Lỗi! Xác nhận xuất kho thất bại!');
+          toast.error("Lỗi! Xác nhận xuất kho thất bại!");
         }
       }
     } else {
-      console.log('Huỷ');
+      console.log("Huỷ");
       try {
         const confirmUserId = AuthService.getCurrentUser().id;
-        const params = { 
-          orderId:exportOrderId, 
-          confirmBy:confirmUserId 
+        const params = {
+          orderId: exportOrderId,
+          confirmBy: confirmUserId,
         };
         const result = await ExportOrderService.cancelExportOrder(params);
-        //const result = unwrapResult(actionResult);
         console.log(result);
         if (!!result) {
           if (!!result.message) {
             toast.success(result.message);
           } else {
-            toast.success('Huỷ xuất kho thành công!');
+            toast.success("Huỷ xuất kho thành công!");
           }
           fetchExportOrderDetail();
-          //fetchConsignmentsByExportOrderId();
           setOpenPopup(false);
         }
       } catch (error) {
-        console.log('Failed to cancel importOder: ', error);
+        console.log("Failed to cancel importOder: ", error);
         if (error.message) {
           toast.error(error.message);
         } else {
-          toast.error('Lỗi! Huỷ xuất kho thất bại!');
+          toast.error("Lỗi! Huỷ xuất kho thất bại!");
         }
       }
     }
   };
+  const handleConfirmDeliveredExport = async () => {
+    if (isConfirmdelivered) {
+      console.log("Xác nhận");
+      try {
+        const result = await ExportOrderService.deliveredExportOrder(
+          exportOrderId
+        );
+        ///console.log(result);
+        if (!!result) {
+          if (!!result.message) {
+            toast.success(result.message);
+          } else {
+            toast.success("Xác nhận xuất kho thành công!");
+          }
+          fetchExportOrderDetail();
+          setOpenPopup1(false);
+        }
+      } catch (error) {
+        console.log("Failed to confirm importOder: ", error);
+        if (error.message) {
+          toast.error(error.message);
+        } else {
+          toast.error("Lỗi! Xác nhận xuất kho thất bại!");
+        }
+      }
+    }
+  };
+
   const fetchExportOrderDetail = async () => {
     try {
       const params = {
-        // pageIndex: page,
-        // pageSize: rowsPerPage,
         orderId: exportOrderId,
       };
-      const dataResult = await ExportOrderService.getExportOrderById(
-        params
-      );
+      const dataResult = await ExportOrderService.getExportOrderById(params);
       //const dataResult = unwrapResult(actionResult);
       if (
         dataResult.data &&
         !FormatDataUtils.isEmptyObject(dataResult.data.listExportProduct)
       ) {
         setExportOrder(dataResult.data.listExportProduct);
-        console.log(dataResult.data.listExportProduct);
+        console.log(dataResult.data.listExportProduct?.is_return);
       } else {
         navigate("/404");
       }
@@ -144,26 +215,13 @@ const ExportOrderDetail = () => {
       console.log("Failed to fetch exportOrder detail: ", error);
     }
   };
-  // const fetchConsignmentsByExportOrderId = async () => {
-  //   try {
-  //     const dataResult = await ExportOrderService.getExportOrderById(exportOrderId);
-  //     //const dataResult = unwrapResult(actionResult);
-  //     if (dataResult.data) {
-  //       setListConsignments(dataResult.data.listExportProduct);
-  //       //setAddressWarehouse(dataResult.data.addressWarehouse);
-  //       //setTotalRecord(dataResult.data.totalRecord);
-  //     }
-  //     console.log('consignments List', dataResult.data.listExportProduct);
-  //   } catch (error) {
-  //     console.log('Failed to fetch consignment list by exportOder: ', error);
-  //   }
-  // };
   useEffect(() => {
     if (isNaN(exportOrderId)) {
       navigate("/404");
     } else {
       fetchExportOrderDetail();
-      //fetchConsignmentsByExportOrderId();
+      //handleConfirm();
+      //handleConfirmDeliveredExport()
     }
   }, []);
   return (
@@ -177,6 +235,24 @@ const ExportOrderDetail = () => {
                   <Typography variant="span">
                     <strong>Phiếu xuất kho số:</strong> {"XUAT" + exportOrderId}
                   </Typography>{" "}
+                  <span>
+                    {exportOrder[0].status_id &&
+                      getStatusLabel(exportOrder[0].status_id)}
+                  </span>
+                  <Typography variant="span"> </Typography>
+                  {exportOrder[0].confirm_by !== null && (
+                    <span>
+                      {getStatusDeliver(
+                        exportOrder[0].is_return === null
+                          ? null
+                          : exportOrder[0].is_return === true
+                          ? 1
+                          : exportOrder[0].is_return === false
+                          ? 0
+                          : undefined
+                      )}
+                    </span>
+                  )}
                 </Box>
                 {exportOrder[0].confirm_by == null && (
                   <Stack
@@ -185,8 +261,7 @@ const ExportOrderDetail = () => {
                     spacing={2}
                     className="buttonAction"
                   >
-                    {(currentUserRole === "ROLE_ADMIN" ||
-                      currentUserRole === "ROLE_USER") && (
+                    {currentUserRole === "ROLE_ADMIN" && (
                       <Button
                         variant="contained"
                         startIcon={<Done />}
@@ -196,8 +271,7 @@ const ExportOrderDetail = () => {
                         Xác nhận xuất kho
                       </Button>
                     )}
-                    {(currentUserRole === "ROLE_ADMIN" ||
-                      currentUserRole === "ROLE_USER") && (
+                    {currentUserRole === "ROLE_ADMIN" && (
                       <Button
                         variant="contained"
                         startIcon={<Edit />}
@@ -219,26 +293,84 @@ const ExportOrderDetail = () => {
                     </Button>
                   </Stack>
                 )}
-                {(exportOrder[0].confirm_by === 'admin' || exportOrder[0].confirm_by === 'user') &&
-                exportOrder[0].status_id != 4 &&
-                (currentUserRole === 'ROLE_ADMIN' ||
-                  currentUserRole === 'ROLE_USER') && (
-                  <Stack
-                    direction="row"
-                    justifyContent="flex-end"
-                    spacing={2}
-                    className="buttonAction"
-                  >
-                    <Button
-                      variant="contained"
-                      startIcon={<KeyboardReturn />}
-                      color="warning"
-                      onClick={() => navigate(`/export/return/${exportOrderId}`)}
+                {exportOrder[0].confirm_by === "admin" &&
+                  exportOrder[0].status_id !== 4 &&
+                  exportOrder[0].is_return == null && (
+                    <Stack
+                      direction="row"
+                      justifyContent="flex-end"
+                      spacing={2}
+                      className="buttonAction"
                     >
-                      Trả hàng
-                    </Button>
-                  </Stack>
-                )}
+                      {currentUserRole === "ROLE_USER" && (
+                        <Button
+                          variant="contained"
+                          startIcon={<Done />}
+                          color="success"
+                          onClick={() => handleOnClickConfirmDeliveredExport()}
+                        >
+                          Xác nhận giao hàng
+                        </Button>
+                      )}
+                      {currentUserRole === "ROLE_USER" && (
+                        <Button
+                          variant="contained"
+                          startIcon={<Edit />}
+                          color="warning"
+                          onClick={() => {
+                            navigate(`/export/cancel/${exportOrderId}`);
+                          }}
+                        >
+                          Chưa giao hàng
+                        </Button>
+                      )}
+                    </Stack>
+                  )}
+
+                {exportOrder[0].confirm_by === "admin" &&
+                  exportOrder[0].status_id != 4 &&
+                  exportOrder[0].is_return == 1 &&
+                  currentUserRole === "ROLE_ADMIN" && (
+                    <Stack
+                      direction="row"
+                      justifyContent="flex-end"
+                      spacing={2}
+                      className="buttonAction"
+                    >
+                      <Button
+                        variant="contained"
+                        startIcon={<KeyboardReturn />}
+                        color="warning"
+                        onClick={() =>
+                          navigate(`/export/return/${exportOrderId}`)
+                        }
+                      >
+                        Trả hàng
+                      </Button>
+                    </Stack>
+                  )}
+                {exportOrder[0].confirm_by === "admin" &&
+                  exportOrder[0].status_id != 4 &&
+                  exportOrder[0].is_return == 0 &&
+                  currentUserRole === "ROLE_ADMIN" && (
+                    <Stack
+                      direction="row"
+                      justifyContent="flex-end"
+                      spacing={2}
+                      className="buttonAction"
+                    >
+                      <Button
+                        variant="contained"
+                        startIcon={<KeyboardReturn />}
+                        color="warning"
+                        onClick={() =>
+                          navigate(`/export/cancel/detail/${exportOrderId}`)
+                        }
+                      >
+                        Xem chi tiết bị hủy
+                      </Button>
+                    </Stack>
+                  )}
               </Stack>
             </Card>
           </Grid>
@@ -282,8 +414,8 @@ const ExportOrderDetail = () => {
                             Người xác nhận:{" "}
                             <i>{"(" + exportOrder[0].confirm_by + ")"}</i>
                           </Typography>
-                          <Typography>Ngày xác nhận:</Typography>
-                          {/* <Typography>
+                          {/* <Typography>Ngày xác nhận:</Typography>
+                          <Typography>
                           <i>
                             {exportOrder.confirmDate
                               ? FormatDataUtils.formatDateTime(
@@ -338,6 +470,18 @@ const ExportOrderDetail = () => {
               {message}
             </Box>
           </AlertPopup>
+          <AlertPopup1
+            maxWidth="sm"
+            title={title1}
+            openPopup={openPopup1}
+            setOpenPopup={setOpenPopup1}
+            isConfirmdelivered={true}
+            handleConfirmDeliveredExport={handleConfirmDeliveredExport}
+          >
+            <Box component={"span"} className="popupMessageContainer">
+              {message1}
+            </Box>
+          </AlertPopup1>
         </Grid>
       )}
     </Box>

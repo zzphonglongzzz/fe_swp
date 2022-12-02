@@ -20,6 +20,7 @@ import {
   TableRow,
   TextField,
   Typography,
+  
 } from "@mui/material";
 import FormatDataUtils from "../../utils/FormatDataUtils";
 import { format } from "date-fns";
@@ -28,18 +29,22 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import CustomTablePagination from "../../component/common/Pagination/index";
 import "./CreateInventoryChecking.scss";
 import InventoryCheckingService from "../../service/InventoryCheckingService";
+import { tableCellClasses } from "@mui/material/TableCell";
+import { styled } from "@mui/material/styles";
+import Paper from "@mui/material/Paper";
 
-const sortByList = [
-  { id: 1, name: "Ngày tạo mới nhất" },
-  { id: 2, name: "Ngày tạo cũ nhất" },
-  { id: 3, name: "Chênh lệch lớn nhất" },
-  { id: 4, name: "Chênh lệch nhỏ nhất" },
-];
 
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
 const InventoryCheckingList = () => {
-  const [creatorId, setCreatorId] = useState("");
   const [warehouseId, setWarehouseId] = useState("");
-  const [sortById, setSortById] = useState(1);
   const [warehouseList, setWarehouseList] = useState([]);
   const [inventoryCheckingList, setInventoryCheckingList] = useState([]);
   const [searchParams, setSearchParams] = useState({});
@@ -49,7 +54,6 @@ const InventoryCheckingList = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
   const [totalRecord, setTotalRecord] = useState(0);
-  const [staffList, setStaffList] = useState([]);
   const navigate = useNavigate();
 
   const handleChangePage = (event, newPage) => {
@@ -100,62 +104,6 @@ const InventoryCheckingList = () => {
       endDate: value !== null ? format(new Date(value), "yyyy-MM-dd") : null,
     });
   };
-  const handleChangeSortBy = (event) => {
-    setPage(0);
-    setSortById(event.target.value);
-    switch (event.target.value) {
-      case 1:
-        setSearchParams({
-          ...searchParams,
-          orderBy: "createDate",
-          order: "desc",
-        });
-        searchInventoryChecking({
-          ...searchParams,
-          orderBy: "createDate",
-          order: "desc",
-        });
-        break;
-      case 2:
-        setSearchParams({
-          ...searchParams,
-          orderBy: "createDate",
-          order: "asc",
-        });
-        searchInventoryChecking({
-          ...searchParams,
-          orderBy: "createDate",
-          order: "asc",
-        });
-        break;
-      case 3:
-        setSearchParams({
-          ...searchParams,
-          orderBy: "totalDifferentAmout",
-          order: "desc",
-        });
-        searchInventoryChecking({
-          ...searchParams,
-          orderBy: "totalDifferentAmout",
-          order: "desc",
-        });
-        break;
-      case 4:
-        setSearchParams({
-          ...searchParams,
-          orderBy: "totalDifferentAmout",
-          order: "asc",
-        });
-        searchInventoryChecking({
-          ...searchParams,
-          orderBy: "totalDifferentAmout",
-          order: "asc",
-        });
-        break;
-      default:
-        break;
-    }
-  };
   const getAllWarehouse = async () => {
     try {
       const dataResult = await WarehouseService.getlistWarehouse();
@@ -178,7 +126,7 @@ const InventoryCheckingList = () => {
         order: "desc",
         ...searchParams,
       };
-      const dataResult = await InventoryCheckingService.getListInventoryChecking();
+      const dataResult = await InventoryCheckingService.getListInventoryChecking(params);
       // const dataResult = unwrapResult(actionResult);
       console.log("dataResult", dataResult);
       if (dataResult.data) {
@@ -198,8 +146,6 @@ const InventoryCheckingList = () => {
         orderBy: "createDate",
       };
       const dataResult = await InventoryCheckingService.getListInventoryChecking();
-      //const dataResult = unwrapResult(actionResult);
-      console.log("dataResult", dataResult);
       if (dataResult.data) {
         setTotalRecord(dataResult.data.totalRecord);
         setInventoryCheckingList(dataResult.data.listStockTakingHistory);
@@ -245,9 +191,6 @@ const InventoryCheckingList = () => {
             </Stack>
             <Stack direction="row" justifyContent="space-between">
               <Typography variant="h6">Khoảng thời gian tạo đơn</Typography>
-              <Typography variant="h6" className="sortBy">
-                Sắp xếp theo
-              </Typography>
             </Stack>
             <Stack direction="row" py={2} justifyContent="space-between">
               <Stack direction="row">
@@ -275,23 +218,6 @@ const InventoryCheckingList = () => {
                   />
                 </LocalizationProvider>
               </Stack>
-              <Box className="selectBox">
-                <FormControl fullWidth>
-                  {/* <InputLabel id="select-creator">Sắp xếp theo</InputLabel> */}
-                  <Select
-                    id="creator"
-                    value={sortById}
-                    // label="Sắp xếp theo"
-                    onChange={handleChangeSortBy}
-                  >
-                    {sortByList.map((item) => (
-                      <MenuItem key={item.id} value={item.id}>
-                        {item.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
             </Stack>
           </CardContent>
         </Card>
@@ -300,14 +226,14 @@ const InventoryCheckingList = () => {
         <Card>
           <CardContent>
             {totalRecord > 0 ? (
-              <TableContainer>
-                <Table className="table">
+              <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 200 }} aria-label="customized table">
                   <TableHead>
                     <TableRow>
-                      <TableCell align="center">Kho</TableCell>
-                      <TableCell align="center">Ngày kiểm kho</TableCell>
-                      <TableCell align="center">Người kiểm kho</TableCell>
-                      <TableCell align="center">Tổng chênh lệch</TableCell>
+                      <StyledTableCell align="center">Kho</StyledTableCell>
+                      <StyledTableCell align="center">Ngày kiểm kho</StyledTableCell>
+                      <StyledTableCell align="center">Người kiểm kho</StyledTableCell>
+                      <StyledTableCell align="center">Tổng chênh lệch</StyledTableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>

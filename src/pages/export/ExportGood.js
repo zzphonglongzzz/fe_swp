@@ -11,28 +11,38 @@ import {
   TextField,
   CardHeader,
   CardContent,
-  TableCell,
-  Table,
-  TableBody,
-  TableContainer,
-  TableHead,
-  TableRow,
   Stack,
   IconButton,
   Divider,
 } from "@mui/material";
 import * as Yup from "yup";
 import { FieldArray, Form, Formik, useField } from "formik";
-import Popup from "../../component/common/dialog/index";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { Delete, Done } from "@mui/icons-material";
 import Select from "react-select";
 import "./ExportGood.scss";
-import ProductService from "../../service/ProductService";
 import ExportOrderService from "../../service/ExportOrderService";
 import AlertPopup from "../../component/common/AlertPopup";
 import moment from "moment";
+import { styled } from "@mui/material/styles";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
 const TextfieldWrapper = ({ name, ...otherProps }) => {
   const [field, meta] = useField(name);
 
@@ -372,18 +382,18 @@ const ExportGood = () => {
                     <br />
                     <Divider />
                     <br />
-                    <TableContainer>
-                      <Table className="table">
+                    <TableContainer component={Paper}>
+                      <Table sx={{ minWidth: 200 }} aria-label="customized table">
                         <TableHead>
                           <TableRow>
-                            <TableCell className="tableColumnIcon"></TableCell>
-                            <TableCell>STT</TableCell>
-                            <TableCell>Mã sản phẩm</TableCell>
-                            <TableCell colSpan={2}>Tên sản phẩm</TableCell>
-                            <TableCell>Đơn vị</TableCell>
-                            <TableCell align="center">Số lượng</TableCell>
-                            <TableCell align="center">Đơn giá</TableCell>
-                            <TableCell align="center">Thành tiền</TableCell>
+                            <StyledTableCell className="tableColumnIcon"></StyledTableCell>
+                            <StyledTableCell>STT</StyledTableCell>
+                            <StyledTableCell>Mã sản phẩm</StyledTableCell>
+                            <StyledTableCell colSpan={2}>Tên sản phẩm</StyledTableCell>
+                            <StyledTableCell>Đơn vị</StyledTableCell>
+                            <StyledTableCell align="center">Số lượng</StyledTableCell>
+                            <StyledTableCell align="center">Đơn giá</StyledTableCell>
+                            <StyledTableCell align="center">Thành tiền</StyledTableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>

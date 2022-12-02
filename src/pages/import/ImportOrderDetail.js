@@ -20,7 +20,32 @@ import CustomTablePagination from "../../component/common/Pagination/index";
 import ConsignmentsTable from "./ConsignmentsTable";
 import importOrderService from "../../service/ImportOrderService";
 import AlertPopup from "../../component/common/AlertPopup/index";
+import Label from "../../component/common/Label";
 
+const getStatusLabel = (exportOrderStatus) => {
+  const map = {
+    3: {
+      text: "Đã huỷ",
+      color: "error",
+    },
+    2: {
+      text: "Đã xuất kho",
+      color: "success",
+    },
+    1: {
+      text: "Đang chờ xử lý",
+      color: "warning",
+    },
+    4: {
+      text: "Đã đã trả hàng",
+      color: "primary",
+    },
+  };
+
+  const { text, color } = map[exportOrderStatus];
+
+  return <Label color={color}>{text}</Label>;
+};
 const ImportOrderDetail = () => {
   const { importOrderId } = useParams();
   const [importOrder, setImportOrder] = useState();
@@ -41,6 +66,7 @@ const ImportOrderDetail = () => {
   console.log(importOrderId);
   //console.log(confirmUserId);
 
+  
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -179,6 +205,7 @@ const ImportOrderDetail = () => {
       }
     }
   };
+ 
   useEffect(() => {
     if (isNaN(importOrderId)) {
       navigate("/404");
@@ -200,8 +227,8 @@ const ImportOrderDetail = () => {
                     <strong>Phiếu nhập kho số:</strong> {"NHAP" + importOrderId}
                   </Typography>{" "}
                   {/* <span>
-                        {FormatDataUtils.getStatusLabel(importOrder.statusName)}
-                      </span> */}
+                        {getStatusLabel(importOrder[0].status_id)}
+                  </span> */}
                 </Box>
                 {importOrder[0].confirm_by == null && (
                   <Stack
@@ -210,8 +237,7 @@ const ImportOrderDetail = () => {
                     spacing={2}
                     className="buttonAction"
                   >
-                    {(currentUserRole === "ROLE_ADMIN" ||
-                      currentUserRole === "ROLE_STOREKEEPER") && (
+                    {(currentUserRole === "ROLE_ADMIN" ) && (
                       <Button
                         variant="contained"
                         startIcon={<Done />}
@@ -221,8 +247,7 @@ const ImportOrderDetail = () => {
                         Xác nhận nhập kho
                       </Button>
                     )}
-                    {(currentUserRole === "ROLE_ADMIN" ||
-                      currentUserRole === "ROLE_STOREKEEPER") && (
+                    {(currentUserRole === "ROLE_ADMIN" ) && (
                       <Button
                         variant="contained"
                         startIcon={<Edit />}
@@ -301,7 +326,7 @@ const ImportOrderDetail = () => {
                     <Typography>
                       Người tạo đơn: <i>{"(" + importOrder[0].creator + ")"}</i>
                     </Typography>
-                    <Typography>Ngày tạo đơn:</Typography>
+                    {/* <Typography>Ngày tạo đơn:</Typography> */}
                     {/* <Typography>
                           {FormatDataUtils.formatDateTime(importOrder.createDate)}
                         </Typography> */}

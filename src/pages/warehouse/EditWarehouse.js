@@ -38,7 +38,7 @@ const EditWarehouse = (props) => {
   const FORM_VALIDATION = Yup.object().shape({
     name: Yup.string()
       .max(255, "Tên danh mục không thể dài quá 255 kí tự")
-      .required("Chưa nhập tên danh mục"),
+      .required("Chưa nhập tên nhà kho"),
       address: Yup.string().max(255, "Mô tả không thể dài quá 255 kí tự"),
   });
   const saveWarehouse = async (warehouse) => {

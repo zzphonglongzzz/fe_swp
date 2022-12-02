@@ -16,6 +16,7 @@ import {
     Typography,
 } from '@mui/material';
 import FormatDataUtils from '../../utils/FormatDataUtils';
+import InventoryCheckingService from '../../service/InventoryCheckingService';
 
 const InventoryCheckingDetail = () => {
     const { inventoryCheckingId } = useParams();
@@ -24,18 +25,10 @@ const InventoryCheckingDetail = () => {
 
     const fetchInventoryCheckingDetail = async () => {
         try {
-          const params = {
-            // pageIndex: page + 1,
-            // pageSize: rowsPerPage,
-          };
-          const dataResult = await dispatch(
-            getInventoryCheckingHistoryDetail(inventoryCheckingId),
-          );
-          //const dataResult = unwrapResult(actionResult);
+          const dataResult = await InventoryCheckingService.getInventoryCheckingHistoryDetail(inventoryCheckingId)
           console.log('dataResult', dataResult);
           if (dataResult.data) {
-            // setTotalRecord(dataResult.data.totalRecord);
-            setInventoryChecking(dataResult.data.inventoryCheckingHistoryDetail);
+            setInventoryChecking(dataResult.data.stockTakingHistoryDetail);
           } else {
             navigate('/404');
           }
@@ -80,10 +73,7 @@ const InventoryCheckingDetail = () => {
                           item
                         >
                           <Typography className="contentInfo">
-                            {inventoryChecking.fullName +
-                              (inventoryChecking.userName
-                                ? '(' + inventoryChecking.userName + ')'
-                                : '')}
+                            {inventoryChecking.userName}
                           </Typography>
                         </Grid>
                         <Grid
@@ -195,6 +185,12 @@ const InventoryCheckingDetail = () => {
                                             <TableCell align="center">
                                               Giá trị chênh lệch
                                             </TableCell>
+                                            <TableCell align="center">
+                                              Ghi Chú
+                                            </TableCell>
+                                            <TableCell align="center">
+                                              Số lượng chênh lệch
+                                            </TableCell>
                                           </TableRow>
                                           {product?.listConsignment.map(
                                             (consignment, indexConsignment) => (
@@ -220,10 +216,19 @@ const InventoryCheckingDetail = () => {
                                                   {consignment?.realityQuantity}
                                                 </TableCell>
                                                 <TableCell align="center">
-                                                  {consignment?.differentAmout &&
+                                                  {consignment?.deviantAmount &&
                                                     FormatDataUtils.formatCurrency(
-                                                      consignment?.differentAmout,
+                                                      consignment?.deviantAmount,
                                                     )}
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                  {consignment?.descriptions &&
+                                                    FormatDataUtils.formatCurrency(
+                                                      consignment?.descriptions,
+                                                    )}
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                  {consignment?.different_quantity}
                                                 </TableCell>
                                               </TableRow>
                                             ),
@@ -253,7 +258,7 @@ const InventoryCheckingDetail = () => {
                         <Typography className="totalDifferent">
                           <b>
                             {FormatDataUtils.formatCurrency(
-                              inventoryChecking.totalDifferentAmout,
+                              inventoryChecking.totalDifferentAmount,
                             )}
                           </b>
                         </Typography>
