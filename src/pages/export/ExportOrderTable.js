@@ -35,7 +35,7 @@ const getStatusLabel = (exportOrderStatus) => {
       color: "warning",
     },
     returned: {
-      text: "Đã xuất kho",
+      text: "Đã đã trả hàng",
       color: "primary",
     },
   };
@@ -56,10 +56,10 @@ const ExportOrderTable = ({ exportOrders }) => {
           <TableRow>
             <StyledTableCell>Mã xuất kho</StyledTableCell>
             <StyledTableCell>Ngày tạo</StyledTableCell>
-            <StyledTableCell>Ngày xuất</StyledTableCell>
+            {/* <StyledTableCell>Ngày xuất</StyledTableCell> */}
             <StyledTableCell>Người tạo đơn</StyledTableCell>
             <StyledTableCell>Trạng thái</StyledTableCell>
-            <StyledTableCell>Giá trị đơn hàng</StyledTableCell>
+            <StyledTableCell align="center">Giá trị đơn hàng</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -94,7 +94,7 @@ const ExportOrderTable = ({ exportOrders }) => {
                     )}
                   </Typography>
                 </TableCell>
-                <TableCell>
+                {/* <TableCell>
                   <Typography
                     variant="body1"
                     color="text.primary"
@@ -106,9 +106,8 @@ const ExportOrderTable = ({ exportOrders }) => {
                         exportOrder.confirm_date,
                         "dd/MM/yyyy"
                       )}
-                    {/* {exportOrder.createDate} */}
                   </Typography>
-                </TableCell>
+                </TableCell> */}
                 <TableCell>
                   <Typography>{exportOrder?.user_name}</Typography>
                 </TableCell>
@@ -123,7 +122,7 @@ const ExportOrderTable = ({ exportOrders }) => {
                     noWrap
                   >
                     {FormatDataUtils.formatCurrency(
-                      exportOrder.totalPrice || 0
+                      exportOrder.total_price || 0
                     )}
                   </Typography>
                 </TableCell>

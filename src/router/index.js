@@ -28,6 +28,8 @@ import ReturnGoods from "../pages/return/ReturnGoods";
 import ReturnList from "../pages/return/ReturnList";
 import ReturnOrderDetail from "../pages/return/ReturnOrderDetail";
 import ResetPassword from "../pages/profile/ResetPassword";
+import AddExportOrderCancel from "../pages/export/AddExportOrderCancel";
+import ExportOrderCancelDetail from "../pages/export/ExportOrderCancelDetail";
 
 const publicRoutes = [
   //public route
@@ -88,6 +90,8 @@ const privateRoutes = [
     path: "/export/return/detail/:returnOrderId",
     component: ReturnOrderDetail,
   },
+  { path: "/export/cancel/:exportOrderId", component: AddExportOrderCancel },
+  { path: "/export/cancel/detail/:exportOrderId", component: ExportOrderCancelDetail },
 
   // inventoryChecking route
   { path: "/inventory-checking/list", component: InventoryCheckingList },

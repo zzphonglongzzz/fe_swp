@@ -20,7 +20,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Close, KeyboardReturn } from "@mui/icons-material";
+import { Close, Co2Sharp, KeyboardReturn } from "@mui/icons-material";
 import { FieldArray, Form, Formik, useField } from "formik";
 import AlertPopup from "../../component/common/AlertPopup";
 import ExportOrderService from "../../service/ExportOrderService";
@@ -92,7 +92,7 @@ const ReturnGoods = () => {
       const values = valueFormik.current;
       let productList = values.consignments;
       let consignmentProductDTOs = [];
-      console.log("xác nhận", values);
+      //console.log("xác nhận", values);
 
       for (let index = 0; index < productList.length; index++) {
         if (productList[index].quantityReturn > productList[index].quantity) {
@@ -118,28 +118,28 @@ const ReturnGoods = () => {
           return;
         }
         consignmentProductDTOs.push({
-          consignment_id: productList[index]?.consignment_id,
+          consignmentId: productList[index]?.consignment_id,
           productId: productList[index]?.product_id,
           unitPrice: productList[index]?.unit_price,
           expirationDate: moment(productList[index]?.expiration_date)
             .utc()
             .format("YYYY-MM-DD hh:mm:ss"),
-          quantity: productList[index]?.quantityReturn,
+           quantity: productList[index]?.quantityReturn,
+           warehouseId: productList[index]?.warehouse_id
         });
       }
-      const returnOrder = {
-        orderId:productList[0].order_id,
-        orderCode:productList[0].order_id,
-        confirmBy: productList[0].confirm_by_id,
-        warehouseId: productList[0].warehouse_id,
-        description: values.description,
-        consignmentProductDTOs: consignmentProductDTOs,
-      };
-      console.log("return", returnOrder);
+      // console.log(consignmentProductDTOs)
+      // console.log(productList[0].order_id)
+      // console.log(productList[0].confirm_by_id)
+      // console.log(values.description)
       if (consignmentProductDTOs.length > 0) {
         try {
           const resultResponse = await ExportOrderService.createReturnOrder(
-            returnOrder
+            productList[0].order_id,
+            productList[0].order_id,
+            productList[0].confirm_by_id,
+            values.description,
+            consignmentProductDTOs
           );
           //const resultResponse = unwrapResult(response);
           console.log(resultResponse);
@@ -253,26 +253,6 @@ const ReturnGoods = () => {
               </Grid>
               <Grid xs={9} item>
                 <Grid container spacing={2}>
-                  {/* <Grid xs={12} item>
-                  <Card>
-                    <CardContent>
-                      <Typography variant="h6">
-                        Thông tin nhà cung cấp
-                      </Typography>
-                      <Box className="manufacturer-info">
-                        {listConsignments[0]?.manufactorName}
-                      </Box>
-                      <br />
-                      <Divider />
-                      <br />
-                      <Typography variant="h6"></Typography>
-                      <br />
-                      <Box className="selectbox-warehouse">
-                        {listConsignments[0]?.warehouse_name}
-                      </Box>
-                    </CardContent>
-                  </Card>
-                </Grid> */}
                   <Grid xs={12} item>
                     <Card>
                       {!!productList && productList?.length > 0 ? (

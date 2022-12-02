@@ -5,26 +5,20 @@ import authHeader from "./AuthHeader";
 const ExportOrderService = {
   createExportOrder: (exportOrder) => {
     const url = process.env.REACT_APP_API_URL + `/export/create-exportOrder`;
-    // const url = process.env.REACT_APP_API_URL + '/export-order/create';
-    // console.log(exportOrder);
     return axios.post(url, exportOrder, { headers: authHeader() });
   },
   confirmExportOrder: (params) => {
     const { orderId, confirmBy } = params;
-    const url =
-      process.env.REACT_APP_API_URL +
-      `/export/confirm?orderId=${orderId}&confirmBy=${confirmBy}`;
-    return axiosClient.get(url, { headers: authHeader() });
+    const url = process.env.REACT_APP_API_URL + `/export/confirm?orderId=${orderId}&confirmBy=${confirmBy}`;
+    return axios.put(url, { headers: authHeader() });
   },
   cancelExportOrder: (params) => {
     const { orderId, confirmBy } = params;
-    const url =
-      process.env.REACT_APP_API_URL +
-      `/export/cancel?orderId=${orderId}&confirmBy=${confirmBy}`;
-    return axiosClient.get(url, { headers: authHeader() });
+    const url = process.env.REACT_APP_API_URL + `/export/cancel?orderId=${orderId}&confirmBy=${confirmBy}`;
+    return axios.put(url, { headers: authHeader() });
   },
-  updateExportOrder: (exportOrder) => {
-    const url = process.env.REACT_APP_API_URL + `/export/editOrder`;
+  updateExportOrder: (orderId,exportOrder) => {
+    const url = process.env.REACT_APP_API_URL + `/export/editOrder?orderId=${orderId}`;
     return axios.put(url, exportOrder, { headers: authHeader() });
   },
   getListProductInStock: () => {
@@ -51,9 +45,25 @@ const ExportOrderService = {
     const url = `/return/getOrderDetail`;
     return axiosClient.get(url, { params, headers: authHeader() });
   },
-  createReturnOrder: (params) => {
-    const url = process.env.REACT_APP_API_URL + `/return/createReturnOrder`;
+  createReturnOrder: (orderId,orderCode,confirmBy,description,params) => {
+    const url = process.env.REACT_APP_API_URL + `/return/createReturnOrder?orderId=${orderId}&orderCode=${orderCode}&confirmBy=${confirmBy}&description=${description}`;
     return axios.post(url, params, { headers: authHeader() });
   },
+  deliveredExportOrder: (orderId)=>{
+    const url = process.env.REACT_APP_API_URL +`/export/delivered?orderId=${orderId}`;
+    return axios.post(url, { headers: authHeader() });
+  },
+  getOrderDetailForCancelDeliveredOrder:(orderId) =>{
+    const url = `/export/getOrderDetailForCancelDeliveredOrder?orderId=${orderId}`;
+    return axiosClient.get(url, { headers: authHeader() });
+  },
+  cancelDeliveredOrder:(orderId,params) =>{
+    const url = process.env.REACT_APP_API_URL +`/export/cancelDeliveredOrder?orderId=${orderId}`;
+    return axios.put(url, params, { headers: authHeader() });
+  },
+  getDetailCancelDeliveredOrder:(orderId) =>{
+    const url = `/export/getDetailCancelDeliveredOrder?orderId=${orderId}`;
+    return axiosClient.get(url, { headers: authHeader() });
+  }
 };
 export default ExportOrderService;

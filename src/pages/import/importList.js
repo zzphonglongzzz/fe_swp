@@ -11,6 +11,9 @@ import {
   Stack,
   TextField,
   Toolbar,
+  FormGroup,
+  Checkbox,
+  FormControlLabel
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -25,21 +28,20 @@ import importOrderService from "../../service/ImportOrderService";
 const ImportList = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [creatorId, setCreatorId] = useState("");
-  const [staffList, setStaffList] = useState([]);
   const pages = [5, 10, 20];
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [totalRecord, setTotalRecord] = useState();
   const [importOrderList, setImportOrderList] = useState([]);
+  const [selectPending, setSelectPending] = useState(false);
   const navigate = useNavigate();
 
   const handleOnClickCreateImportOrder = () => {
     navigate("/import/create-order");
   };
   const [searchParams, setSearchParams] = useState({
-    startDate: "",
-    endDate: "",
+    dateFrom: "",
+    dateTo: "",
   });
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -49,59 +51,71 @@ const ImportList = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  // const handleChangeStartDate = (value) => {
-  //   setStartDate(value);
-  //   setPage(0);
-  //   console.log("startDate", format(new Date(value), "dd-MM-yyyy"));
-  //   setSearchParams({
-  //     ...searchParams,
-  //     startDate: value !== null ? format(new Date(value), "dd-MM-yyyy") : null,
-  //   });
-  //   searchImportOrder({
-  //     ...searchParams,
-  //     startDate: value !== null ? format(new Date(value), "dd-MM-yyyy") : null,
-  //   });
-  // };
+  const handleChangeCheckboxPending = () => {
+    setPage(0);
+    setSearchParams({
+      ...searchParams,
+      status: selectPending === false ? 1 : "",
+    });
+    searchImportOrder({
+      ...searchParams,
+      status: selectPending === false ? 1 : "",
+    });
+    setSelectPending(!selectPending);
+  };
+  const handleChangeStartDate = (value) => {
+    setStartDate(value);
+    setPage(0);
+    console.log("startDate", format(new Date(value), "yyyy-MM-dd HH:mm:ss"));
+    setSearchParams({
+      ...searchParams,
+      dateFrom: value !== null ? format(new Date(value), "yyyy-MM-dd HH:mm:ss") : null,
+    });
+    searchImportOrder({
+      ...searchParams,
+      dateFrom: value !== null ? format(new Date(value), "yyyy-MM-dd HH:mm:ss") : null,
+    });
+  };
   const handleSearch = (e) => {
     if (e.keyCode === 13) {
       console.log(e.target.value);
       setPage(0);
       setSearchParams({ ...searchParams });
-      //searchImportOrder({ ...searchParams});
+      searchImportOrder({ ...searchParams});
     }
   };
 
   const handleChangeEndDate = (value) => {
     setEndDate(value);
     setPage(0);
-    console.log("endDate", format(new Date(value), "dd-MM-yyyy"));
+    console.log("endDate", format(new Date(value), "yyyy-MM-dd HH:mm:ss"));
     setSearchParams({
       ...searchParams,
-      endDate: value !== null ? format(new Date(value), "dd-MM-yyyy") : null,
+      dateTo: value !== null ? format(new Date(value), "yyyy-MM-dd HH:mm:ss") : null,
     });
-    // searchImportOrder({
-    //   ...searchParams,
-    //   endDate: value !== null ? format(new Date(value), "dd-MM-yyyy") : null,
-    // });
+    searchImportOrder({
+      ...searchParams,
+      dateTo: value !== null ? format(new Date(value), "yyyy-MM-dd HH:mm:ss") : null,
+    });
   };
-  // const searchImportOrder = async (searchParams) => {
-  //   try {
-  //     const params = {
-  //       pageIndex: page,
-  //       pageSize: rowsPerPage,
-  //       ...searchParams,
-  //     };
-  //     const actionResult = await dispatch(getImportOrderList(params));
-  //     const dataResult = unwrapResult(actionResult);
-  //     console.log("dataResult", dataResult);
-  //     if (dataResult.data) {
-  //       setTotalRecord(dataResult.data.totalRecord);
-  //       setImportOrderList(dataResult.data.orderList);
-  //     }
-  //   } catch (error) {
-  //     console.log("Failed to search export order list: ", error);
-  //   }
-  // };
+  const searchImportOrder = async (searchParams) => {
+    try {
+      const params = {
+        pageIndex: page + 1,
+        pageSize: rowsPerPage,
+        ...searchParams,
+      };
+      const dataResult = await importOrderService.getImportOrderList(params);
+      //const dataResult = unwrapResult(actionResult);
+      console.log("dataResult", dataResult);
+      if (dataResult.data) {
+        setTotalRecord(dataResult.data.totalRecord);
+        setImportOrderList(dataResult.data.orderList);
+      }
+    } catch (error) {
+      console.log("Failed to search export order list: ", error);
+    }
+  };
   const fetchImportOrderList = async () => {
     try {
       const params = {
@@ -122,7 +136,7 @@ const ImportList = () => {
   };
   useEffect(() => {
     fetchImportOrderList();
-    // searchImportOrder(searchParams);
+    searchImportOrder(searchParams);
   }, [page, rowsPerPage]);
 
   return (
@@ -157,29 +171,10 @@ const ImportList = () => {
             onChange={(e) => {
               setSearchParams({
                 ...searchParams,
-                billReferenceNumber: e.target.value,
+                orderCode: e.target.value,
               });
             }}
           />
-          <Box className="selectBox">
-            {/* {staffList && (
-              <Autocomplete
-                id="combo-box-demo"
-                options={staffList}
-                getOptionLabel={(staff) => staff.name || ''}
-                noOptionsText="Không tìm thấy người tạo đơn"
-                onChange={(event, newInputValue) => {
-                  handleChangeCreator(newInputValue);
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Người tạo đơn"
-                  />
-                )}
-              />
-            )} */}
-          </Box>
         </Toolbar>
         <div>
           <div className="labelDateRange">Khoảng thời gian tạo đơn</div>
@@ -195,9 +190,9 @@ const ImportList = () => {
                   label="Ngày bắt đầu"
                   value={startDate}
                   inputFormat="dd/MM/yyyy"
-                  // onChange={(newValue) => {
-                  //   handleChangeStartDate(newValue);
-                  // }}
+                  onChange={(newValue) => {
+                    handleChangeStartDate(newValue);
+                  }}
                   renderInput={(params) => <TextField {...params} />}
                 />
                 <Box sx={{ mx: 2 }}> Đến </Box>
@@ -213,6 +208,20 @@ const ImportList = () => {
                 />
               </LocalizationProvider>
             </Toolbar>
+            <Box>
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={selectPending}
+                      onChange={() => handleChangeCheckboxPending()}
+                    />
+                  }
+                  label="Chỉ hiển thị đơn hàng đang được xử lý"
+                  className="labelCheckbox"
+                />
+              </FormGroup>
+            </Box>
           </Stack>
         </div>
       </Card>

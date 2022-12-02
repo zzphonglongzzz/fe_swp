@@ -53,11 +53,11 @@ const ImportOrdersTable = ({ importOrderList }) => {
           <TableRow>
             <StyledTableCell>Mã nhập kho</StyledTableCell>
             <StyledTableCell>Ngày tạo</StyledTableCell>
-            <StyledTableCell>Ngày nhập</StyledTableCell>
+            {/* <StyledTableCell>Ngày nhập</StyledTableCell> */}
             <StyledTableCell>Nhà cung cấp</StyledTableCell>
             <StyledTableCell>Người tạo đơn</StyledTableCell>
             <StyledTableCell>Trạng thái</StyledTableCell>
-            <StyledTableCell>Giá trị đơn hàng</StyledTableCell>
+            <StyledTableCell align="center">Giá trị đơn hàng</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -91,7 +91,7 @@ const ImportOrdersTable = ({ importOrderList }) => {
                   )}
                 </Typography>
               </TableCell>
-              <TableCell>
+              {/* <TableCell>
                 {importOrderList?.confirm_date && (
                   <Typography
                     variant="body1"
@@ -106,7 +106,7 @@ const ImportOrdersTable = ({ importOrderList }) => {
                     )}
                   </Typography>
                 )}
-              </TableCell>
+              </TableCell> */}
               <TableCell>
                 <Typography
                   variant="body1"
@@ -137,11 +137,11 @@ const ImportOrdersTable = ({ importOrderList }) => {
                   {getStatusLabel(row.status)}
                 </Typography>
               </TableCell>
-              {/* <TableCell align="center">
+              <TableCell align="center">
                 <Typography>
-                  {FormatDataUtils.formatCurrency(row.totalPrice)}
+                  {FormatDataUtils.formatCurrency(row.total_price)}
                 </Typography>
-              </TableCell> */}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

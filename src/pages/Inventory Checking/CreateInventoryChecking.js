@@ -10,12 +10,6 @@ import {
   Grid,
   IconButton,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Typography,
   TextField,
 } from "@mui/material";
@@ -27,12 +21,29 @@ import { useNavigate } from "react-router-dom";
 import "./CreateInventoryChecking.scss";
 import { Delete, Done } from "@mui/icons-material";
 import LoadingButton from "@mui/lab/LoadingButton";
-import Popup from "../../component/common/dialog";
 import InventoryCheckingService from "../../service/InventoryCheckingService";
 import WarehouseService from "../../service/WarehouseService";
 import "./CreateInventoryChecking.scss";
 import AlertPopup from "../../component/common/AlertPopup";
+import { styled } from "@mui/material/styles";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
 const TextfieldWrapper = ({ name, ...otherProps }) => {
   const [field, meta] = useField(name);
 
@@ -54,7 +65,6 @@ const CreateInventoryChecking = () => {
   const [warehouseId, setWarehouseId] = useState("");
   const [openPopup, setOpenPopup] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  //const hiddenFileInput = useRef(null);
   const navigate = useNavigate();
   const user = AuthService.getCurrentUser();
   const arrayHelpersRef = useRef(null); /*  */
@@ -131,6 +141,7 @@ const CreateInventoryChecking = () => {
               product,
               indexConsignment
             ),
+            unitPrice:product.unitPrice,
             description: consignment.description,
           });
         }
@@ -165,6 +176,7 @@ const CreateInventoryChecking = () => {
       setOpenPopup(true);
       return;
     }
+    
   };
   const calculateTotalDifferentAmountOfConsignment1 = (
     product,
@@ -365,19 +377,19 @@ const CreateInventoryChecking = () => {
                     <br />
                     <Divider />
                     <br />
-                    <TableContainer className="tableContainer">
-                      <Table className="table">
+                    <TableContainer component={Paper}>
+                      <Table  sx={{ minWidth: 200 }} aria-label="customized table">
                         <TableHead>
                           <TableRow>
-                            <TableCell
+                            <StyledTableCell
                               className="tableColumnIcon"
                               align="center"
-                            ></TableCell>
-                            <TableCell align="center">STT</TableCell>
-                            <TableCell>Mã sản phẩm</TableCell>
-                            <TableCell>Tên sản phẩm</TableCell>
-                            <TableCell>Đơn vị</TableCell>
-                            <TableCell align="center">Đơn giá</TableCell>
+                            ></StyledTableCell>
+                            <StyledTableCell align="center">STT</StyledTableCell>
+                            <StyledTableCell>Mã sản phẩm</StyledTableCell>
+                            <StyledTableCell>Tên sản phẩm</StyledTableCell>
+                            <StyledTableCell>Đơn vị</StyledTableCell>
+                            <StyledTableCell align="center">Đơn giá</StyledTableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
@@ -512,9 +524,9 @@ const CreateInventoryChecking = () => {
                                                       >
                                                         <TextfieldWrapper
                                                           name={`productList[${index}].consignmentList[${indexConsignment}].description`}
-                                                          variant="standard"
-                                                          className="text-field-quantity"
-                                                          type="string"
+                                                          aria-label="minimum height"
+                                                          minRows={5}
+                                                          style={{ width: 200 }}
                                                         />
                                                       </Stack>
                                                     </TableCell>
