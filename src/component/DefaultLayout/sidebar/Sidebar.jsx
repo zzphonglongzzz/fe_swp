@@ -41,14 +41,17 @@ const Sidebar = () => {
   function hanleCreateExport() {
     navigate("/export/create-order");
   }
-  function handleClickListReturn(){
-    navigate("/export/return/list")
+  function handleClickListReturn() {
+    navigate("/export/return/list");
   }
-  function handleClickListInventoryChecking(){
-    navigate('/inventory-checking/list')
+  function handleClickListInventoryChecking() {
+    navigate("/inventory-checking/list");
   }
-  function handleClickCreateInventoryChecking(){
-    navigate('/inventory-checking/create')
+  function handleClickCreateInventoryChecking() {
+    navigate("/inventory-checking/create");
+  }
+  function handleClickStaffList() {
+    navigate("/staff/list");
   }
   return (
     <div className="sidebar">
@@ -101,23 +104,18 @@ const Sidebar = () => {
             <KeyboardReturnIcon className="icon" />
             <span onClick={handleClickListReturn}>Danh sách trả hàng</span>
           </li>
-          {/* <p className="title">Trả hàng Lưu kho</p>
-          <li>
-            <InventoryIcon className="icon" />
-            <span>Tạo phiếu lưu kho</span>
-          </li>
-          <li>
-            <ListIcon className="icon" />
-            <span>Danh sách lưu kho</span>
-          </li> */}
           <p className="title">Kiểm kho</p>
           <li>
             <InventoryIcon className="icon" />
-            <span onClick={handleClickCreateInventoryChecking}>Tạo phiếu kiểm kho</span>
+            <span onClick={handleClickCreateInventoryChecking}>
+              Tạo phiếu kiểm kho
+            </span>
           </li>
           <li>
             <ListIcon className="icon" />
-            <span onClick={handleClickListInventoryChecking}>Lịch sử kiểm kho</span>
+            <span onClick={handleClickListInventoryChecking}>
+              Lịch sử kiểm kho
+            </span>
           </li>
           <p className="title">Nhân viên</p>
           <li>
@@ -126,7 +124,7 @@ const Sidebar = () => {
           </li>
           <li>
             <PeopleIcon className="icon" />
-            <span>Danh sách nhân viên</span>
+            <span onClick={handleClickStaffList}>Danh sách nhân viên</span>
           </li>
         </ul>
       </div>

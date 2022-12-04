@@ -30,6 +30,7 @@ import ReturnOrderDetail from "../pages/return/ReturnOrderDetail";
 import ResetPassword from "../pages/profile/ResetPassword";
 import AddExportOrderCancel from "../pages/export/AddExportOrderCancel";
 import ExportOrderCancelDetail from "../pages/export/ExportOrderCancelDetail";
+import StaffList from "../pages/staff/StaffList";
 
 const publicRoutes = [
   //public route
@@ -106,6 +107,8 @@ const privateRoutes = [
   //dashboard
   { path: "/dashboard", component: Home },
   { path: "*", component: NotFound, layout: null },
-  { path: '/reset-password', component: ResetPassword}
+  { path: '/reset-password', component: ResetPassword},
+  //staff
+  { path: '/staff/list', component: StaffList },
 ];
 export { publicRoutes, privateRoutes };

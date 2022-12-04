@@ -30,6 +30,7 @@ const ExportProductTable = ({ listConsignment }) => {
             <StyledTableCell>STT</StyledTableCell>
             <StyledTableCell>Mã sản phẩm</StyledTableCell>
             <StyledTableCell>Tên sản phẩm</StyledTableCell>
+            <StyledTableCell>Vị Trí</StyledTableCell>
             <StyledTableCell>Hạn Lưu kho</StyledTableCell>
             <StyledTableCell>Đơn vị</StyledTableCell>
             <StyledTableCell align="center">Số lượng</StyledTableCell>
@@ -72,6 +73,16 @@ const ExportProductTable = ({ listConsignment }) => {
                   noWrap
                 >
                   {consignment?.product_name}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography
+                  variant="body1"
+                  color="text.primary"
+                  gutterBottom
+                  noWrap
+                >
+                  {consignment?.warehouse_name}
                 </Typography>
               </TableCell>
               <TableCell>

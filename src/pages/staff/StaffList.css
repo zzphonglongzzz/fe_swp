@@ -1,0 +1,12 @@
+.selectBox {
+    width: 200px;
+}
+.searchButton{
+    width: 170px;
+    font-size: 18px;
+    max-height: 56px;
+}
+.imgStaff{
+    width: 100px;
+    height: 100px;
+}

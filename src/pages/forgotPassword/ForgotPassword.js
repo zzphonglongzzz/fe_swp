@@ -1,19 +1,25 @@
 import * as React from "react";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import './forgotPassword.scss'
+import "./forgotPassword.scss";
 import Box from "@mui/material/Box";
-import {
-  Form,
-  Formik,
-  FormikConfig,
-  FormikValues,
-  FormikHelpers,
-  Field,
-} from "formik";
-import * as Yup from "yup";
+import { useField } from "formik";
 import { TextField } from "@mui/material";
 
+const TextfieldWrapper = ({ name, ...otherProps }) => {
+  const [field, meta] = useField(name);
+
+  const configTextfield = {
+    ...field,
+    ...otherProps,
+  };
+
+  if (meta && meta.touched && meta.error) {
+    configTextfield.error = true;
+    configTextfield.helperText = meta.error;
+  }
+  return <TextField {...configTextfield} />;
+};
 export default function ForgotPassword() {
   return (
     <Grid item component="main">
@@ -24,7 +30,6 @@ export default function ForgotPassword() {
           flexDirection: "column",
           alignItems: "center",
           padding: "32px",
-          
         }}
       >
         <Typography component="h1" variant="h5">
@@ -35,7 +40,7 @@ export default function ForgotPassword() {
             Bạn quên mật khẩu? Vui lòng điền email đã dùng để đăng ký tài khoản
             của bạn ở đây.
           </label>
-          <TextField
+          <TextfieldWrapper
             name="email"
             label="Email"
             margin="normal"
