@@ -1,5 +1,6 @@
 import axios from "axios";
 import { toast } from "react-toastify";
+import authHeader from "./AuthHeader";
 
 const login = (username, password) => {
   return axios
@@ -37,45 +38,72 @@ const register = (username, email, password) => {
 const getCurrentUser = () => {
   return JSON.parse(localStorage.getItem("user"));
 };
-const forgotPassword = (username) => {
-  const url = process.env.REACT_APP_API_URL + `/user/forgot_password`;
-  return axios.post(url, username).then(
-    (response) => {
+const forgotPassword = (email) => {
+  const url = process.env.REACT_APP_API_URL + `/forgot_password`;
+  return axios
+    .post(url, email)
+    .then((response) => {
       if (response.data) {
         return response.data;
       }
-    },
-    (error) => {
+    })
+    .catch((error) => {
       const errResponse = error.message;
       if (!errResponse) {
         return Promise.reject(error);
       }
 
       return Promise.reject(error);
-    }
-  );
+    });
 };
 const logout = () => {
   localStorage.removeItem("user");
 };
 const setNewPassword = (userInfo) => {
-  const url = process.env.REACT_APP_API_URL + `/user/create-password`;
+  const url = process.env.REACT_APP_API_URL + `/reset_password`;
 
-  return axios.post(url, userInfo).then(
-    (response) => {
-      if (response.data) {
-        return response.data;
-      }
-    },
-    (error) => {
-      const errResponse = error.message;
-      if (!errResponse) {
+  return axios
+    .put(url, userInfo, {
+      headers: authHeader(),
+    })
+    .then(
+      (response) => {
+        if (response.data) {
+          return response.data;
+        }
+      },
+      (error) => {
+        const errResponse = error.message;
+        if (!errResponse) {
+          return Promise.reject(error);
+        }
+
         return Promise.reject(error);
       }
+    );
+};
+const checkOtp = (userInfo) => {
+  const url = process.env.REACT_APP_API_URL + `/check_otp`;
 
-      return Promise.reject(error);
-    }
-  );
+  return axios
+    .post(url, userInfo, {
+      headers: authHeader(),
+    })
+    .then(
+      (response) => {
+        if (response.data) {
+          return response.data;
+        }
+      },
+      (error) => {
+        const errResponse = error.message;
+        if (!errResponse) {
+          return Promise.reject(error);
+        }
+
+        return Promise.reject(error);
+      }
+    );
 };
 const AuthService = {
   register,
@@ -83,7 +111,7 @@ const AuthService = {
   logout,
   getCurrentUser,
   forgotPassword,
-  // checkOtp,
+  checkOtp,
   setNewPassword,
 };
 export default AuthService;

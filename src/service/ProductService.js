@@ -28,6 +28,7 @@ const ProductService = {
   updateProduct: (product) => {
     const url = process.env.REACT_APP_API_URL + '/updateProduct';
     return axios.put(url, {
+      id: product.id,
       productCode: product.productCode,
       name: product.name,
       description: product.description,

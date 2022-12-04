@@ -312,7 +312,7 @@ const AddEditProduct = () => {
       <Box>
         {!!product && (
           <Formik
-            initialValues={{ ...product, isUseWrapUnitMeasure: false }}
+            initialValues={{ ...product}}
             validationSchema={FORM_VALIDATION}
             onSubmit={(values) => handleSubmit(values)}
           >

@@ -430,7 +430,7 @@ const ExportOrderDetail = () => {
                   </CardContent>
                 </Card>
               </Grid>
-              <Grid xs={12} item>
+              {/* <Grid xs={12} item>
                 <Card>
                   <CardContent className="warehourseInfo">
                     <Typography variant="h6">Kho lấy hàng</Typography>
@@ -444,7 +444,7 @@ const ExportOrderDetail = () => {
                     </Stack>
                   </CardContent>
                 </Card>
-              </Grid>
+              </Grid> */}
               <Grid xs={12} item>
                 <Card>
                   <CardContent className="totalAmount">

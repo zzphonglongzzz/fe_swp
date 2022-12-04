@@ -2,19 +2,26 @@ import * as React from "react";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import {
-  Form,
-  Formik,
-  FormikConfig,
-  FormikValues,
-  FormikHelpers,
-  Field,
-} from "formik";
+import { useField } from "formik";
 import { useState } from "react";
 import { IconButton, TextField, Tooltip } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import "./forgotPassword.scss";
 
+const TextfieldWrapper = ({ name, ...otherProps }) => {
+  const [field, meta] = useField(name);
+
+  const configTextfield = {
+    ...field,
+    ...otherProps,
+  };
+
+  if (meta && meta.touched && meta.error) {
+    configTextfield.error = true;
+    configTextfield.helperText = meta.error;
+  }
+  return <TextField {...configTextfield} />;
+};
 export default function ConfirmPassword() {
   const [passwordShown, setPasswordShown] = useState(false);
   const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
@@ -38,7 +45,7 @@ export default function ConfirmPassword() {
             Hãy điền dãy số mã hóa mà bạn đã nhận được ở trong email của mình để
             được cấp quyền cài đặt lại mật khẩu
           </label>
-          <Field
+          <TextfieldWrapper
             name="password"
             label="Mật khẩu mới"
             margin="normal"
@@ -60,7 +67,7 @@ export default function ConfirmPassword() {
             autoComplete="password"
           />
 
-          <TextField
+          <TextfieldWrapper
             name="confirmPassword"
             label="Nhập lại mật khẩu mới"
             margin="normal"

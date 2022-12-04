@@ -1,11 +1,25 @@
 import * as React from "react";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
-import { Form, Formik, FormikConfig, FormikValues, FormikHelpers, Field } from 'formik';
+import { useField } from 'formik';
 import './forgotPassword.scss'
 import Box from "@mui/material/Box";
 import { TextField } from "@mui/material";
 
+const TextfieldWrapper = ({ name, ...otherProps }) => {
+  const [field, meta] = useField(name);
+
+  const configTextfield = {
+    ...field,
+    ...otherProps,
+  };
+
+  if (meta && meta.touched && meta.error) {
+    configTextfield.error = true;
+    configTextfield.helperText = meta.error;
+  }
+  return <TextField {...configTextfield} />;
+};
 export default function RequestCodeForm() {
   return (
     <Grid item component="main">
@@ -27,7 +41,7 @@ export default function RequestCodeForm() {
             Hãy điền dãy số mã hóa mà bạn đã nhận được ở trong email của mình để
             được cấp quyền cài đặt lại mật khẩu
           </label>
-          <TextField
+          <TextfieldWrapper
             name="otp"
             label="Mã số"
             margin="normal"

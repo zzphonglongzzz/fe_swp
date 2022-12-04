@@ -7,13 +7,13 @@ import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-//import AuthService from '@/services/authService';
 import { toast } from "react-toastify";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./CommonForgotPassword.scss";
 import AuthService from "../../service/AuthService";
+
 function getStepContent(step) {
   switch (step) {
     case 0:
@@ -54,19 +54,27 @@ export default function CommonForgotPass() {
   });
 
   const sendMailForgotPassword = (values) => {
-    const email = { email: values.email };
+    const email = { email_request: values.email };
+    console.log(values.email);
+    setLoading(true);
     AuthService.forgotPassword(email).then(
       (response) => {
-        console.log(response);
-        if (response.status1 === 200) {
+        console.log(response.status);
+        if (!response.status) {
           toast.success(response.message);
+          localStorage.setItem("token", response.data)
+          setLoading(false);
+          setActiveStep(activeStep + 1);
         } else {
+          setLoading(false);
           toast.error(response.message);
+          //setActiveStep(activeStep + 1);
         }
       },
       (error) => {
         toast.error(error.response.data.message);
-      },
+        setLoading(false);
+      }
     );
   };
 
@@ -74,61 +82,70 @@ export default function CommonForgotPass() {
     console.log(values);
     switch (activeStep) {
       case 0:
-        const email = { email: values.email };
+        const email = { email_request: values.email };
+        console.log(values.email);
         setLoading(true);
         AuthService.forgotPassword(email).then(
           (response) => {
-            console.log(response);
-            if (response.status1 === 200) {
+            console.log(response.status);
+            if (!response.status) {
               toast.success(response.message);
+              localStorage.setItem("token", response.data)
               setLoading(false);
               setActiveStep(activeStep + 1);
             } else {
               setLoading(false);
               toast.error(response.message);
+              //setActiveStep(activeStep + 1);
             }
           },
           (error) => {
             toast.error(error.response.data.message);
             setLoading(false);
-          },
+          }
         );
         break;
       case 1:
-        const userOtp = { email: values.email, otp: values.otp };
+        const userOtp = { otp: values.otp };
         setLoading(true);
         AuthService.checkOtp(userOtp).then(
           (response) => {
             console.log(response);
-            if (response.status === 500) {
-              toast.error(response.message);
-              setLoading(false);
-            } else {
+            if (response.status === 200) {
               toast.success(response.message);
               setLoading(false);
               setActiveStep(activeStep + 1);
+            } else {
+              toast.error(response.message);
+              setLoading(false);
             }
           },
           (error) => {
             toast.error(error.response.data.message);
             setLoading(false);
-          },
+          }
         );
         break;
       case 2:
-        const userInfo = { email: values.email, newPassword: values.password };
+        const userInfo = {
+          new_password: values.password,
+          confirm_password: values.confirmPassword,
+          otp: values.otp
+        };
+        console.log(userInfo)
         setLoading(true);
         AuthService.setNewPassword(userInfo).then(
           (response) => {
             console.log(response);
             toast.success(response.message);
             setLoading(false);
-            navigate('/');
+            localStorage.removeItem("token");
+            navigate("/");
           },
           (error) => {
             toast.error(error.response.data.message);
             setLoading(false);
-          },
+          }
         );
         break;
       default:
@@ -141,7 +158,7 @@ export default function CommonForgotPass() {
       <Formik
         initialValues={{ ...initialValue }}
         validationSchema={FORM_VALIDATION}
-        // onSubmit={(values) => handleNext(values)}
+        onSubmit={(values) => handleNext(values)}
       >
         {({ values }) => (
           <Form>
@@ -165,7 +182,7 @@ export default function CommonForgotPass() {
                     }
                   }}
                   loading={loading}
-                  loadingposition="center"
+                  loadingPosition="center"
                   sx={{
                     mt: 3,
                     ml: 1,
@@ -178,6 +195,7 @@ export default function CommonForgotPass() {
                   Gửi
                 </LoadingButton>
               </Box>
+
               {activeStep === 1 ? (
                 <div className="styleLabel">
                   <div>
@@ -201,7 +219,7 @@ export default function CommonForgotPass() {
                   <div style={{ marginTop: "25%" }}>
                     <label>
                       Nếu bạn vẫn chưa xử lý được, hãy liên hệ với quản lý của
-                      bạn để được hỗ trợ cài lại mật khẩu. SĐT: 0868752500
+                      bạn để được hỗ trợ cài lại mật khẩu. SĐT: 09876543212
                     </label>
                   </div>
                 </div>
