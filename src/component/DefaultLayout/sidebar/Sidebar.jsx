@@ -98,7 +98,7 @@ const Sidebar = () => {
           </li>
           <li>
             <ListIcon className="icon" />
-            <span onClick={handleExportList}>Danh sách nhập hàng</span>
+            <span onClick={handleExportList}>Danh sách xuất hàng</span>
           </li>
           <li>
             <KeyboardReturnIcon className="icon" />

@@ -65,7 +65,7 @@ const ExportOrderCancelDetail = () => {
   const fetchConsignmentsByExportOrderId = async () => {
     try {
       const dataResult =
-        await ExportOrderService.getOrderDetailForCancelDeliveredOrder(
+        await ExportOrderService.getDetailCancelDeliveredOrder(
           exportOrderId
         );
       if (dataResult.data) {
@@ -146,7 +146,7 @@ const ExportOrderCancelDetail = () => {
                                               {consignment?.product_code}
                                             </TableCell>
                                             <TableCell>
-                                              {consignment?.product_name}
+                                              {consignment?.name}
                                             </TableCell>
                                             <TableCell>
                                               {consignment?.quantity}
@@ -173,7 +173,7 @@ const ExportOrderCancelDetail = () => {
                     )}
                   </Card>
                 </Grid>
-                <Grid xs={12} item>
+                {/* <Grid xs={12} item>
                   <Card>
                     <CardContent>
                       <Typography variant="h6">
@@ -187,7 +187,7 @@ const ExportOrderCancelDetail = () => {
                       </Typography>
                     </CardContent>
                   </Card>
-                </Grid>
+                </Grid> */}
               </Grid>
             </Grid>
           </Form>
