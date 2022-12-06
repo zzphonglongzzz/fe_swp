@@ -13,7 +13,7 @@ const InventoryCheckingService = {
   },
   getConsignmentByProductId: (params) => {
     const { productId, warehouseId } = params;
-    const url = `/stockTakingHistory/productDetails?id=${productId}`;
+    const url = `/stockTakingHistory/productDetails?id=${productId}&wid=${warehouseId}`;
     return axiosClient.get(url, { headers: authHeader() });
   },
   createInventoryChecking: (inventoryChecking) => {
