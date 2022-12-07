@@ -18,6 +18,10 @@ const StaffService = {
     updateStaff :(staff) =>{
         const url = process.env.REACT_APP_API_URL + '/staff/editStaff';
         return axios.put(url, staff, { headers: authHeader() });
-    }
+    },
+    getProfile: () => {
+        const url = `/user/userprofile`
+        return axiosClient.get(url, { headers: authHeader() });
+    },
 }
 export default StaffService;

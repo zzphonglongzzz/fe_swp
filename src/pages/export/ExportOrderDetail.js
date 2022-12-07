@@ -35,7 +35,7 @@ const getStatusLabel = (exportOrderStatus) => {
       color: "warning",
     },
     4: {
-      text: "Đã đã trả hàng",
+      text: "Đã trả hàng",
       color: "primary",
     },
   };

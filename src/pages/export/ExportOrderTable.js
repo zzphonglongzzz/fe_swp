@@ -11,6 +11,24 @@ import FormatDataUtils from "../../utils/FormatDataUtils";
 import { Typography } from "@mui/material";
 import Label from "../../component/common/Label";
 
+const getStatusDeliver = (exportOrderStatus) => {
+  const map = {
+    null: {
+      text: "Đang giao hàng",
+      color: "warning",
+    },
+    1: {
+      text: "Đã giao hàng",
+      color: "success",
+    },
+    0: {
+      text: "Đã hủy giao hàng",
+      color: "error",
+    },
+  };
+  const { text, color } = map[exportOrderStatus];
+  return <Label color={color}>{text}</Label>;
+};
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -35,7 +53,7 @@ const getStatusLabel = (exportOrderStatus) => {
       color: "warning",
     },
     returned: {
-      text: "Đã đã trả hàng",
+      text: "Đã trả hàng",
       color: "primary",
     },
   };
@@ -58,7 +76,7 @@ const ExportOrderTable = ({ exportOrders }) => {
             <StyledTableCell>Ngày tạo</StyledTableCell>
             {/* <StyledTableCell>Ngày xuất</StyledTableCell> */}
             <StyledTableCell>Người tạo đơn</StyledTableCell>
-            <StyledTableCell>Trạng thái</StyledTableCell>
+            <StyledTableCell align="center">Trạng thái</StyledTableCell>
             <StyledTableCell align="center">Giá trị đơn hàng</StyledTableCell>
           </TableRow>
         </TableHead>
@@ -111,10 +129,25 @@ const ExportOrderTable = ({ exportOrders }) => {
                 <TableCell>
                   <Typography>{exportOrder?.user_name}</Typography>
                 </TableCell>
-                <TableCell>
-                  <Typography>{getStatusLabel(exportOrder.status)}</Typography>
+                <TableCell align="center">
+                  <Typography>
+                    {getStatusLabel(exportOrder.status)}{" "}
+                    {exportOrder.status !== "pending" && (
+                      <span>
+                        {getStatusDeliver(
+                          exportOrder.is_return === null
+                            ? null
+                            : exportOrder.is_return === true
+                            ? 1
+                            : exportOrder.is_return === false
+                            ? 0
+                            : undefined
+                        )}
+                      </span>
+                    )}
+                  </Typography>
                 </TableCell>
-                <TableCell>
+                <TableCell align="center">
                   <Typography
                     variant="body1"
                     color="text.primary"
