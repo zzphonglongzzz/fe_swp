@@ -66,7 +66,6 @@ const ImportOrderDetail = () => {
   console.log(importOrderId);
   //console.log(confirmUserId);
 
-  
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -78,7 +77,7 @@ const ImportOrderDetail = () => {
   const calculateTotalAmount = () => {
     let totalAmount = 0;
     if (importOrder !== undefined && importOrder?.length > 0) {
-     // console.log(listConsignments);
+      // console.log(listConsignments);
       for (let index = 0; index < importOrder.length; index++) {
         totalAmount =
           totalAmount +
@@ -153,9 +152,7 @@ const ImportOrderDetail = () => {
           orderId: importOrderId,
           confirmBy: confirmUserId,
         };
-        const result = await importOrderService.confirmImportOrder(
-          params
-        );
+        const result = await importOrderService.confirmImportOrder(params);
         // const result = unwrapResult(actionResult);
         if (!!result) {
           if (!!result.message) {
@@ -205,7 +202,7 @@ const ImportOrderDetail = () => {
       }
     }
   };
- 
+
   useEffect(() => {
     if (isNaN(importOrderId)) {
       navigate("/404");
@@ -237,7 +234,7 @@ const ImportOrderDetail = () => {
                     spacing={2}
                     className="buttonAction"
                   >
-                    {(currentUserRole === "ROLE_ADMIN" ) && (
+                    {currentUserRole === "ROLE_ADMIN" && (
                       <Button
                         variant="contained"
                         startIcon={<Done />}
@@ -247,7 +244,7 @@ const ImportOrderDetail = () => {
                         Xác nhận nhập kho
                       </Button>
                     )}
-                    {(currentUserRole === "ROLE_ADMIN" ) && (
+                    {currentUserRole === "ROLE_ADMIN" && (
                       <Button
                         variant="contained"
                         startIcon={<Edit />}
@@ -276,14 +273,9 @@ const ImportOrderDetail = () => {
                 <Card>
                   <CardContent>
                     <Typography variant="h6">Thông tin nhà cung cấp</Typography>
-                    <Box className="manufacturer-info">
-                      <Link
-                        href={`/manufacturer/detail/${importOrder[0].manufacturer_name}`}
-                        underline="none"
-                      >
-                        {importOrder[0].manufacturer_name}
-                      </Link>
-                    </Box>
+                    <Typography>
+                      {importOrder[0].name}
+                    </Typography>
                     <br />
                     <Divider />
                     <br />

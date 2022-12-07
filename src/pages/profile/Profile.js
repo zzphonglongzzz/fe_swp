@@ -16,6 +16,7 @@ import { toast } from 'react-toastify';
 import FormatDataUtils from "../../utils/FormatDataUtils";
 import "./Profile.css"
 import AlertPopup from "../../component/common/AlertPopup/index"
+import StaffService from "../../service/StaffService";
 
 
 const Profile = () => {
@@ -33,44 +34,44 @@ const Profile = () => {
     console.log("cập nhật ảnh đại diện");
     hiddenFileInput.current.click();
   };
-  const handleChangeImageStaff = async (e) => {
-    console.log(e.target.files[0]);
-    const file = e.target.files[0];
-    if (file.type !== "image/png" && file.type !== "image/jpeg") {
-      setTitle("Chú ý");
-      setMessage("");
-      setErrorMessage("Vui lòng chọn file ảnh có định dạng .png hoặc .jpg");
-      setOpenPopup(true);
-      return;
-    }
+  // const handleChangeImageStaff = async (e) => {
+  //   console.log(e.target.files[0]);
+  //   const file = e.target.files[0];
+  //   if (file.type !== "image/png" && file.type !== "image/jpeg") {
+  //     setTitle("Chú ý");
+  //     setMessage("");
+  //     setErrorMessage("Vui lòng chọn file ảnh có định dạng .png hoặc .jpg");
+  //     setOpenPopup(true);
+  //     return;
+  //   }
 
-    if (file.size > 5 * 1024 * 1024) {
-      setTitle("Chú ý");
-      setMessage("");
-      setErrorMessage("Vui lòng chọn file có dung lượng nhỏ hơn 5MB");
-      setOpenPopup(true);
-      return;
-    }
+  //   if (file.size > 5 * 1024 * 1024) {
+  //     setTitle("Chú ý");
+  //     setMessage("");
+  //     setErrorMessage("Vui lòng chọn file có dung lượng nhỏ hơn 5MB");
+  //     setOpenPopup(true);
+  //     return;
+  //   }
 
-    setImage(URL.createObjectURL(file));
-    const formData = new FormData();
-    formData.append("file", file);
-    try {
-      const params = {
-        staffId: staffId,
-        formData: formData,
-      };
-      const dataResult = await dispatch(updateImageStaff(params));
-      //const actionResult = unwrapResult(actionResult);
-      console.log("dataResult", dataResult);
-      if (dataResult) {
-        toast.success(dataResult.message);
-        fetchStaffDetail();
-      }
-    } catch (error) {
-      console.log("Failed to set active staff: ", error);
-    }
-  };
+  //   setImage(URL.createObjectURL(file));
+  //   const formData = new FormData();
+  //   formData.append("file", file);
+  //   try {
+  //     const params = {
+  //       staffId: staffId,
+  //       formData: formData,
+  //     };
+  //     const dataResult = await dispatch(updateImageStaff(params));
+  //     //const actionResult = unwrapResult(actionResult);
+  //     console.log("dataResult", dataResult);
+  //     if (dataResult) {
+  //       toast.success(dataResult.message);
+  //       fetchStaffDetail();
+  //     }
+  //   } catch (error) {
+  //     console.log("Failed to set active staff: ", error);
+  //   }
+  // };
   const handleResetPassword = () => {
     navigate("/reset-password");
   };
@@ -79,25 +80,24 @@ const Profile = () => {
   };
   const fetchStaffDetail = async () => {
     try {
-      const dataResult = await dispatch(getStaffDetail(staffId));
-      // const dataResult = unwrapResult(actionResult);
+      const dataResult = await StaffService.getProfile();
       console.log("dataResult", dataResult);
       if (dataResult) {
         setStaff(dataResult.data);
-        if (dataResult.data.imageUrl) {
-          fetchImage(process.env.REACT_APP_API_URL + "/" + dataResult.data.imageUrl);
+        if (dataResult.data.image) {
+          setImage("/image/" + dataResult.data.image);
         }
       }
     } catch (error) {
       console.log("Failed to fetch staff detail: ", error);
     }
   };
-  const fetchImage = async (imageUrl) => {
-    const res = await fetch(imageUrl);
-    const imageBlob = await res.blob();
-    const imageObjectURL = URL.createObjectURL(imageBlob);
-    setImage(imageObjectURL);
-  };
+  // const fetchImage = async (imageUrl) => {
+  //   const res = await fetch(imageUrl);
+  //   const imageBlob = await res.blob();
+  //   const imageObjectURL = URL.createObjectURL(imageBlob);
+  //   setImage(imageObjectURL);
+  // };
   useEffect(() => {
     fetchStaffDetail();
   }, []);
@@ -122,6 +122,11 @@ const Profile = () => {
                             
                         }
                       /> */}
+                      <img
+                        className="imgProfile"
+                        accept="image/*"
+                        src={image ? image : ("/image/default-avatar.jpg")}
+                      />
                       <Button
                         variant="outlined"
                         startIcon={<PhotoCamera />}
@@ -135,7 +140,7 @@ const Profile = () => {
                         accept="image/png, image/gif, image/jpeg"
                         style={{ display: "none" }}
                         ref={hiddenFileInput}
-                        onChange={(e) => handleChangeImageStaff(e)}
+                        //onChange={(e) => handleChangeImageStaff(e)}
                         id="upload-file"
                         type="file"
                       />
@@ -143,14 +148,14 @@ const Profile = () => {
                   </CardContent>
                 </Card>
               </Grid>
-              <Grid xs={12} item>
+              {/* <Grid xs={12} item>
                 <Card>
                   <Stack padding={2} spacing={2} alignItems="center">
                     <Box>{staff.roleName}</Box>
-                    {/* <Box>{getStatusLabel(Boolean(staff.isActive))}</Box> */}
+                    <Box>{getStatusLabel(Boolean(staff.isActive))}</Box>
                   </Stack>
                 </Card>
-              </Grid>
+              </Grid> */}
             </Grid>
           </Grid>
           <Grid xs={9.5} item>
@@ -168,10 +173,10 @@ const Profile = () => {
                   </Grid>
                   <Grid container>
                     <Grid xs={3} item>
-                      <Typography>Mã nhân viên</Typography>
+                      <Typography>Tên đăng nhập</Typography>
                     </Grid>
                     <Grid xs={9} item>
-                      <Typography>{staff.userName}</Typography>
+                      <Typography>{staff.username}</Typography>
                     </Grid>
                   </Grid>
                   <Grid container>
@@ -190,15 +195,15 @@ const Profile = () => {
                       <Typography>{staff?.email}</Typography>
                     </Grid>
                   </Grid>
-                  <Grid container>
+                  {/* <Grid container>
                     <Grid xs={3} item>
                       <Typography>Số CCCD/CMND</Typography>
                     </Grid>
                     <Grid xs={9} item>
                       <Typography>{staff?.identityCard}</Typography>
                     </Grid>
-                  </Grid>
-                  <Grid container>
+                  </Grid> */}
+                  {/* <Grid container>
                     <Grid xs={3} item>
                       <Typography>Địa chỉ</Typography>
                     </Grid>
@@ -208,18 +213,18 @@ const Profile = () => {
                         {staff.districtName}, {staff.provinceName}
                       </Typography>
                     </Grid>
-                  </Grid>
+                  </Grid> */}
                   <Grid container>
                     <Grid xs={3} item>
                       <Typography>Ngày sinh</Typography>
                     </Grid>
                     <Grid xs={9} item>
                       <Typography>
-                        {FormatDataUtils.formatDate(staff.dateOfBirth)}
+                        {FormatDataUtils.formatDate(staff.dob)}
                       </Typography>
                     </Grid>
                   </Grid>
-                  <Grid container>
+                  {/* <Grid container>
                     <Grid xs={3} item>
                       <Typography>Giới tính</Typography>
                     </Grid>
@@ -228,7 +233,7 @@ const Profile = () => {
                         {staff.gender === 1 ? "Nam" : "Nữ"}
                       </Typography>
                     </Grid>
-                  </Grid>
+                  </Grid> */}
                   <Stack direction="row" spacing={2} justifyContent="flex-end">
                     <Button
                       variant="contained"

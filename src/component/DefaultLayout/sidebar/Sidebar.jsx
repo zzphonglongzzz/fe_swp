@@ -53,6 +53,9 @@ const Sidebar = () => {
   function handleClickStaffList() {
     navigate("/staff/list");
   }
+  function handleCreateStaff(){
+    navigate('/staff/add')
+  }
   return (
     <div className="sidebar">
       <div className="top">
@@ -120,7 +123,7 @@ const Sidebar = () => {
           <p className="title">Nhân viên</p>
           <li>
             <GroupAddIcon className="icon" />
-            <span>Đăng ký nhân viên mới</span>
+            <span onClick={handleCreateStaff}>Đăng ký nhân viên mới</span>
           </li>
           <li>
             <PeopleIcon className="icon" />

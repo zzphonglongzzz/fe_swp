@@ -11,29 +11,39 @@ import {
   Card,
   CardContent,
   CardHeader,
-  FormControlLabel,
   Grid,
   InputAdornment,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   TextField,
 } from "@mui/material";
 import CustomTablePagination from "../../component/common/Pagination/index";
 import "./StaffList.css";
 import FormatDataUtils from "../../utils/FormatDataUtils";
+import { styled } from "@mui/material/styles";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
 const StaffList = () => {
   const [staffList, setStaffList] = useState([]);
   const pages = [10, 20, 50];
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalRecord, setTotalRecord] = useState();
-  const [keyword, setKeyword] = useState("");
+  const [keyword, setKeyword] = useState();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useState({
     staffName: "",
@@ -60,8 +70,8 @@ const StaffList = () => {
 
   const handleSearch = (e) => {
     setPage(0)
-    searchStaff({ ...searchParams, name: FormatDataUtils.removeExtraSpace(keyword), searchBy: searchBy });
-    setSearchParams({ ...searchParams, name: FormatDataUtils.removeExtraSpace(keyword), searchBy: searchBy });
+    searchStaff({ ...searchParams, staffName: FormatDataUtils.removeExtraSpace(keyword), searchBy: searchBy });
+    setSearchParams({ ...searchParams, staffName: FormatDataUtils.removeExtraSpace(keyword), searchBy: searchBy });
   };
 
   const searchStaff = async (searchParams) => {
@@ -72,7 +82,6 @@ const StaffList = () => {
         ...searchParams,
       };
       const dataResult = await StaffService.getStaffList(params);
-      //const dataResult = unwrapResult(actionResult);
       console.log("dataResult", dataResult);
       if (dataResult) {
         setTotalRecord(dataResult.data.totalRecord);
@@ -124,7 +133,6 @@ const StaffList = () => {
                   </InputAdornment>
                 ),
               }}
-              // onKeyDown={handleSearch}
               onChange={handleSearchChange}
             />
              <Button
@@ -148,12 +156,12 @@ const StaffList = () => {
                 <TableContainer>
                   {staffList && staffList.length > 0 && (
                     <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell align="center">Tên Nhân viên</TableCell>
-                          <TableCell align="center">Ảnh</TableCell>
-                          <TableCell align="center">Số điện thoại</TableCell>
-                          <TableCell align="center">Chức vụ</TableCell>
+                      <TableHead component={Paper}>
+                        <TableRow sx={{ minWidth: 200 }} aria-label="customized table">
+                          <StyledTableCell align="center">Tên Nhân viên</StyledTableCell>
+                          <StyledTableCell align="center">Ảnh</StyledTableCell>
+                          <StyledTableCell align="center">Số điện thoại</StyledTableCell>
+                          <StyledTableCell align="center">Chức vụ</StyledTableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>

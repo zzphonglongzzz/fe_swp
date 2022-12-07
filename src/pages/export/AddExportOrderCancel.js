@@ -262,6 +262,7 @@ const AddExportOrderCancel = () => {
                                 <TableCell>STT</TableCell>
                                 <TableCell>Mã sản phẩm</TableCell>
                                 <TableCell>Tên sản phẩm</TableCell>
+                                <TableCell>Vị trí</TableCell>
                                 <TableCell>Đơn vị</TableCell>
                                 <TableCell>Số lượng bị lỗi</TableCell>
                                 <TableCell>Số lượng</TableCell>
@@ -297,6 +298,9 @@ const AddExportOrderCancel = () => {
                                               {consignment?.product_name}
                                             </TableCell>
                                             <TableCell>
+                                              {consignment?.warehouse_name}
+                                            </TableCell>
+                                            <TableCell>
                                               {consignment?.unit_measure}
                                             </TableCell>
                                             <TableCell>
@@ -328,7 +332,7 @@ const AddExportOrderCancel = () => {
                                                   .damagedQuantity *
                                                   values.consignments[index]
                                                     .unit_price
-                                              ) || 0}
+                                                    || 0) }
                                             </TableCell>
 
                                             <TableCell align="center">

@@ -51,36 +51,36 @@ const ReturnList = () => {
       let target = e.target;
       console.log(e.target.value);
       setPage(0);
-      setSearchParams({ ...searchParams, billReferenceNumber: target.value });
-      searchReturnOrderList({ ...searchParams, billReferenceNumber: target.value });
+      setSearchParams({ ...searchParams, orderCode: target.value });
+      searchReturnOrderList({ ...searchParams, orderCode: target.value });
     }
   };
 
   const handleChangeStartDate = (value) => {
     setStartDate(value);
     setPage(0);
-    console.log('startDate', format(new Date(value), 'dd-MM-yyyy'));
+    console.log('startDate', format(new Date(value), 'yyyy-MM-dd HH:mm:ss'));
     setSearchParams({
       ...searchParams,
-      startDate: value !== null ? format(new Date(value), 'dd-MM-yyyy') : null,
+      dateFrom: value !== null ? format(new Date(value), 'yyyy-MM-dd HH:mm:ss') : null,
     });
     searchReturnOrderList({
       ...searchParams,
-      startDate: value !== null ? format(new Date(value), 'dd-MM-yyyy') : null,
+      dateFrom: value !== null ? format(new Date(value), 'yyyy-MM-dd HH:mm:ss') : null,
     });
   };
 
   const handleChangeEndDate = (value) => {
     setEndDate(value);
     setPage(0);
-    console.log('endDate', format(new Date(value), 'dd-MM-yyyy'));
+    console.log('endDate', format(new Date(value), 'yyyy-MM-dd HH:mm:ss'));
     setSearchParams({
       ...searchParams,
-      endDate: value !== null ? format(new Date(value), 'dd-MM-yyyy') : null,
+      dateTo: value !== null ? format(new Date(value), 'yyyy-MM-dd HH:mm:ss') : null,
     });
     searchReturnOrderList({
       ...searchParams,
-      endDate: value !== null ? format(new Date(value), 'dd-MM-yyyy') : null,
+      dateTo: value !== null ? format(new Date(value), 'yyyy-MM-dd HH:mm:ss') : null,
     });
   };
   const handleOnClickTableRow = (returnOrderId) => {
@@ -135,12 +135,9 @@ const ReturnList = () => {
   };
   useEffect(() => {
     searchReturnOrderList(searchParams);
+    fetchReturnOrderList();
   }, [page, rowsPerPage]);
 
-  useEffect(() => {
-    fetchReturnOrderList();
-    //getAllStaff();
-  }, []);
   return (
     <Grid
       container
@@ -266,7 +263,7 @@ const ReturnList = () => {
                                 {"XUAT" + returnOrder.order_code}
                               </TableCell>
                               <TableCell align="center">
-                                {/* {FormatDataUtils.formatCurrency(returnOrder?.totalPrice) || 0} */}50000
+                                {FormatDataUtils.formatCurrency(returnOrder?.total_price) || 0}
                               </TableCell>
                             </TableRow>
                           ))}

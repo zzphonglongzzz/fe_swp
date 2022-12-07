@@ -77,7 +77,7 @@ const ReturnOrderDetail = () => {
               <Stack direction="row" justifyContent="space-between" p={2}>
                 <Box className="billReferenceContainer">
                   <Typography variant="span">
-                    <strong>Phiếu trả hàng từ phiếu xuất hàng số:</strong> {"XUAT" + returnOrder[0].consignment_id}
+                    <strong>Phiếu trả hàng từ phiếu xuất hàng số:</strong> {"XUAT" + returnOrder[0].order_code}
                   </Typography>{" "}
                   {/* <span>
                             {FormatDataUtils.getStatusLabel(importOrder.statusName)}
