@@ -100,7 +100,7 @@ export default function CommonForgotPass() {
             }
           },
           (error) => {
-            toast.error(error.response.data.message);
+            toast.error("Không tìm thấy email đăng ký");
             setLoading(false);
           }
         );
@@ -200,26 +200,8 @@ export default function CommonForgotPass() {
                 <div className="styleLabel">
                   <div>
                     <label>
-                      Bạn không nhận được mail?
-                      <Link
-                        href="#"
-                        variant="body2"
-                        onClick={() => {
-                          if (activeStep < 2) {
-                            sendMailForgotPassword(values);
-                          }
-                        }}
-                      >
-                        {" bấm vào đây "}
-                      </Link>
-                      để được gửi lại mã token
-                    </label>
-                    <br></br>
-                  </div>
-                  <div style={{ marginTop: "25%" }}>
-                    <label>
                       Nếu bạn vẫn chưa xử lý được, hãy liên hệ với quản lý của
-                      bạn để được hỗ trợ cài lại mật khẩu. SĐT: 09876543212
+                      bạn để được hỗ trợ cài lại mật khẩu. SĐT: 0868752500
                     </label>
                   </div>
                 </div>

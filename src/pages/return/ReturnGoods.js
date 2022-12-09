@@ -8,19 +8,20 @@ import {
   Button,
   Card,
   CardContent,
-  Divider,
   Grid,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   TextField,
   Typography,
 } from "@mui/material";
-import { Close, Co2Sharp, KeyboardReturn } from "@mui/icons-material";
+import { styled } from "@mui/material/styles";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import { Close, KeyboardReturn } from "@mui/icons-material";
 import { FieldArray, Form, Formik, useField } from "formik";
 import AlertPopup from "../../component/common/AlertPopup";
 import ExportOrderService from "../../service/ExportOrderService";
@@ -41,6 +42,15 @@ const ReturnGoods = () => {
   const errorFormik = useRef();
   
 
+  const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+      backgroundColor: theme.palette.common.black,
+      color: theme.palette.common.white,
+    },
+    [`&.${tableCellClasses.body}`]: {
+      fontSize: 14,
+    },
+  }));
   const TextfieldWrapper = ({ name, ...otherProps }) => {
     const [field, meta] = useField(name);
 
@@ -128,10 +138,6 @@ const ReturnGoods = () => {
            warehouseId: productList[index]?.warehouse_id
         });
       }
-      // console.log(consignmentProductDTOs)
-      // console.log(productList[0].order_id)
-      // console.log(productList[0].confirm_by_id)
-      // console.log(values.description)
       if (consignmentProductDTOs.length > 0) {
         try {
           const resultResponse = await ExportOrderService.createReturnOrder(
@@ -257,21 +263,21 @@ const ReturnGoods = () => {
                     <Card>
                       {!!productList && productList?.length > 0 ? (
                         <Box>
-                          <TableContainer>
-                            <Table>
+                          <TableContainer component={Paper}>
+                            <Table sx={{ minWidth: 200 }} aria-label="customized table">
                               <TableHead>
                                 <TableRow>
-                                  <TableCell>STT</TableCell>
-                                  <TableCell>Mã sản phẩm</TableCell>
-                                  <TableCell>Tên sản phẩm</TableCell>
-                                  <TableCell>Vị trí</TableCell>
-                                  <TableCell>Đơn vị</TableCell>
-                                  <TableCell>Đơn giá</TableCell>
-                                  <TableCell>Trả về</TableCell>
-                                  <TableCell align="center">
+                                  <StyledTableCell>STT</StyledTableCell>
+                                  <StyledTableCell>Mã sản phẩm</StyledTableCell>
+                                  <StyledTableCell>Tên sản phẩm</StyledTableCell>
+                                  <StyledTableCell>Vị trí</StyledTableCell>
+                                  <StyledTableCell>Đơn vị</StyledTableCell>
+                                  <StyledTableCell>Đơn giá</StyledTableCell>
+                                  <StyledTableCell>Trả về</StyledTableCell>
+                                  <StyledTableCell align="center">
                                     Số lượng trên đơn hàng
-                                  </TableCell>
-                                  <TableCell>Thành tiền</TableCell>
+                                  </StyledTableCell>
+                                  <StyledTableCell>Thành tiền</StyledTableCell>
                                 </TableRow>
                               </TableHead>
                               <TableBody>
@@ -331,7 +337,7 @@ const ReturnGoods = () => {
                                                     .quantityReturn *
                                                     values.consignments[index]
                                                       .unit_price
-                                                )}
+                                                || 0)}
                                               </TableCell>
                                             </TableRow>
                                           )
@@ -412,7 +418,7 @@ const ReturnGoods = () => {
                         <br />
                         <Typography align="right">
                           {FormatDataUtils.formatCurrency(
-                            calculateTotalAmount()
+                            calculateTotalAmount() || 0
                           )}
                         </Typography>
                       </CardContent>

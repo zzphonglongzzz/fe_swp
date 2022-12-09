@@ -10,12 +10,8 @@ import {
   Button,
   Card,
   CardContent,
-  FormControl,
-  FormControlLabel,
   FormHelperText,
   Grid,
-  Radio,
-  RadioGroup,
   Stack,
   TextField,
   Typography,
@@ -27,6 +23,8 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import StaffService from "../../service/StaffService";
 import FormatDataUtils from "../../utils/FormatDataUtils";
+import { vi } from "date-fns/locale";
+import moment from "moment";
 
 const TextfieldWrapper = ({ name, ...otherProps }) => {
   const [field, meta] = useField(name);
@@ -56,6 +54,7 @@ const AddStaff = () => {
   const [loadingButton, setLoadingButton] = useState(false);
   const [file1, setFile1] = useState([]);
   const [staff, setStaff] = useState();
+  //const [dob, setDob] = useState();
 
   const onDrop = useCallback((acceptedFiles, fileRejections) => {
     if (!!fileRejections[0]) {
@@ -118,13 +117,13 @@ const AddStaff = () => {
       .max(255, "Email không thể dài quá 255 kí tự")
       .email("Vui lòng nhập đúng định dạng email. VD abc@xyz.com")
       .required("Chưa nhập Email"),
-    dob: Yup.date()
-      .typeError("Ngày sinh không hợp lệ")
-      .required("Chưa nhập ngày sinh")
-      .nullable()
-      .test("dateOfBirth", "Nhân viên phải ít nhất 18 tuổi", function (value) {
-        return differenceInYears(new Date(), new Date(value)) >= 18;
-      }),
+    // dob: Yup.date()
+    //   .typeError("Ngày sinh không hợp lệ")
+    //   .required("Chưa nhập ngày sinh")
+    //   .nullable()
+    //   .test("dateOfBirth", "Nhân viên phải ít nhất 18 tuổi", function (value) {
+    //     return differenceInYears(new Date(), new Date(value)) >= 18;
+    //   }),
     role: Yup.string()
       .trim()
       .max(255, "Chức vụ không thể dài quá 255 kí tự")
@@ -139,7 +138,7 @@ const AddStaff = () => {
       if (dataResult.data) {
         setStaff(dataResult.data.staff);
 
-        //console.log(dataResult.data.product.image)
+        setDob(dataResult.data.staff.dob);
         if (dataResult.data.staff.image) {
           setImageUrl("/image/" + dataResult.data.staff.image);
         }
@@ -154,14 +153,13 @@ const AddStaff = () => {
     console.log(values);
     const staff = {
       fullName: FormatDataUtils.removeExtraSpace(values.fullName),
-      dob: new Date(
-        new Date(values.dateOfBirth) + new Date().getTimezoneOffset() / 60
-      ).toJSON(),
+      dob: moment(values.dateOfBirth).format("YYYY-MM-DD"),
       phone: values.phone,
       email: values.email,
       role: values.role,
-      image: file1.patth,
+      image: file1.path === undefined ? values.image : file1.path,
     };
+    console.log(staff);
     saveStaffDetail(staff);
   };
   const saveStaffDetail = async (staff) => {
@@ -245,7 +243,7 @@ const AddStaff = () => {
                             <div {...getRootProps()} className="preview">
                               <input {...getInputProps()} />
                               {imageUrl && (
-                                <img className="imgPreview" src={imageUrl} />
+                                <img name="image" className="imgPreview" src={imageUrl} />
                               )}
                               <CloudUpload
                                 fontSize="large"
@@ -291,7 +289,7 @@ const AddStaff = () => {
                                 dateAdapter={AdapterDateFns}
                               >
                                 <DatePicker
-                                  id="birthDate"
+                                  id="dob"
                                   label={null}
                                   value={dob}
                                   inputFormat="dd/MM/yyyy"
@@ -300,7 +298,7 @@ const AddStaff = () => {
                                   onChange={(dob) => {
                                     console.log(dob);
                                     setDob(dob);
-                                    setFieldValue("dob", dob);
+                                    setFieldValue("dateOfBirth", dob);
                                   }}
                                   renderInput={(params) => (
                                     <TextField
@@ -455,12 +453,13 @@ const AddStaff = () => {
                                 dateAdapter={AdapterDateFns}
                               >
                                 <DatePicker
-                                  id="birthDate"
-                                  label={null}
+                                  id="dob"
+                                  //label={null}
+                                  //name= "dob"
                                   value={dob}
                                   inputFormat="dd/MM/yyyy"
                                   maxDate={today}
-                                  onOpen={() => setTouchedDob(true)}
+                                  // onOpen={() => setTouchedDob(true)}
                                   onChange={(dob) => {
                                     console.log(dob);
                                     setDob(dob);

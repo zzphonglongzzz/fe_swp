@@ -90,7 +90,7 @@ const CreateInventoryChecking = () => {
     console.log(e);
     const isSelected = valueFormik.current.productList.some((element) => {
       console.log("element 215", element);
-      if (element.productId === e.value.productId) {
+      if (element.productId === e.value.id) {
         return true;
       }
       return false;
@@ -162,7 +162,7 @@ const CreateInventoryChecking = () => {
           );
         if (resultResponse) {
           setSubmitting(false);
-          toast.success(resultResponse.data.message);
+          toast.success("Tạo phiếu kiểm kho thành công");
           navigate("/inventory-checking/list");
         }
       } catch (error) {

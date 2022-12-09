@@ -105,6 +105,7 @@ const privateRoutes = [
 
   { path: "/profile", component: Profile },
   { path: "/profile/edit", component: UpdateProfile },
+
   //dashboard
   { path: "/dashboard", component: Home },
   { path: "*", component: NotFound, layout: null },
