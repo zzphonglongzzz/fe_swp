@@ -72,13 +72,15 @@ const ExportGood = () => {
   const arrayHelpersRef = useRef(null);
   const valueFormik = useRef();
   
+
   const FORM_VALIDATION = Yup.object().shape({
-    //quantity: Yup.number().required("Bạn chưa số lượng ").min(1),
-    ///manufactorId: Yup.number().required("Bạn chưa chọn nhà cung cấp"),
+    // quantity: Yup.number().required("Bạn có sản phẩm chưa nhập số lượng").max(1),
+    // manufactorId: Yup.number().required("Bạn chưa chọn nhà cung cấp"),
   });
   const handleOnChangeProduct = async (e) => {
+    console.log(e.value.productId)
     const isSelected = valueFormik.current.productList.some((element) => {
-      if (element.productId === e.value.productId) {
+      if (element.productId === e.value.id) {
         return true;
       }
       return false;
@@ -204,9 +206,8 @@ const ExportGood = () => {
               const consignmentProductExportListItem = {
                 consignment_id: consignmentItem.id,
                 wareHouseId: consignmentItem.warehouseId,
-                expirationDate: moment(consignmentItem.expirationDate)
-                  .utc()
-                  .format("YYYY-MM-DD hh:mm:ss"),
+                expirationDate: 
+                  moment(consignmentItem.expirationDate).format('YYYY-MM-DD hh:mm:ss'),
                 quantity: consignmentItem.quantity,
               };
               returnConsignments.push(consignmentProductExportListItem);
@@ -511,7 +512,7 @@ const ExportGood = () => {
                                                           type={"number"}
                                                           InputProps={{
                                                             inputProps: {
-                                                              min: 0,
+                                                              min: 1,
                                                               max: consignment?.quantityInstock,
                                                               step: 1,
                                                             },

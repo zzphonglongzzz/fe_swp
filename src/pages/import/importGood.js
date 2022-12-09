@@ -176,11 +176,18 @@ const ImportGoods = () => {
         setOpenPopup(true);
         return;
       }
+      // console.log(
+      //   moment(consignments[index]?.expirationDate.add('days', 1).calendar())
+      //     .utc()
+      //     .format("YYYY-MM-DD hh:mm:ss")
+      // );
       productRequestList.push({
         id: consignments[index]?.productId,
-        expiration_date: moment(consignments[index]?.expirationDate)
-          .utc()
-          .format("YYYY-MM-DD hh:mm:ss"),
+        //expiration_date1: moment(consignments[index]?.expirationDate).add(1, 'days').format('YYYY-MM-DD hh:mm:ss'),
+        // expiration_date1: moment(consignments[index]?.expirationDate,"YYYY-MM-DD hh:mm:ss")
+        //   .utc()
+        //   .format("YYYY-MM-DD hh:mm:ss"),
+        expiration_date: moment(consignments[index]?.expirationDate).format('YYYY-MM-DD hh:mm:ss'),
         unit_price: Math.round(consignments[index]?.unitPrice),
         quantity: Math.round(consignments[index]?.quantity),
       });
@@ -194,7 +201,7 @@ const ImportGoods = () => {
         manufacturerId: values.manufactorId,
         warehouseId: values.wareHouseId,
         //productRequestList: productRequestList,
-        consignmentRequest: {productRequestList},
+        consignmentRequest: { productRequestList },
       };
       console.log(newImportOrder);
       setLoadingButton(true);
@@ -518,10 +525,7 @@ const ImportGoods = () => {
                 openPopup={openPopup}
                 setOpenPopup={setOpenPopup}
               >
-                <Box
-                  component={'span'}
-                  className="popup-message-container"
-                >
+                <Box component={"span"} className="popup-message-container">
                   {errorMessage}
                 </Box>
               </AlertPopup>

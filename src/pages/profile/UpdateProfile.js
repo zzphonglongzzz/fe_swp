@@ -25,6 +25,7 @@ import * as Yup from "yup";
 import { differenceInYears } from 'date-fns';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import StaffService from "../../service/StaffService";
 
 const TextfieldWrapper = ({ name, ...otherProps }) => {
     const [field, meta] = useField(name);
@@ -45,31 +46,14 @@ const UpdateProfile = () => {
   const [staff, setStaff] = useState();
   const navigate = useNavigate();
   const [dob, setDob] = useState(null);
-  const [gender, setGender] = useState(1);
   const [touchedDob, setTouchedDob] = useState(false);
   const today = new Date();
-  const initialFormValue = {
-    username: "",
-    fullName: "",
-    identityCard: "",
-    dateOfBirth: "",
-    gender: 1,
-    phone: "",
-    email: "",
-    role: ["ROLE_SELLER"],
-    // provinceId: '',
-    // districtId: '',
-    // wardId: '',
-    addressDetail: "",
-  };
+
   const FORM_VALIDATION = Yup.object().shape({
     fullName: Yup.string()
       .trim()
       .max(255, "Họ và tên nhân viên không thể dài quá 255 kí tự")
       .required("Chưa nhập Họ và tên nhân viên"),
-    identityCard: Yup.string()
-      .required("Chưa nhập Số CCCD/CMND")
-      .matches(/^(\d{9}|\d{12})$/, "Số CCCD/CMND của bạn không hợp lệ"),
     phone: Yup.string()
       .required("Chưa nhập Số điện thoại")
       .test("phone", "Vui lòng xoá các khoảng trắng", function (value) {
@@ -91,36 +75,23 @@ const UpdateProfile = () => {
       .nullable()
       .test("dateOfBirth", "Nhân viên phải ít nhất 18 tuổi", function (value) {
         return differenceInYears(new Date(), new Date(value)) >= 18;
-      }),
-    // provinceId: Yup.string().required('Chưa chọn tỉnh/thành phố').nullable(),
-    // districtId: Yup.number().required('Chưa chọn quận/huyện').nullable(),
-    // wardId: Yup.number().required('Chưa chọn xã/phường').nullable(),
-    detailAddress: Yup.string()
-      .trim()
-      .max(255, "Địa chỉ chi tiết không thể dài quá 255 kí tự")
-      .required("Chưa nhập Địa chỉ chi tiết"),
+      })
   });
   const handleSubmit = async (values) => {
     const staff = {
       id: staffId,
       fullName: FormatDataUtils.removeExtraSpace(values.fullName),
-      identityCard: values.identityCard,
+      //identityCard: values.identityCard,
       dateOfBirth: new Date(
         new Date(values.dateOfBirth) + new Date().getTimezoneOffset() / 60
       ).toJSON(),
-      gender: Boolean(+values.gender),
       phone: values.phone,
       email: values.email,
-      //addressId: values.addressId,
-      // provinceId: values.provinceId,
-      // districtId: values.districtId,
-      // wardId: values.wardId,
-      detailAddress: FormatDataUtils.removeExtraSpace(values.detailAddress),
     };
 
     try {
-      const actionResult = await dispatch(updateProfile(staff));
-      const dataResult = unwrapResult(actionResult);
+      const dataResult = await StaffService.getProfile();
+      //const dataResult = unwrapResult(actionResult);
       if (dataResult) {
         let currentUser = AuthService.getCurrentUser();
         currentUser.fullName = staff.fullName;
@@ -134,16 +105,11 @@ const UpdateProfile = () => {
   };
   const fetchProfile = async () => {
     try {
-      const actionResult = await dispatch(getProfile(staffId));
-      const dataResult = unwrapResult(actionResult);
+      const dataResult = await StaffService.getProfile();
       console.log("dataResult", dataResult);
       if (dataResult) {
         setStaff(dataResult.data);
-        setDob(dataResult.data.dateOfBirth);
-        setGender(dataResult.data.gender ? 1 : 0);
-        //setSelectedProvince(dataResult.data.provinceId);
-        // setSelectedDistrict(dataResult.data.districtId);
-        //setSelectedWard(dataResult.data.wardId);
+        setDob(dataResult.data.dob)
       }
     } catch (error) {
       console.log("Failed to fetch staff detail: ", error);
@@ -171,27 +137,15 @@ const UpdateProfile = () => {
                     <Typography variant="h6">Thông tin cá nhân</Typography>
                     <Stack padding={2}>
                       <Grid container spacing={3}>
-                        <Grid xs={12} item>
+                        <Grid xs={6} item>
                           <Typography>
                             Họ và tên
-                          
                           </Typography>
                           <TextfieldWrapper
                             name="fullName"
                             fullWidth
                             id="fullName"
                             autoComplete="fullName"
-                          />
-                        </Grid>
-                        <Grid xs={6} item>
-                          <Typography>
-                            Số CCCD/CMND 
-                          </Typography>
-                          <TextfieldWrapper
-                            name="identityCard"
-                            fullWidth
-                            id="identityCard"
-                            autoComplete="identityCard"
                           />
                         </Grid>
                         <Grid xs={6} item>
@@ -229,32 +183,6 @@ const UpdateProfile = () => {
                             </FormHelperText>
                           )}
                         </Grid>
-                        <Grid xs={12} item>
-                          <Typography>Giới tính</Typography>
-                          <FormControl>
-                            <RadioGroup
-                              row
-                              aria-labelledby="demo-controlled-radio-buttons-group"
-                              name="controlled-radio-buttons-group"
-                              value={gender}
-                              onChange={(e) => {
-                                setFieldValue("gender", e.target.value);
-                                setGender(e.target.value);
-                              }}
-                            >
-                              <FormControlLabel
-                                value="1"
-                                control={<Radio />}
-                                label="Nam"
-                              />
-                              <FormControlLabel
-                                value="0"
-                                control={<Radio />}
-                                label="Nữ"
-                              />
-                            </RadioGroup>
-                          </FormControl>
-                        </Grid>
                         <Grid xs={6} item>
                           <Typography>
                             Số điện thoại
@@ -275,17 +203,6 @@ const UpdateProfile = () => {
                             fullWidth
                             id="email"
                             autoComplete="email"
-                          />
-                        </Grid>
-                        <Grid xs={12} item>
-                          <Typography>
-                            Địa chỉ chi tiết
-                          </Typography>
-                          <TextfieldWrapper
-                            name="detailAddress"
-                            fullWidth
-                            id="detailAddress"
-                            autoComplete="detailAddress"
                           />
                         </Grid>
                       </Grid>

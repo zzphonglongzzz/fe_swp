@@ -10,12 +10,6 @@ import {
   Grid,
   IconButton,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Typography,
   TextField,
 } from "@mui/material";
@@ -26,8 +20,25 @@ import * as Yup from "yup";
 import ExportOrderService from "../../service/ExportOrderService";
 import "./UpdateExportTable.scss";
 import AlertPopup from "../../component/common/AlertPopup/index";
+import { styled } from "@mui/material/styles";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 
 
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
 const TextfieldWrapper = ({ name, ...otherProps }) => {
   const [field, meta] = useField(name);
 
@@ -255,22 +266,22 @@ const AddExportOrderCancel = () => {
                   <Card>
                     {!!productList && productList?.length > 0 ? (
                       <Box>
-                        <TableContainer>
-                          <Table>
+                        <TableContainer component={Paper}>
+                          <Table sx={{ minWidth: 200 }} aria-label="customized table">
                             <TableHead>
                               <TableRow>
-                                <TableCell>STT</TableCell>
-                                <TableCell>Mã sản phẩm</TableCell>
-                                <TableCell>Tên sản phẩm</TableCell>
-                                <TableCell>Vị trí</TableCell>
-                                <TableCell>Đơn vị</TableCell>
-                                <TableCell>Số lượng bị lỗi</TableCell>
-                                <TableCell>Số lượng</TableCell>
-                                <TableCell>Đơn giá</TableCell>
-                                <TableCell>Thành tiền</TableCell>
-                                <TableCell align="center">
+                                <StyledTableCell>STT</StyledTableCell>
+                                <StyledTableCell>Mã sản phẩm</StyledTableCell>
+                                <StyledTableCell>Tên sản phẩm</StyledTableCell>
+                                <StyledTableCell>Vị trí</StyledTableCell>
+                                <StyledTableCell>Đơn vị</StyledTableCell>
+                                <StyledTableCell>Số lượng bị lỗi</StyledTableCell>
+                                <StyledTableCell>Số lượng</StyledTableCell>
+                                <StyledTableCell>Đơn giá</StyledTableCell>
+                                <StyledTableCell>Thành tiền</StyledTableCell>
+                                <StyledTableCell align="center">
                                   Mô tả chi tiết
-                                </TableCell>
+                                </StyledTableCell>
                               </TableRow>
                             </TableHead>
                             <TableBody>

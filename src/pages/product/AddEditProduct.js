@@ -172,13 +172,13 @@ const AddEditProduct = () => {
     manufactorId: Yup.string().required("Chưa chọn nhà cung cấp"),
   });
   const onChangeCategory = (event) => {
-    setSelectedSubCategory(null);
+    setSelectedSubCategory(event);
     setSelectedCategory(event);
     fetchSubCategoryByCategoryId(event.value);
   };
   const fetchManufacturerList = async () => {
     try {
-      const actionResult = await ManfacuturerService.getManufacturerList();
+      const actionResult = await ManfacuturerService.getAllManufacturer();
       if (actionResult.data) {
         setManufacturerList(actionResult.data.manufacturer);
       }
@@ -247,13 +247,13 @@ const AddEditProduct = () => {
       category_id: values.categoryId,
       manufacturer_id: values.manufactorId,
       subCategory_id: values.subCategoryId,
-      image: file.path,
+      image: file.path === undefined ? values.image : file.path,
     };
     console.log(newProduct);
     saveProductDetail(newProduct);
   };
   const handleOnClickExit = () => {
-    navigate(isAdd ? "/getAllProducts" : `/product/detail/${productId}`);
+    navigate(isAdd ? "/product" : `/product/detail/${productId}`);
   };
   const fetchSubCategoryByCategoryId = async (categoryId) => {
     try {
@@ -403,7 +403,7 @@ const AddEditProduct = () => {
                                     noOptionsMessage={() => (
                                       <>Không tìm thấy danh mục phù hợp</>
                                     )}
-                                    isClearable={true}
+                                    //isClearable={true}
                                     isSearchable={true}
                                     name="categoryId"
                                     value={FormatDataUtils.getSelectedOption(
@@ -442,14 +442,14 @@ const AddEditProduct = () => {
                                 <Typography className="wrapIcon">
                                   Danh mục phụ:
                                 </Typography>
-                                {!!subCategoryList && (
+                                {subCategoryList && selectedSubCategory && (
                                   <Select
                                     classNamePrefix="select"
                                     placeholder="Chọn danh mục phụ"
                                     noOptionsMessage={() => (
-                                      <>Không tìm thấy danh mục phù hợp</>
+                                      <>Không tìm thấy danh mục phụ phù hợp</>
                                     )}
-                                    isClearable={true}
+                                    //isClearable={true}
                                     isSearchable={true}
                                     name="subCategoryId"
                                     value={FormatDataUtils.getSelectedOption(
@@ -482,7 +482,7 @@ const AddEditProduct = () => {
                                 <Typography className="wrapIcon">
                                   Nhà cung cấp:
                                 </Typography>
-                                {!!manufacturerList && selectedManufacuter && (
+                                {manufacturerList && selectedManufacuter && (
                                   <Select
                                     classNamePrefix="select"
                                     placeholder="Chọn nhà cung cấp"
@@ -491,12 +491,12 @@ const AddEditProduct = () => {
                                         Không tìm thấy nhà cung cấp phù hợp
                                       </>
                                     )}
-                                    isClearable={true}
+                                    //isClearable={true}
                                     isSearchable={true}
                                     name="manufacturerId"
                                     value={FormatDataUtils.getSelectedOption(
                                       manufacturerList,
-                                      selectedManufacuter
+                                      selectedManufacuter,
                                     )}
                                     options={FormatDataUtils.getOptionWithIdandName(
                                       manufacturerList
@@ -515,6 +515,7 @@ const AddEditProduct = () => {
                                     }}
                                     onChange={(e) => {
                                       setFieldValue("manufactorId", e?.value);
+                                      setSelectedManufacturer(e)
                                     }}
                                   />
                                 )}
@@ -546,6 +547,7 @@ const AddEditProduct = () => {
                                   {imageUrl && (
                                     // eslint-disable-next-line jsx-a11y/alt-text
                                     <img
+                                      name="image"
                                       className="imgPreview"
                                       src={imageUrl}
                                       accept="image/*"
