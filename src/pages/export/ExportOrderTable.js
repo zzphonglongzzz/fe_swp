@@ -131,20 +131,21 @@ const ExportOrderTable = ({ exportOrders }) => {
                 </TableCell>
                 <TableCell align="center">
                   <Typography>
-                    {getStatusLabel(exportOrder.status)}{" "}
-                    {exportOrder.status !== "pending" && (
-                      <span>
-                        {getStatusDeliver(
-                          exportOrder.is_return === null
-                            ? null
-                            : exportOrder.is_return === true
-                            ? 1
-                            : exportOrder.is_return === false
-                            ? 0
-                            : undefined
+                    {exportOrder.status === "returned" || exportOrder.status === "pending"
+                      ? getStatusLabel(exportOrder.status)
+                      : exportOrder.status !== "pending" && (
+                          <span>
+                            {getStatusDeliver(
+                              exportOrder.is_return === null
+                                ? null
+                                : exportOrder.is_return === true
+                                ? 1
+                                : exportOrder.is_return === false
+                                ? 0
+                                : undefined
+                            )}
+                          </span>
                         )}
-                      </span>
-                    )}
                   </Typography>
                 </TableCell>
                 <TableCell align="center">

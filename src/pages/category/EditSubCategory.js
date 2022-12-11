@@ -94,7 +94,7 @@ const EditSubCategory = (props) => {
   useEffect(() => {
     getSelectedParent();
     fetchCategoryList();
-  }, []);
+  }, [categoryId]);
 
   return (
     <Formik
@@ -133,10 +133,10 @@ const EditSubCategory = (props) => {
                     placeholder="Chọn danh mục cha"
                     noOptionsMessage={() => <>Không có tìm thấy danh mục nào</>}
                     isSearchable={true}
-                    isLoading={loadingSelect}
+                    //isLoading={loadingSelect}
                     loadingMessage={() => <>Đang tìm kiếm danh mục cha...</>}
                     name="categoryId"
-                    value={FormatDataUtils.getSelectedOption(
+                    value={FormatDataUtils.getSelectedOption1(
                       categoryList,
                       selectedCategory
                     )}
