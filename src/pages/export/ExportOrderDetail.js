@@ -321,7 +321,7 @@ const ExportOrderDetail = () => {
                             navigate(`/export/cancel/${exportOrderId}`);
                           }}
                         >
-                          Chưa giao hàng
+                          Chi tiết hủy giao hàng
                         </Button>
                       )}
                     </Stack>

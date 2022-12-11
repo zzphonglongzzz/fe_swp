@@ -69,8 +69,8 @@ const ExportList = () => {
       let target = e.target;
       console.log(e.target.value);
       setPage(0);
-      setSearchParams({ ...searchParams });
-      searchExportOrder({ ...searchParams });
+      setSearchParams({ ...searchParams,orderCode: target.value });
+      searchExportOrder({ ...searchParams,orderCode: target.value });
     }
   };
   const handleChangeStartDate = (value) => {
@@ -136,7 +136,7 @@ const ExportList = () => {
   };
   useEffect(() => {
     searchExportOrder(searchParams);
-   fetchExportOrderList();
+    fetchExportOrderList();
   }, [page, rowsPerPage]);
 
   return (

@@ -11,12 +11,6 @@ import {
   Divider,
   Grid,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   TextField,
   Typography,
 } from "@mui/material";
@@ -28,6 +22,14 @@ import { vi } from "date-fns/locale";
 import importOrderService from "../../service/ImportOrderService";
 import AlertPopup from "../../component/common/AlertPopup";
 import moment from "moment";
+import { styled } from "@mui/material/styles";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 
 const TextfieldWrapper = ({ name, ...otherProps }) => {
   const [field, meta] = useField(name);
@@ -43,6 +45,15 @@ const TextfieldWrapper = ({ name, ...otherProps }) => {
   }
   return <TextField {...configTextfield} />;
 };
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
 const UpdateImportOrder = () => {
   const { importOrderId } = useParams();
   //const [importOrder, setImportOrder] = useState();
@@ -280,9 +291,9 @@ const UpdateImportOrder = () => {
                 <Card>
                   <Stack direction="row" justifyContent="space-between" p={2}>
                     <Box>
-                      <Typography variant="span">
+                      <Typography variant="span">{" "}
                         <strong>Phiếu nhập kho số:</strong>
-                        {/* {"NHAP" + listConsignments[0]?.order_id} */}
+                        {"NHAP " + listConsignments[0]?.order_id}
                       </Typography>{" "}
                       {/* <span>
                               {FormatDataUtils.getStatusLabel(listConsignments.statusName)}
@@ -341,18 +352,18 @@ const UpdateImportOrder = () => {
                     <Card>
                       {!!listConsignments && listConsignments?.length > 0 ? (
                         <Box>
-                          <TableContainer>
-                            <Table>
+                          <TableContainer component={Paper}>
+                            <Table sx={{ minWidth: 200 }} aria-label="customized table">
                               <TableHead>
                                 <TableRow>
-                                  <TableCell>STT</TableCell>
-                                  <TableCell>Mã sản phẩm</TableCell>
-                                  <TableCell>Tên sản phẩm</TableCell>
-                                  <TableCell>Hạn lưu kho</TableCell>
-                                  <TableCell>Đơn vị</TableCell>
-                                  <TableCell>Số lượng</TableCell>
-                                  <TableCell>Đơn giá</TableCell>
-                                  <TableCell>Thành tiền</TableCell>
+                                  <StyledTableCell>STT</StyledTableCell>
+                                  <StyledTableCell>Mã sản phẩm</StyledTableCell>
+                                  <StyledTableCell>Tên sản phẩm</StyledTableCell>
+                                  <StyledTableCell>Hạn lưu kho</StyledTableCell>
+                                  <StyledTableCell>Đơn vị</StyledTableCell>
+                                  <StyledTableCell>Số lượng</StyledTableCell>
+                                  <StyledTableCell>Đơn giá</StyledTableCell>
+                                  <StyledTableCell>Thành tiền</StyledTableCell>
                                 </TableRow>
                               </TableHead>
                               <TableBody>

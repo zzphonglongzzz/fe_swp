@@ -14,7 +14,7 @@ import {
   TextField,
 } from "@mui/material";
 import FormatDataUtils from "../../utils/FormatDataUtils";
-import { Close, Edit } from "@mui/icons-material";
+import { Close, Edit,Done } from "@mui/icons-material";
 import { Form, Formik, useField, FieldArray } from "formik";
 import * as Yup from "yup";
 import ExportOrderService from "../../service/ExportOrderService";
@@ -222,11 +222,11 @@ const AddExportOrderCancel = () => {
                     >
                       <Button
                         variant="contained"
-                        startIcon={<Edit />}
-                        color="warning"
+                        startIcon={<Done />}
+                        color="success"
                         onClick={() => handleOnClickConfirm()}
                       >
-                        Hủy xuất hàng
+                        Xác nhận hủy giao hàng
                       </Button>
                       <Button
                         variant="contained"
@@ -234,7 +234,7 @@ const AddExportOrderCancel = () => {
                         color="error"
                         onClick={() => handleOnClickCancel()}
                       >
-                        Huỷ chỉnh sửa
+                        Quay lại
                       </Button>
                     </Stack>
                     {/* )} */}

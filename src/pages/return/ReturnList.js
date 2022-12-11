@@ -171,7 +171,7 @@ const ReturnList = () => {
                 }}
                 onKeyDown={handleSearch}
                 onChange={(e) => {
-                  setSearchParams({ ...searchParams, billReferenceNumber: e.target.value });
+                  setSearchParams({ ...searchParams, orderCode: e.target.value });
                 }}
               />
               {/* <Box width={35}>

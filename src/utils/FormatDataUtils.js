@@ -75,6 +75,14 @@ const getSelectedOption = (array, value) => {
     return null;
   }
 };
+const getSelectedOption1 = (array, value) => {
+  const arrayOption = getOptionWithIdandName(array);
+  if (value !== null) {
+    return arrayOption.find((item) => item.value == value);
+  } else {
+    return null;
+  }
+};
 
 const getSelectedOptionWithId = (array, id) => {
   const arrayOption = getOption(array);
@@ -129,5 +137,6 @@ const FormatDataUtils = {
   isEmptyObject,
   formatDateByFormat,
   truncate,
+  getSelectedOption1,
 };
 export default FormatDataUtils;
