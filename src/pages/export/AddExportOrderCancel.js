@@ -120,7 +120,7 @@ const AddExportOrderCancel = () => {
 
           if (consignment.damagedQuantity > consignment.quantity) {
             setErrorMessage(
-              "Vui lòng nhập số lượng nhỏ hơn số lượng trong kho"
+              "Vui lòng nhập số lượng nhỏ hơn số lượng xuất hàng"
             );
             setOpenPopup(true);
             return;

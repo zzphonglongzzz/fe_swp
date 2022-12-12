@@ -150,8 +150,9 @@ const AddStaff = () => {
     }
   };
   const handleSubmit = async (values) => {
-    console.log(values);
+    //console.log(values);
     const staff = {
+      id: staffId,
       fullName: FormatDataUtils.removeExtraSpace(values.fullName),
       dob: moment(values.dateOfBirth).format("YYYY-MM-DD"),
       phone: values.phone,

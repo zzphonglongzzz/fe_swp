@@ -107,7 +107,7 @@ const ReturnGoods = () => {
       for (let index = 0; index < productList.length; index++) {
         if (productList[index].quantityReturn > productList[index].quantity) {
           setErrorMessage(
-            "Bạn không thể nhập số lượng lớn hơn số lượng tồn kho của lô hàng"
+            "Bạn không thể nhập số lượng lớn hơn số lượng phiếu xuất hàng"
           );
           setOpenPopup(true);
           return;
