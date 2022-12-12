@@ -312,7 +312,7 @@ const AddEditProduct = () => {
       <Box>
         {!!product && (
           <Formik
-            initialValues={{ ...product}}
+            initialValues={{ ...product }}
             validationSchema={FORM_VALIDATION}
             onSubmit={(values) => handleSubmit(values)}
           >
@@ -353,6 +353,31 @@ const AddEditProduct = () => {
                                   autoComplete="productCode"
                                 />
                               </Grid>
+                              <Grid xs={6} item>
+                                <Typography className="wrapIcon">
+                                  Đơn xuất nhập:
+                                  {/* <Info className={classes.iconStyle} /> */}
+                                </Typography>
+                                <TextfieldWrapper
+                                  name="productCode"
+                                  fullWidth
+                                  id="productCode"
+                                  autoComplete="productCode"
+                                  
+                                />
+                              </Grid>
+                              <Grid xs={6} item>
+                              <Typography className="wrapIcon">
+                                Đơn xuất bán:
+                                {/* <Info className={classes.iconStyle} /> */}
+                              </Typography>
+                              <TextfieldWrapper
+                                name="productCode"
+                                fullWidth
+                                id="productCode"
+                                autoComplete="productCode"
+                              />
+                            </Grid>
                               <Grid xs={6} item>
                                 <Typography className="wrapIcon">
                                   Đơn vị:
@@ -487,16 +512,14 @@ const AddEditProduct = () => {
                                     classNamePrefix="select"
                                     placeholder="Chọn nhà cung cấp"
                                     noOptionsMessage={() => (
-                                      <>
-                                        Không tìm thấy nhà cung cấp phù hợp
-                                      </>
+                                      <>Không tìm thấy nhà cung cấp phù hợp</>
                                     )}
                                     //isClearable={true}
                                     isSearchable={true}
                                     name="manufacturerId"
                                     value={FormatDataUtils.getSelectedOption(
                                       manufacturerList,
-                                      selectedManufacuter,
+                                      selectedManufacuter
                                     )}
                                     options={FormatDataUtils.getOptionWithIdandName(
                                       manufacturerList
@@ -515,7 +538,7 @@ const AddEditProduct = () => {
                                     }}
                                     onChange={(e) => {
                                       setFieldValue("manufactorId", e?.value);
-                                      setSelectedManufacturer(e)
+                                      setSelectedManufacturer(e);
                                     }}
                                   />
                                 )}

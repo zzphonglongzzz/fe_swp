@@ -12,7 +12,6 @@ import {
   Avatar,
   Menu,
   MenuItem,
-  Button,
   IconButton,
   Stack,
 } from "@mui/material";
@@ -55,7 +54,7 @@ const titles = [
   { url: '/inventory-checking/detail', title: 'Chi tiết kiểm kho', backUrl: null },
   { url: '/staff/list', title: 'Danh sách nhân viên', backUrl: null },
   { url: '/staff/detail', title: 'Thông tin nhân viên', backUrl: null },
-  { url: '/staff/register', title: 'Đăng ký nhân viên mới', backUrl: '' },
+  { url: '/staff/add', title: 'Đăng ký nhân viên mới', backUrl: '' },
   { url: '/warehouse', title: 'Quản lý nhà kho', backUrl: null },
   { url: '/profile', title: 'Hồ sơ cá nhân', backUrl: null },
   { url: '/reset-password', title: 'Đổi mật khẩu', backUrl: null },

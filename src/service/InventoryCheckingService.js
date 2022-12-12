@@ -18,7 +18,7 @@ const InventoryCheckingService = {
   },
   createInventoryChecking: (inventoryChecking) => {
     const url = process.env.REACT_APP_API_URL +`/stockTakingHistory/createStockTakingHistory`;
-    return axios.post(url, inventoryChecking, { headers: authHeader() });
+    return axios.put(url, inventoryChecking, { headers: authHeader() });
   },
   getInventoryCheckingHistoryDetail: (inventoryCheckingHistoryId) => {
     const url = `/stockTakingHistory/detail/${inventoryCheckingHistoryId}`;

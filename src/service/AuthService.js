@@ -60,7 +60,7 @@ const logout = () => {
   localStorage.removeItem("user");
 };
 const setNewPassword = (userInfo) => {
-  const url = process.env.REACT_APP_API_URL + `/reset_password`;
+  const url = process.env.REACT_APP_API_URL + `/user/userprofile/change_password`;
 
   return axios
     .put(url, userInfo, {

@@ -132,6 +132,7 @@ const ImportGoods = () => {
       productCode: e.value.productCode,
       unitMeasure: e.value.unitMeasure,
       expirationDate: null,
+      importDate:null,
       quantity: "",
       unitPrice: "",
     };
@@ -190,6 +191,7 @@ const ImportGoods = () => {
         expiration_date: moment(consignments[index]?.expirationDate).format('YYYY-MM-DD hh:mm:ss'),
         unit_price: Math.round(consignments[index]?.unitPrice),
         quantity: Math.round(consignments[index]?.quantity),
+        import_date: moment(consignments[index]?.importDate).format('YYYY-MM-DD hh:mm:ss')
       });
       //consignmentRequests.push(productRequestList);
     }
@@ -383,6 +385,7 @@ const ImportGoods = () => {
                             <StyledTableCell>STT</StyledTableCell>
                             <StyledTableCell>Mã sản phẩm</StyledTableCell>
                             <StyledTableCell>Tên sản phẩm</StyledTableCell>
+                            <StyledTableCell>Ngày nhập</StyledTableCell>
                             <StyledTableCell>Ngày hết hạn</StyledTableCell>
                             <StyledTableCell>Đơn vị tính</StyledTableCell>
                             <StyledTableCell>Số lượng</StyledTableCell>
@@ -417,6 +420,34 @@ const ImportGoods = () => {
                                           {item.productCode}
                                         </TableCell>
                                         <TableCell>{item.name}</TableCell>
+                                        <TableCell>
+                                          <LocalizationProvider
+                                            className="date-picker"
+                                            locale={vi}
+                                            dateAdapter={AdapterDateFns}
+                                          >
+                                            <DatePicker
+                                              onChange={(value) => {
+                                                setFieldValue(
+                                                  `productRequestList[${index}].importDate`,
+                                                  value,
+                                                  false
+                                                );
+                                              }}
+                                              value={
+                                                values.productRequestList[index]
+                                                  .importDate
+                                              }
+                                              renderInput={(params) => (
+                                                <TextField
+                                                  variant="standard"
+                                                  {...params}
+                                                  helperText={null}
+                                                />
+                                              )}
+                                            />
+                                          </LocalizationProvider>
+                                        </TableCell>
                                         <TableCell>
                                           <LocalizationProvider
                                             className="date-picker"
