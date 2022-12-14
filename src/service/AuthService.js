@@ -60,7 +60,7 @@ const logout = () => {
   localStorage.removeItem("user");
 };
 const setNewPassword = (userInfo) => {
-  const url = process.env.REACT_APP_API_URL + `/user/userprofile/change_password`;
+  const url = process.env.REACT_APP_API_URL + `/reset_password`;
 
   return axios
     .put(url, userInfo, {
@@ -105,6 +105,29 @@ const checkOtp = (userInfo) => {
       }
     );
 };
+const changePassword = (userInfo) => {
+  const url = process.env.REACT_APP_API_URL + `/user/userprofile/change_password`;
+
+  return axios
+    .put(url, userInfo, {
+      headers: authHeader(),
+    })
+    .then(
+      (response) => {
+        if (response.data) {
+          return response.data;
+        }
+      },
+      (error) => {
+        const errResponse = error.message;
+        if (!errResponse) {
+          return Promise.reject(error);
+        }
+
+        return Promise.reject(error);
+      }
+    );
+};
 const AuthService = {
   register,
   login,
@@ -113,5 +136,6 @@ const AuthService = {
   forgotPassword,
   checkOtp,
   setNewPassword,
+  changePassword
 };
 export default AuthService;

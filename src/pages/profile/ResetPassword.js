@@ -66,7 +66,7 @@ const ResetPassword = () => {
     };
     console.log(newPassword);
     try {
-      const dataResult = await AuthService.setNewPassword(newPassword);
+      const dataResult = await AuthService.changePassword(newPassword);
       //const dataResult = unwrapResult(actionResult);
       console.log(dataResult);
       if (dataResult) {

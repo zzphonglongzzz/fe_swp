@@ -1,5 +1,4 @@
-import AuthService from "../../service/AuthService";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -11,29 +10,26 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { LockReset, ManageAccounts, PhotoCamera } from "@mui/icons-material";
-import { toast } from 'react-toastify';
+import { LockReset, ManageAccounts } from "@mui/icons-material";
 import FormatDataUtils from "../../utils/FormatDataUtils";
-import "./Profile.css"
-import AlertPopup from "../../component/common/AlertPopup/index"
+import "./Profile.css";
 import StaffService from "../../service/StaffService";
 
-
 const Profile = () => {
-  const staffId = AuthService.getCurrentUser().id;
-  const [openPopup, setOpenPopup] = useState(false);
-  const [title, setTitle] = useState("");
-  const [message, setMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState();
-  const [image, setImage] = useState();
-  const hiddenFileInput = useRef(null);
+  // const staffId = AuthService.getCurrentUser().id;
+  //const [openPopup, setOpenPopup] = useState(false);
+  //const [title, setTitle] = useState("");
+  //const [message, setMessage] = useState("");
+  //const [errorMessage, setErrorMessage] = useState();
+  //const [image, setImage] = useState();
+  //const hiddenFileInput = useRef(null);
   const navigate = useNavigate();
   const [staff, setStaff] = useState();
 
-  const handleUpdateImage = () => {
-    console.log("cập nhật ảnh đại diện");
-    hiddenFileInput.current.click();
-  };
+  // const handleUpdateImage = () => {
+  //   console.log("cập nhật ảnh đại diện");
+  //   hiddenFileInput.current.click();
+  // };
   // const handleChangeImageStaff = async (e) => {
   //   console.log(e.target.files[0]);
   //   const file = e.target.files[0];
@@ -84,9 +80,6 @@ const Profile = () => {
       console.log("dataResult", dataResult);
       if (dataResult) {
         setStaff(dataResult.data);
-        if (dataResult.data.image) {
-          setImage("/image/" + dataResult.data.image);
-        }
       }
     } catch (error) {
       console.log("Failed to fetch staff detail: ", error);
@@ -106,59 +99,7 @@ const Profile = () => {
     <Box>
       {staff && (
         <Grid container spacing={2}>
-          <Grid xs={2.5} item>
-            <Grid container spacing={2}>
-              <Grid xs={12} item>
-                <Card>
-                  <CardContent className="imgContainer">
-                    <Stack spacing={2}>
-                      {/* <img
-                        className="imgProfile"
-                        accept="image/*"
-                        src={
-                          image
-                            ? image
-                            : require("/public/image/default-avatar.jpg")
-                            
-                        }
-                      /> */}
-                      <img
-                        className="imgProfile"
-                        accept="image/*"
-                        src={image ? image : ("/image/default-avatar.jpg")}
-                      />
-                      <Button
-                        variant="outlined"
-                        startIcon={<PhotoCamera />}
-                        color="warning"
-                        fullWidth
-                        onClick={() => handleUpdateImage()}
-                      >
-                        Cập nhật ảnh đại diện
-                      </Button>
-                      <input
-                        accept="image/png, image/gif, image/jpeg"
-                        style={{ display: "none" }}
-                        ref={hiddenFileInput}
-                        //onChange={(e) => handleChangeImageStaff(e)}
-                        id="upload-file"
-                        type="file"
-                      />
-                    </Stack>
-                  </CardContent>
-                </Card>
-              </Grid>
-              {/* <Grid xs={12} item>
-                <Card>
-                  <Stack padding={2} spacing={2} alignItems="center">
-                    <Box>{staff.roleName}</Box>
-                    <Box>{getStatusLabel(Boolean(staff.isActive))}</Box>
-                  </Stack>
-                </Card>
-              </Grid> */}
-            </Grid>
-          </Grid>
-          <Grid xs={9.5} item>
+          <Grid xs={12}>
             <Card>
               <CardHeader title="Thông tin cá nhân" />
               <CardContent>
@@ -195,25 +136,6 @@ const Profile = () => {
                       <Typography>{staff?.email}</Typography>
                     </Grid>
                   </Grid>
-                  {/* <Grid container>
-                    <Grid xs={3} item>
-                      <Typography>Số CCCD/CMND</Typography>
-                    </Grid>
-                    <Grid xs={9} item>
-                      <Typography>{staff?.identityCard}</Typography>
-                    </Grid>
-                  </Grid> */}
-                  {/* <Grid container>
-                    <Grid xs={3} item>
-                      <Typography>Địa chỉ</Typography>
-                    </Grid>
-                    <Grid xs={9} item>
-                      <Typography>
-                        {staff.detailAddress}, {staff.wardName},{" "}
-                        {staff.districtName}, {staff.provinceName}
-                      </Typography>
-                    </Grid>
-                  </Grid> */}
                   <Grid container>
                     <Grid xs={3} item>
                       <Typography>Ngày sinh</Typography>
@@ -224,16 +146,6 @@ const Profile = () => {
                       </Typography>
                     </Grid>
                   </Grid>
-                  {/* <Grid container>
-                    <Grid xs={3} item>
-                      <Typography>Giới tính</Typography>
-                    </Grid>
-                    <Grid xs={9} item>
-                      <Typography>
-                        {staff.gender === 1 ? "Nam" : "Nữ"}
-                      </Typography>
-                    </Grid>
-                  </Grid> */}
                   <Stack direction="row" spacing={2} justifyContent="flex-end">
                     <Button
                       variant="contained"
@@ -256,18 +168,6 @@ const Profile = () => {
               </CardContent>
             </Card>
           </Grid>
-          <AlertPopup
-            maxWidth="sm"
-            title={errorMessage ? "Chú ý" : title}
-            openPopup={openPopup}
-            setOpenPopup={setOpenPopup}
-            isConfirm={!errorMessage}
-            //handleConfirm={handleConfirm}
-          >
-            <Box component={"span"} className="popupMessageContainer">
-              {errorMessage ? errorMessage : message}
-            </Box>
-          </AlertPopup>
         </Grid>
       )}
     </Box>

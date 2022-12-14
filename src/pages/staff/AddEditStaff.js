@@ -117,13 +117,13 @@ const AddStaff = () => {
       .max(255, "Email không thể dài quá 255 kí tự")
       .email("Vui lòng nhập đúng định dạng email. VD abc@xyz.com")
       .required("Chưa nhập Email"),
-    // dob: Yup.date()
-    //   .typeError("Ngày sinh không hợp lệ")
-    //   .required("Chưa nhập ngày sinh")
-    //   .nullable()
-    //   .test("dateOfBirth", "Nhân viên phải ít nhất 18 tuổi", function (value) {
-    //     return differenceInYears(new Date(), new Date(value)) >= 18;
-    //   }),
+    dob: Yup.date()
+      .typeError("Ngày sinh không hợp lệ")
+      .required("Chưa nhập ngày sinh")
+      .nullable()
+      .test("dateOfBirth", "Nhân viên phải ít nhất 18 tuổi", function (value) {
+        return differenceInYears(new Date(), new Date(value)) >= 18;
+      }),
     role: Yup.string()
       .trim()
       .max(255, "Chức vụ không thể dài quá 255 kí tự")
@@ -154,7 +154,7 @@ const AddStaff = () => {
     const staff = {
       id: staffId,
       fullName: FormatDataUtils.removeExtraSpace(values.fullName),
-      dob: moment(values.dateOfBirth).format("YYYY-MM-DD"),
+      dob: moment(values.dob).format("YYYY-MM-DD"),
       phone: values.phone,
       email: values.email,
       role: values.role,
@@ -299,7 +299,7 @@ const AddStaff = () => {
                                   onChange={(dob) => {
                                     console.log(dob);
                                     setDob(dob);
-                                    setFieldValue("dateOfBirth", dob);
+                                    setFieldValue("dob", dob);
                                   }}
                                   renderInput={(params) => (
                                     <TextField

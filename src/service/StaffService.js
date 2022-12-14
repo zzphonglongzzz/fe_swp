@@ -16,7 +16,7 @@ const StaffService = {
         return axios.post(url, staff, { headers: authHeader() });
     },
     updateStaff :(staff) =>{
-        const url = process.env.REACT_APP_API_URL + '/staff/editStaff';
+        const url = process.env.REACT_APP_API_URL + '/user/userprofile/updateProfile';
         return axios.put(url, staff, { headers: authHeader() });
     },
     getProfile: () => {

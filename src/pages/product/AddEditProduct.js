@@ -4,11 +4,9 @@ import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { Form, Formik } from "formik";
 import ProductService from "../../service/ProductService";
-import { Container } from "@mui/system";
 import {
   Box,
   Card,
-  CardHeader,
   Grid,
   Typography,
   CardContent,
@@ -18,8 +16,6 @@ import {
   FormHelperText,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
-import CheckIcon from "@mui/icons-material/Check";
-import ClearIcon from "@mui/icons-material/Clear";
 import { useField } from "formik";
 import "./AddEditProduct.scss";
 import { useDropzone } from "react-dropzone";
@@ -29,7 +25,6 @@ import FormatDataUtils from "../../utils/FormatDataUtils";
 import { Close, CloudUpload, Done } from "@mui/icons-material";
 import "./AddEditProduct.scss";
 import Select from "react-select";
-import axios from "axios";
 
 const TextfieldWrapper = ({ name, ...otherProps }) => {
   const [field, meta] = useField(name);
@@ -45,52 +40,6 @@ const TextfieldWrapper = ({ name, ...otherProps }) => {
   }
   return <TextField {...configTextfield} />;
 };
-function Dropzone(props) {
-  const { imageUrl, setImageUrl, setFormData } = props;
-  const onDrop = useCallback((acceptedFiles, fileRejections) => {
-    if (!!fileRejections[0]) {
-      if (fileRejections[0].errors[0].code === "file-invalid-type") {
-        toast.success("Bạn vui lòng chọn file đuôi .jpg, .png để tải lên");
-        console.log("Bạn vui lòng chọn file đuôi .jpg, .png để tải lên");
-        return;
-      }
-      if (fileRejections[0].errors[0].code === "file-too-large") {
-        toast.success("Bạn vui lòng chọn file ảnh dưới 5MB để tải lên");
-        console.log("Bạn vui lòng chọn file ảnh dưới 5MB để tải lên");
-      }
-    } else {
-      const file = acceptedFiles[0];
-      console.log(file);
-      setImageUrl(URL.createObjectURL(file));
-      const formData = new FormData();
-      formData.append("file", file);
-      console.log(formData);
-      setFormData(formData);
-    }
-  }, []);
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: {
-      "image/png": [".png"],
-      "image/jpeg": [".jpg"],
-    },
-    maxSize: 5 * 1024 * 1024, // 5MB
-    multiple: false,
-  });
-
-  return (
-    <div {...getRootProps()} className="preview">
-      <input {...getInputProps()} />
-      {imageUrl && (
-        // eslint-disable-next-line jsx-a11y/alt-text
-        <img className="imgPreview" src={imageUrl} />
-      )}
-      <CloudUpload fontSize="large" className="iconUpload" />
-
-      {isDragActive ? <span>Kéo ảnh vào đây</span> : <span>Tải ảnh lên</span>}
-    </div>
-  );
-}
 const AddEditProduct = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState();
@@ -170,9 +119,40 @@ const AddEditProduct = () => {
     categoryId: Yup.string().required("Chưa chọn danh mục"),
     subCategoryId: Yup.string().required("Chưa chọn danh mục phụ"),
     manufactorId: Yup.string().required("Chưa chọn nhà cung cấp"),
+    lastAveragePrice: Yup.number(),
+    unitprice: Yup.number()
+      .required("Chưa nhập đơn giá bán")
+      .positive("Vui lòng nhập số dương")
+      .moreThan(
+        Yup.ref("lastAveragePrice"),
+        "Vui lòng nhập đơn giá xuất lớn hơn"
+      ),
+  });
+  const FORM_VALIDATION1 = Yup.object().shape({
+    productCode: Yup.string()
+      .trim()
+      .max(255, "Mã sản phẩm không thể dài quá 255 kí tự")
+      .required("Chưa nhập mã sản phẩm")
+      .test("productCode", "Vui lòng xoá các khoảng trắng", function (value) {
+        if (value) {
+          return !value.includes(" ");
+        }
+      }),
+    name: Yup.string()
+      .trim()
+      .max(255, "Tên sản phẩm không thể dài quá 255 kí tự")
+      .required("Chưa nhập tên sản phẩm"),
+    unitMeasure: Yup.string()
+      .trim()
+      .max(255, "Đơn vị không thể dài quá 255 kí tự")
+      .required("Chưa nhập đơn vị"),
+    description: Yup.string().max(255, "Mô tả không thể dài quá 255 kí tự"),
+    categoryId: Yup.string().required("Chưa chọn danh mục"),
+    subCategoryId: Yup.string().required("Chưa chọn danh mục phụ"),
+    manufactorId: Yup.string().required("Chưa chọn nhà cung cấp"),
   });
   const onChangeCategory = (event) => {
-    setSelectedSubCategory(event);
+    setSelectedSubCategory(event.value);
     setSelectedCategory(event);
     fetchSubCategoryByCategoryId(event.value);
   };
@@ -244,6 +224,26 @@ const AddEditProduct = () => {
       productCode: FormatDataUtils.removeExtraSpace(values.productCode),
       unit_measure: FormatDataUtils.removeExtraSpace(values.unitMeasure),
       description: FormatDataUtils.removeExtraSpace(values.description),
+      unit_price: Math.round(values.unitprice),
+      lastAveragePrice: Math.round(values.lastAveragePrice),
+      category_id: values.categoryId,
+      manufacturer_id: values.manufactorId,
+      subCategory_id: values.subCategoryId,
+      image: file.path === undefined ? values.image : file.path,
+    };
+    console.log(newProduct);
+    saveProductDetail(newProduct);
+  };
+  const handleSubmit1 = (values) => {
+    setLoadingButton(true);
+    const newProduct = {
+      id: productId,
+      name: FormatDataUtils.removeExtraSpace(values.name),
+      productCode: FormatDataUtils.removeExtraSpace(values.productCode),
+      unit_measure: FormatDataUtils.removeExtraSpace(values.unitMeasure),
+      description: FormatDataUtils.removeExtraSpace(values.description),
+      //unit_price: Math.round(values.unitprice),
+      //lastAveragePrice: Math.round(values.lastAveragePrice),
       category_id: values.categoryId,
       manufacturer_id: values.manufactorId,
       subCategory_id: values.subCategoryId,
@@ -282,7 +282,6 @@ const AddEditProduct = () => {
         setSelectedSubCategory(dataResult.data.product.subCategoryId);
         setSelectedManufacturer(dataResult.data.product.manufactorId);
         fetchSubCategoryByCategoryId(dataResult.data.product.categoryId);
-        //console.log(dataResult.data.product.image)
         if (dataResult.data.product.image) {
           setImageUrl("/image/" + dataResult.data.product.image);
         }
@@ -359,35 +358,33 @@ const AddEditProduct = () => {
                                   {/* <Info className={classes.iconStyle} /> */}
                                 </Typography>
                                 <TextfieldWrapper
-                                  name="productCode"
+                                  name="lastAveragePrice"
                                   fullWidth
-                                  id="productCode"
-                                  autoComplete="productCode"
-                                  
+                                  id="lastAveragePrice"
+                                  autoComplete="lastAveragePrice"
+                                  disabled={true}
                                 />
                               </Grid>
                               <Grid xs={6} item>
-                              <Typography className="wrapIcon">
-                                Đơn xuất bán:
-                                {/* <Info className={classes.iconStyle} /> */}
-                              </Typography>
-                              <TextfieldWrapper
-                                name="productCode"
-                                fullWidth
-                                id="productCode"
-                                autoComplete="productCode"
-                              />
-                            </Grid>
-                              <Grid xs={6} item>
                                 <Typography className="wrapIcon">
                                   Đơn vị:
-                                  {/* <Info className={classes.iconStyle} /> */}
                                 </Typography>
                                 <TextfieldWrapper
                                   name="unitMeasure"
                                   fullWidth
                                   id="unitMeasure"
                                   autoComplete="unitMeasure"
+                                />
+                              </Grid>
+                              <Grid xs={6} item>
+                                <Typography className="wrapIcon">
+                                  Đơn xuất bán:
+                                </Typography>
+                                <TextfieldWrapper
+                                  name="unitprice"
+                                  fullWidth
+                                  id="unitprice"
+                                  autoComplete="unitprice"
                                 />
                               </Grid>
                               <Grid xs={12} item>
@@ -635,8 +632,8 @@ const AddEditProduct = () => {
       {!product && isAdd && (
         <Formik
           initialValues={{ ...initialFormValue }}
-          validationSchema={FORM_VALIDATION}
-          onSubmit={(values) => handleSubmit(values)}
+          validationSchema={FORM_VALIDATION1}
+          onSubmit={(values) => handleSubmit1(values)}
         >
           {({ values, errors, setFieldValue }) => (
             <Form>

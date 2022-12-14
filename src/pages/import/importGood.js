@@ -18,7 +18,6 @@ import {
   Stack,
   TextField,
   Grid,
-  Link,
 } from "@mui/material";
 import { FieldArray, Form, Formik, useField } from "formik";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -34,7 +33,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import ProductService from "../../service/ProductService";
-import Popup from "../../component/common/dialog/index";
 import AuthService from "../../service/AuthService";
 import moment from "moment";
 import AlertPopup from "../../component/common/AlertPopup";
@@ -113,12 +111,8 @@ const ImportGoods = () => {
   const handleOnChangeProduct = (e) => {
     console.log(e);
     setSelectedProduct(e);
-    // console.log('value 211',e.value);
-    //console.log(valueFormik.current);
-    // check selected Product
     const isSelected = valueFormik.current.productRequestList.some(
       (element) => {
-        // console.log('element 215',element)
         if (element.productId === e.value.id) {
           return true;
         }
@@ -140,7 +134,6 @@ const ImportGoods = () => {
       return;
     } else {
       arrayHelpersRef.current.push(productSelected);
-      // console.log('productList', valueFormik.current);
     }
   };
   const handleSubmit = async (values) => {
@@ -193,16 +186,12 @@ const ImportGoods = () => {
         quantity: Math.round(consignments[index]?.quantity),
         import_date: moment(consignments[index]?.importDate).format('YYYY-MM-DD hh:mm:ss')
       });
-      //consignmentRequests.push(productRequestList);
     }
     if (productRequestList.length > 0) {
       const newImportOrder = {
-        //createdDate: values.createdDate,
-        //description: values.description,
         user_Id: values.userId,
         manufacturerId: values.manufactorId,
         warehouseId: values.wareHouseId,
-        //productRequestList: productRequestList,
         consignmentRequest: { productRequestList },
       };
       console.log(newImportOrder);
