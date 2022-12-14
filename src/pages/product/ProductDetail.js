@@ -11,6 +11,7 @@ import {
 import { Edit } from '@mui/icons-material';
 import "./product.scss";
 import ProductService from "../../service/ProductService";
+import FormatDataUtils from "../../utils/FormatDataUtils";
 
 const ProductDetail = () => {
   const { productId } = useParams();
@@ -211,14 +212,39 @@ const ProductDetail = () => {
                           xs={6}
                           item
                         >
-                          <Typography className="labelInfo">Đơn giá</Typography>
+                          <Typography className="labelInfo">Đơn giá nhập</Typography>
                         </Grid>
                         <Grid
                           xs={5}
                           item
                         >
                           <Typography className="contentInfo">
-                            {product.unitprice}
+                            {FormatDataUtils.formatCurrency(product?.lastAveragePrice || 0)}
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                    <Grid
+                      xs={12}
+                      item
+                    >
+                      <Grid container>
+                        <Grid
+                          xs={1}
+                          item
+                        ></Grid>
+                        <Grid
+                          xs={6}
+                          item
+                        >
+                          <Typography className="labelInfo">Đơn giá xuất</Typography>
+                        </Grid>
+                        <Grid
+                          xs={5}
+                          item
+                        >
+                          <Typography className="contentInfo">
+                              {FormatDataUtils.formatCurrency(product?.unitprice || 0)}
                           </Typography>
                         </Grid>
                       </Grid>

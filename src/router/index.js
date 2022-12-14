@@ -32,6 +32,7 @@ import AddExportOrderCancel from "../pages/export/AddExportOrderCancel";
 import ExportOrderCancelDetail from "../pages/export/ExportOrderCancelDetail";
 import StaffList from "../pages/staff/StaffList";
 import AddEditStaff from "../pages/staff/AddEditStaff"
+import AccessDenied from "../component/DefaultLayout/AccessDenied/AccessDenied";
 
 const publicRoutes = [
   //public route
@@ -40,80 +41,91 @@ const publicRoutes = [
   { path: "/forgotPassword", component: CommonForgotPass, layout: null },
 ];
 const privateRoutes = [
-  { path: "/category", component: CategoryList },
-  { path: "/category/subCategory/:categoryId", component: CategoryDetail },
+  { path: "/category", component: CategoryList, acceptRole: ["ROLE_ADMIN","ROLE_USER"]},
+  { path: "/category/subCategory/:categoryId", component: CategoryDetail, acceptRole: ["ROLE_ADMIN","ROLE_USER"]},
 
   //manufacturer
-  { path: "/manufacturer", component: ManufacturerList },
+  { path: "/manufacturer", component: ManufacturerList,acceptRole: ["ROLE_ADMIN","ROLE_USER"] },
   {
     path: "/manufacturer/detail/:manufacturerId",
     component: ManufacturerDetail,
+    acceptRole: ["ROLE_ADMIN","ROLE_USER"]
   },
-  { path: "/manufacturer/add", component: AddEditManufacturer },
+  { path: "/manufacturer/add", component: AddEditManufacturer,acceptRole: ["ROLE_ADMIN","ROLE_USER"] },
   {
     path: "/manufacturer/edit/:manufacturerId",
     component: AddEditManufacturer,
+    acceptRole: ["ROLE_ADMIN","ROLE_USER"]
   },
   //warehouse
   {
     path: "/warehouseList",
     component: WarehouseList,
+    acceptRole: ["ROLE_ADMIN","ROLE_USER"]
   },
   //product
   {
     path: "/product",
     component: ProductList,
+    acceptRole: ["ROLE_ADMIN","ROLE_USER"]
   },
   {
     path: "/product/detail/:productId",
     component: ProductDetail,
+    acceptRole: ["ROLE_ADMIN","ROLE_USER"]
   },
   {
     path: "/product/add",
     component: AddEditProduct,
+    acceptRole: ["ROLE_ADMIN","ROLE_USER"]
   },
   {
     path: "/product/edit/:productId",
     component: AddEditProduct,
+    acceptRole: ["ROLE_ADMIN","ROLE_USER"]
   },
   //importOrder
-  { path: "/import/create-order", component: ImportGoods },
-  { path: "/import/list", component: ImportList },
-  { path: "/import/detail/:importOrderId", component: ImportOrderDetail },
-  { path: "/import/edit/:importOrderId", component: updateImportOrder },
+  { path: "/import/create-order", component: ImportGoods ,acceptRole: ["ROLE_ADMIN","ROLE_USER"]},
+  { path: "/import/list", component: ImportList,acceptRole: ["ROLE_ADMIN","ROLE_USER"] },
+  { path: "/import/detail/:importOrderId", component: ImportOrderDetail,acceptRole: ["ROLE_ADMIN","ROLE_USER"] },
+  { path: "/import/edit/:importOrderId", component: updateImportOrder,acceptRole: ["ROLE_ADMIN","ROLE_USER"] },
   //exportOrder
-  { path: "/export/create-order", component: ExportGood },
-  { path: "/export/list", component: ExportList },
-  { path: "/export/detail/:exportOrderId", component: ExportOrderDetail },
-  { path: "/export/edit/:exportOrderId", component: UpdateExportOrderDetail },
-  { path: "/export/return/:exportOrderId", component: ReturnGoods },
-  { path: "/export/return/list", component: ReturnList },
+  { path: "/export/create-order", component: ExportGood,acceptRole: ["ROLE_ADMIN","ROLE_USER"]},
+  { path: "/export/list", component: ExportList,acceptRole: ["ROLE_ADMIN","ROLE_USER"] },
+  { path: "/export/detail/:exportOrderId", component: ExportOrderDetail,acceptRole: ["ROLE_ADMIN","ROLE_USER"] },
+  { path: "/export/edit/:exportOrderId", component: UpdateExportOrderDetail,acceptRole: ["ROLE_ADMIN","ROLE_USER"]},
+  { path: "/export/return/:exportOrderId", component: ReturnGoods,acceptRole: ["ROLE_ADMIN","ROLE_USER"] },
+  { path: "/export/return/list", component: ReturnList,acceptRole: ["ROLE_ADMIN","ROLE_USER"] },
   {
     path: "/export/return/detail/:returnOrderId",
     component: ReturnOrderDetail,
+    acceptRole: ["ROLE_ADMIN","ROLE_USER"]
   },
-  { path: "/export/cancel/:exportOrderId", component: AddExportOrderCancel },
-  { path: "/export/cancel/detail/:exportOrderId", component: ExportOrderCancelDetail },
+  { path: "/export/cancel/:exportOrderId", component: AddExportOrderCancel,acceptRole: ["ROLE_USER"] },
+  { path: "/export/cancel/detail/:exportOrderId", component: ExportOrderCancelDetail,acceptRole: ["ROLE_ADMIN"] },
 
   // inventoryChecking route
-  { path: "/inventory-checking/list", component: InventoryCheckingList },
+  { path: "/inventory-checking/list", component: InventoryCheckingList,acceptRole: ["ROLE_ADMIN"] },
   {
     path: "/inventory-checking/detail/:inventoryCheckingId",
     component: InventoryCheckingDetail,
+    acceptRole: ["ROLE_ADMIN"]
   },
-  { path: "/inventory-checking/create", component: CreateInventoryChecking },
+  { path: "/inventory-checking/create", component: CreateInventoryChecking,acceptRole: ["ROLE_ADMIN"] },
 
-  { path: "/profile", component: Profile },
-  { path: "/profile/edit", component: UpdateProfile },
+  { path: "/profile", component: Profile,acceptRole: ["ROLE_ADMIN","ROLE_USER"] },
+  { path: "/profile/edit", component: UpdateProfile,acceptRole: ["ROLE_ADMIN","ROLE_USER"] },
+  
 
   //dashboard
-  { path: "/dashboard", component: Home },
+  { path: "/dashboard", component: Home,acceptRole: ["ROLE_ADMIN","ROLE_USER"] },
   { path: "*", component: NotFound, layout: null },
-  { path: '/reset-password', component: ResetPassword},
+  { path: '/reset-password', component: ResetPassword,acceptRole: ["ROLE_ADMIN","ROLE_USER"]},
+  { path: '/denied', component: AccessDenied, layout: null, acceptRole: ["ROLE_ADMIN","ROLE_USER"]},
 
   //staff
-  { path: '/staff/list', component: StaffList },
-  { path: '/staff/add', component: AddEditStaff},
-  { path: '/staff/detail/:staffId', component: AddEditStaff},
+  { path: '/staff/list', component: StaffList,acceptRole: ["ROLE_ADMIN"] },
+  { path: '/staff/add', component: AddEditStaff,acceptRole: ["ROLE_ADMIN"]},
+  { path: '/staff/detail/:staffId', component: AddEditStaff,acceptRole: ["ROLE_ADMIN"]},
 ];
 export { publicRoutes, privateRoutes };

@@ -12,8 +12,12 @@ import ListIcon from "@mui/icons-material/List";
 import PeopleIcon from "@mui/icons-material/People";
 import { useNavigate } from "react-router-dom";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
+import AuthService from "../../../service/AuthService";
+
 const Sidebar = () => {
   const navigate = useNavigate();
+  const currentUserRole = AuthService.getCurrentUser().roles[0];
+  console.log(currentUserRole);
   function handleDashboard() {
     navigate("/dashboard");
   }
@@ -53,8 +57,8 @@ const Sidebar = () => {
   function handleClickStaffList() {
     navigate("/staff/list");
   }
-  function handleCreateStaff(){
-    navigate('/staff/add')
+  function handleCreateStaff() {
+    navigate("/staff/add");
   }
   return (
     <div className="sidebar">
@@ -107,28 +111,33 @@ const Sidebar = () => {
             <KeyboardReturnIcon className="icon" />
             <span onClick={handleClickListReturn}>Danh sách trả hàng</span>
           </li>
-          <p className="title">Kiểm kho</p>
-          <li>
-            <InventoryIcon className="icon" />
-            <span onClick={handleClickCreateInventoryChecking}>
-              Tạo phiếu kiểm kho
-            </span>
-          </li>
-          <li>
-            <ListIcon className="icon" />
-            <span onClick={handleClickListInventoryChecking}>
-              Lịch sử kiểm kho
-            </span>
-          </li>
-          <p className="title">Nhân viên</p>
-          <li>
-            <GroupAddIcon className="icon" />
-            <span onClick={handleCreateStaff}>Đăng ký nhân viên mới</span>
-          </li>
-          <li>
-            <PeopleIcon className="icon" />
-            <span onClick={handleClickStaffList}>Danh sách nhân viên</span>
-          </li>
+          {currentUserRole === "ROLE_ADMIN" && (
+            <>
+              <p className="title">Kiểm kho</p>
+              <li>
+                <InventoryIcon className="icon" />
+                <span onClick={handleClickCreateInventoryChecking}>
+                  Tạo phiếu kiểm kho
+                </span>
+              </li>
+              <li>
+                <ListIcon className="icon" />
+                <span onClick={handleClickListInventoryChecking}>
+                  Lịch sử kiểm kho
+                </span>
+              </li>
+
+              <p className="title">Nhân viên</p>
+              <li>
+                <GroupAddIcon className="icon" />
+                <span onClick={handleCreateStaff}>Đăng ký nhân viên mới</span>
+              </li>
+              <li>
+                <PeopleIcon className="icon" />
+                <span onClick={handleClickStaffList}>Danh sách nhân viên</span>
+              </li>
+            </>
+          )}
         </ul>
       </div>
     </div>
