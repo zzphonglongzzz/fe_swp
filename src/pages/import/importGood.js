@@ -153,34 +153,33 @@ const ImportGoods = () => {
         setOpenPopup(true);
         return;
       }
+      if (
+        consignments[index]?.importDate === "" ||
+        consignments[index]?.expirationDate === ""
+      ) {
+        setErrorMessage("Bạn có sản phẩm chưa nhập ngày nhập hoặc ngày hết hạn");
+        setOpenPopup(true);
+        return;
+      }
       if (consignments[index]?.quantity === 0) {
         setErrorMessage("Bạn không thể nhập sản phẩm với số lượng bằng 0");
         setOpenPopup(true);
         return;
       }
+      
 
       if (!Number.isInteger(consignments[index]?.quantity)) {
         setErrorMessage("Vui lòng nhập số lượng sản phẩm là số nguyên");
         setOpenPopup(true);
         return;
       }
-
       if (!Number.isInteger(consignments[index]?.unitPrice)) {
         setErrorMessage("Vui lòng nhập đơn giá của sản phẩm là số nguyên");
         setOpenPopup(true);
         return;
       }
-      // console.log(
-      //   moment(consignments[index]?.expirationDate.add('days', 1).calendar())
-      //     .utc()
-      //     .format("YYYY-MM-DD hh:mm:ss")
-      // );
       productRequestList.push({
         id: consignments[index]?.productId,
-        //expiration_date1: moment(consignments[index]?.expirationDate).add(1, 'days').format('YYYY-MM-DD hh:mm:ss'),
-        // expiration_date1: moment(consignments[index]?.expirationDate,"YYYY-MM-DD hh:mm:ss")
-        //   .utc()
-        //   .format("YYYY-MM-DD hh:mm:ss"),
         expiration_date: moment(consignments[index]?.expirationDate).format('YYYY-MM-DD hh:mm:ss'),
         unit_price: Math.round(consignments[index]?.unitPrice),
         quantity: Math.round(consignments[index]?.quantity),

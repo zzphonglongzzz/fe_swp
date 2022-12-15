@@ -223,9 +223,7 @@ const ImportOrderDetail = () => {
                   <Typography variant="span">
                     <strong>Phiếu nhập kho số:</strong> {"NHAP" + importOrderId}
                   </Typography>{" "}
-                  {/* <span>
-                        {getStatusLabel(importOrder[0].status_id)}
-                  </span> */}
+                  <span>{getStatusLabel(importOrder[0]?.status_id)}</span>
                 </Box>
                 {importOrder[0].confirm_by == null && (
                   <Stack
@@ -273,9 +271,7 @@ const ImportOrderDetail = () => {
                 <Card>
                   <CardContent>
                     <Typography variant="h6">Thông tin nhà cung cấp</Typography>
-                    <Typography>
-                      {importOrder[0].name}
-                    </Typography>
+                    <Typography>{importOrder[0].name}</Typography>
                     <br />
                     <Divider />
                     <br />
