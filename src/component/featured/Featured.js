@@ -1,47 +1,62 @@
-import React from 'react';
-import ReactApexChart from 'react-apexcharts'
+import React from "react";
+import ReactApexChart from "react-apexcharts";
+import { useState,useEffect } from "react";
+import DashboardService from "../../service/DashboardService";
 
-class Featured extends React.Component {
-  constructor(props) {
-    super(props);
+const Featured = () => {
+  const [product,setProduct] = useState([]);
 
-    this.state = {
-      series: [44, 55, 13, 43, 22],
-      options: {
-        chart: {
-          width: 380,
-          type: "pie",
-        },
-        labels: ["Team A", "Team B", "Team C", "Team D", "Team E"],
-        responsive: [
-          {
-            breakpoint: 480,
-            options: {
-              chart: {
-                width: 200,
-              },
-              legend: {
-                position: "bottom",
-              },
+  const getProductInStock = async () => {
+    try {
+      const actionResult = await DashboardService.getProuctInStock();
+      if (actionResult.data) {
+        setProduct(actionResult.data.listProductInStock);
+      
+      }
+    } catch (error) {
+      console.log("Failed to fetch category list: ", error);
+    }
+  };
+  useEffect(() => {
+    getProductInStock();
+  }, []);
+  const labels = product.map(a => a.productCode);
+  const series  = product.map(b => b.totalSales)
+  const data = {
+    series: series,
+    options: {
+      chart: {
+        width: 380,
+        type: "pie",
+      },
+      labels: labels,
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200,
+            },
+            legend: {
+              position: "bottom",
             },
           },
-        ],
-      },
-    };
-  }
-
-  render() {
-    return (
-      <div id="chart">
-        <ReactApexChart
-          options={this.state.options}
-          series={this.state.series}
-          type="pie"
-          width={380}
-        />
-      </div>
-    );
-  }
-}
+        },
+      ],
+    },
+  };
+  return (
+    <div id="chart">
+      Hàng tồn kho
+      <ReactApexChart
+        options={data.options}
+        series={data.series}
+        type="pie"
+        width={500}
+        height={500}
+      />
+    </div>
+  );
+};
 
 export default Featured;
