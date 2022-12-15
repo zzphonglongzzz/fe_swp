@@ -139,6 +139,7 @@ const ImportGoods = () => {
   const handleSubmit = async (values) => {
     let productRequestList = [];
     let consignments = values.productRequestList;
+    console.log(consignments)
     if (consignments.length === 0) {
       setErrorMessage(" Vui lòng chọn ít nhất 1 sản phẩm để nhập hàng");
       setOpenPopup(true);
@@ -154,13 +155,19 @@ const ImportGoods = () => {
         return;
       }
       if (
-        consignments[index]?.importDate === "" ||
-        consignments[index]?.expirationDate === ""
+        consignments[index].importDate === null ||
+        consignments[index].expirationDate === null
       ) {
-        setErrorMessage("Bạn có sản phẩm chưa nhập ngày nhập hoặc ngày hết hạn");
+        setErrorMessage("Bạn chưa nhập ngày nhập hoặc ngày hết hạn");
         setOpenPopup(true);
         return;
       }
+      if (consignments[index].importDate > consignments[index].expirationDate ) {
+        setErrorMessage("Ngày nhập không được phép lớn ngày hết hạn");
+        setOpenPopup(true);
+        return;
+      }
+      
       if (consignments[index]?.quantity === 0) {
         setErrorMessage("Bạn không thể nhập sản phẩm với số lượng bằng 0");
         setOpenPopup(true);

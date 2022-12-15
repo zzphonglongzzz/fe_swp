@@ -62,7 +62,7 @@ const quantityExportOrders = async () => {
       break;
     case "earning":
       data = {
-        title: "Số đơn xuất đã giao hàng",
+        title: "Số đơn xuất đã xuất hàng",
         isMoney: true,
         amount: totalExports
       };

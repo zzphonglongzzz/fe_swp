@@ -36,6 +36,8 @@ const ProductService = {
       category_id: product.category_id,
       subCategory_id:product.subCategory_id,
       manufacturer_id: product.manufacturer_id,
+      unit_price: product.unit_price,
+      lastAveragePrice: product.lastAveragePrice,
       image:product.image
     } ,{ headers: authHeader() });
   },

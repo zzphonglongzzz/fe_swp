@@ -190,15 +190,13 @@ const AddEditProduct = () => {
           }
         }
       } else {
-        if (formData.has("file")) {
-          const actionResult = await ProductService.updateProduct(product);
-          if (actionResult.status === 200) {
-            toast.success("Sửa sản phẩm thành công!");
-            navigate("/product");
-          } else {
-            navigate(`/product/detail/${productId}`);
-            toast.success("Sửa sản phẩm thành công!");
-          }
+        const actionResult = await ProductService.updateProduct(product);
+        if (actionResult.status === 200) {
+          toast.success("Sửa sản phẩm thành công!");
+          navigate("/product");
+        } else {
+          navigate(`/product/detail/${productId}`);
+          toast.success("Sửa sản phẩm thành công!");
         }
       }
     } catch (error) {
