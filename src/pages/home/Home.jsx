@@ -3,8 +3,6 @@ import Widget from "../../component/widget/Widget";
 import Featured from "../../component/featured/Featured";
 import Chart from "../../component/chart/Chart";
 import { Box, Grid, Container } from "@mui/material";
-import { useState, useEffect } from "react";
-import DashboardService from "../../service/DashboardService";
 
 const Home = () => {
   // const [product, setProduct] = useState([]);

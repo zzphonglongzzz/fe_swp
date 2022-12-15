@@ -173,7 +173,6 @@ const ExportOrderDetail = () => {
         const result = await ExportOrderService.deliveredExportOrder(
           exportOrderId
         );
-        ///console.log(result);
         if (!!result) {
           if (!!result.message) {
             toast.success(result.message);
@@ -186,7 +185,7 @@ const ExportOrderDetail = () => {
       } catch (error) {
         console.log("Failed to confirm importOder: ", error);
         if (error.message) {
-          toast.error(error.message);
+          toast.error("Số lượng hàng trong lô không đủ !!");
         } else {
           toast.error("Lỗi! Xác nhận xuất kho thất bại!");
         }
