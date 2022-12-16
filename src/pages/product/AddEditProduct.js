@@ -240,8 +240,6 @@ const AddEditProduct = () => {
       productCode: FormatDataUtils.removeExtraSpace(values.productCode),
       unit_measure: FormatDataUtils.removeExtraSpace(values.unitMeasure),
       description: FormatDataUtils.removeExtraSpace(values.description),
-      //unit_price: Math.round(values.unitprice),
-      //lastAveragePrice: Math.round(values.lastAveragePrice),
       category_id: values.categoryId,
       manufacturer_id: values.manufactorId,
       subCategory_id: values.subCategoryId,
