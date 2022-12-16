@@ -32,7 +32,6 @@ const ExportList = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalRecord, setTotalRecord] = useState();
   const [exportOrderList, setExportOrderList] = useState();
-
   const [selectPending, setSelectPending] = useState(false);
   const navigate = useNavigate();
   const currentUserRole = AuthService.getCurrentUser().roles[0];

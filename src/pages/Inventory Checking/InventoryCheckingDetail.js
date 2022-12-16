@@ -223,22 +223,22 @@ const InventoryCheckingDetail = () => {
                     </Table>
                   )}
                 </TableContainer>
-                <Box className="totalDifferentContainer">
-                  <Divider />
-                  <Stack direction="row" p={2} justifyContent="space-between">
-                    <Typography className="labelTotalDifferent">
-                      Tổng chênh lệch:
-                    </Typography>
-                    <Typography className="totalDifferent">
-                      <b>
-                        {FormatDataUtils.formatCurrency(
-                          inventoryChecking.totalDifferentAmount
-                        )}
-                      </b>
-                    </Typography>
-                  </Stack>
-                </Box>
               </CardContent>
+              <Box className="totalDifferentContainer">
+                <Divider />
+                <Stack direction="row" p={2} justifyContent="space-between">
+                  <Typography className="labelTotalDifferent">
+                    Tổng chênh lệch:
+                  </Typography>
+                  <Typography className="totalDifferent">
+                    <b>
+                      {FormatDataUtils.formatCurrency(
+                        inventoryChecking.totalDifferentAmount
+                      )}
+                    </b>
+                  </Typography>
+                </Stack>
+              </Box>
             </Card>
           </Grid>
         </Grid>

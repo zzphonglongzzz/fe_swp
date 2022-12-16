@@ -554,7 +554,41 @@ const CreateInventoryChecking = () => {
                         </TableBody>
                       </Table>
                     </TableContainer>
-                    <Box className="totalDifferentContainer">
+                    {/* <Box className="totalDifferentContainer">
+                      <Divider />
+                      <Stack spacing={2}>
+                        <Stack
+                          direction="row"
+                          p={2}
+                          justifyContent="space-between"
+                        >
+                          <Typography className="labelTotalDifferent">
+                            Tổng chênh lệch:
+                          </Typography>
+                          <Typography className="totalDifferent">
+                            <b>
+                              {FormatDataUtils.formatCurrency(
+                                calculateTotalDifferentAmountOfOrder()
+                              )}
+                            </b>
+                          </Typography>
+                        </Stack>
+                        <Stack direction="row" justifyContent="flex-end">
+                          <LoadingButton
+                            variant="contained"
+                            color="success"
+                            startIcon={<Done />}
+                            loading={isSubmitting}
+                            loadingposition="start"
+                            type="submit"
+                          >
+                            Xác nhận kiểm kho
+                          </LoadingButton>
+                        </Stack>
+                      </Stack>
+                    </Box> */}
+                  </CardContent>
+                  <Box className="totalDifferentContainer">
                       <Divider />
                       <Stack spacing={2}>
                         <Stack
@@ -587,7 +621,6 @@ const CreateInventoryChecking = () => {
                         </Stack>
                       </Stack>
                     </Box>
-                  </CardContent>
                 </Card>
               </Grid>
             </Grid>

@@ -33,7 +33,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
-
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -71,14 +70,13 @@ const ExportGood = () => {
   const currentUser = AuthService.getCurrentUser();
   const arrayHelpersRef = useRef(null);
   const valueFormik = useRef();
-  
 
   const FORM_VALIDATION = Yup.object().shape({
     // quantity: Yup.number().required("Bạn có sản phẩm chưa nhập số lượng").max(1),
     // manufactorId: Yup.number().required("Bạn chưa chọn nhà cung cấp"),
   });
   const handleOnChangeProduct = async (e) => {
-    console.log(e.value.productId)
+    console.log(e.value.productId);
     const isSelected = valueFormik.current.productList.some((element) => {
       if (element.productId === e.value.id) {
         return true;
@@ -161,10 +159,14 @@ const ExportGood = () => {
   const handleSubmit = async (values) => {
     console.log("submit value", values);
     let productList = values.productList;
-    //let consignmentProductExportList = [];
-    //let productForExport = [];
     if (productList.length === 0) {
       setErrorMessage(" Vui lòng chọn ít nhất 1 sản phẩm để xuất hàng");
+      setOpenPopup(true);
+      return;
+    }
+
+    if (productList.unitPrice < productList.importPrice) {
+      setErrorMessage("Đơn giá nhập đang lớn hơn đơn giá bán.Vui lòng xem lại");
       setOpenPopup(true);
       return;
     }
@@ -176,6 +178,11 @@ const ExportGood = () => {
         return;
       }
       const product = productList[index];
+      if (product.unitPrice < product.importPrice) {
+        setErrorMessage("Đơn giá nhập đang lớn hơn đơn giá bán.Vui lòng xem lại");
+        setOpenPopup(true);
+        return;
+      }
       const consignments = productList[index]?.consignments;
       for (
         let indexConsignment = 0;
@@ -206,8 +213,9 @@ const ExportGood = () => {
               const consignmentProductExportListItem = {
                 consignment_id: consignmentItem.id,
                 wareHouseId: consignmentItem.warehouseId,
-                expirationDate: 
-                  moment(consignmentItem.expirationDate).format('YYYY-MM-DD hh:mm:ss'),
+                expirationDate: moment(consignmentItem.expirationDate).format(
+                  "YYYY-MM-DD hh:mm:ss"
+                ),
                 quantity: consignmentItem.quantity,
               };
               returnConsignments.push(consignmentProductExportListItem);
@@ -222,72 +230,10 @@ const ExportGood = () => {
       []
     );
     console.log(productForExport);
-    // const productForExport = productList.reduce((consignmentProductExportList, index) => {
-    //   const product = productList[index];
-    //   const consignments = productList[index]?.consignments;
-    //   let consignment = consignments[indexConsignment];
-    //   consignmentProductExportList.push({
-    //     consignment_id: consignment.id,
-    //     wareHouseId: consignment.warehouseId,
-    //     expirationDate: moment(consignment.expirationDate)
-    //       .utc()
-    //       .format("YYYY-MM-DD hh:mm:ss"),
-    //     quantity: consignment.quantity,
-    //   })
-    //   return consignmentProductExportList;
-    // } , {})
-    // for (let index = 0; index < productList.length; index++) {
-    //   if (calculateTotalQuantityOfProduct(productList[index]) === 0) {
-    //     setErrorMessage("Bạn có sản phẩm chưa nhập số lượng");
-    //     setOpenPopup(true);
-    //     return;
-    //   }
-    //   const product = productList[index];
-    //   const consignments = productList[index]?.consignments;
-    //   productForExport.push({
-    //     product: product.productId,
-    //     consignmentProductExportList: consignmentProductExportList,
-    //   });
-    //   for (
-    //     let indexConsignment = 0;
-    //     indexConsignment < consignments.length;
-    //     indexConsignment++
-    //   ) {
-    //     let consignment = consignments[indexConsignment];
-    //     if (consignment.quantity > consignment.quantityInstock) {
-    //       setErrorMessage(
-    //         "Bạn không thể nhập số lượng lớn hơn số lượng tồn kho của lô hàng"
-    //       );
-    //       setOpenPopup(true);
-    //       return;
-    //     }
-    //     if (consignment.quantity < 0) {
-    //       setErrorMessage("Bạn không thể nhập số lượng nhỏ hơn 0");
-    //       setOpenPopup(true);
-    //       return;
-    //     }
-    //     if (consignment.quantity > 0) {
-    //       consignmentProductExportList.push({
-    //         consignment_id: consignment.id,
-    //         wareHouseId: consignment.warehouseId,
-    //         expirationDate: moment(consignment.expirationDate)
-    //           .utc()
-    //           .format("YYYY-MM-DD hh:mm:ss"),
-    //         quantity: consignment.quantity,
-    //       });
-    //     }
-    //     // productForExport.push({
-    //     //   product: product.productId,
-    //     //   consignmentProductExportList: consignmentProductExportList,
-    //     // });
-    //   }
-    // }
-
     const dataSubmit = {
       user_Id: currentUser.id,
       productForExport: productForExport,
     };
-    console.log("create new export", dataSubmit);
     if (productForExport.length > 0) {
       try {
         const resultResponse = await ExportOrderService.createExportOrder(
@@ -384,17 +330,31 @@ const ExportGood = () => {
                     <Divider />
                     <br />
                     <TableContainer component={Paper}>
-                      <Table sx={{ minWidth: 200 }} aria-label="customized table">
+                      <Table
+                        sx={{ minWidth: 200 }}
+                        aria-label="customized table"
+                      >
                         <TableHead>
                           <TableRow>
                             <StyledTableCell className="tableColumnIcon"></StyledTableCell>
                             <StyledTableCell>STT</StyledTableCell>
                             <StyledTableCell>Mã sản phẩm</StyledTableCell>
-                            <StyledTableCell colSpan={2}>Tên sản phẩm</StyledTableCell>
+                            <StyledTableCell colSpan={2}>
+                              Tên sản phẩm
+                            </StyledTableCell>
                             <StyledTableCell>Đơn vị</StyledTableCell>
-                            <StyledTableCell align="center">Số lượng</StyledTableCell>
-                            <StyledTableCell align="center">Đơn giá</StyledTableCell>
-                            <StyledTableCell align="center">Thành tiền</StyledTableCell>
+                            <StyledTableCell align="center">
+                              Số lượng
+                            </StyledTableCell>
+                            <StyledTableCell align="center">
+                              Đơn giá xuất
+                            </StyledTableCell>
+                            <StyledTableCell align="center">
+                              Đơn giá nhập
+                            </StyledTableCell>
+                            <StyledTableCell align="center">
+                              Thành tiền
+                            </StyledTableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
@@ -443,6 +403,11 @@ const ExportGood = () => {
                                         <TableCell align="center">
                                           {FormatDataUtils.formatCurrency(
                                             product?.unitPrice || "0"
+                                          )}
+                                        </TableCell>
+                                        <TableCell align="center">
+                                          {FormatDataUtils.formatCurrency(
+                                            product?.importPrice || "0"
                                           )}
                                         </TableCell>
                                         <TableCell align="center">
