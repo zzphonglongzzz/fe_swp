@@ -234,7 +234,7 @@ const ExportOrderDetail = () => {
                   <Typography variant="span">
                     <strong>Phiếu xuất kho số:</strong> {"XUAT" + exportOrderId}
                   </Typography>{" "}
-                  <span>
+                  {/* <span>
                     {exportOrder[0].status_id &&
                       getStatusLabel(exportOrder[0].status_id)}
                   </span>
@@ -251,7 +251,22 @@ const ExportOrderDetail = () => {
                           : undefined
                       )}
                     </span>
-                  )}
+                  )} */}
+                  {exportOrder[0].status_id === 4|| exportOrder[0].status_id === 1
+                      ? getStatusLabel(exportOrder[0].status_id)
+                      : exportOrder[0].status_id !== 1 && (
+                          <span>
+                            {getStatusDeliver(
+                              exportOrder[0].is_return === null
+                                ? null
+                                : exportOrder[0].is_return === true
+                                ? 1
+                                : exportOrder[0].is_return === false
+                                ? 0
+                                : undefined
+                            )}
+                          </span>
+                    )}
                 </Box>
                 {exportOrder[0].confirm_by == null && (
                   <Stack

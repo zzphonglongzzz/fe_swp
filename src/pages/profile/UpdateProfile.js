@@ -23,6 +23,7 @@ import StaffService from "../../service/StaffService";
 import moment from "moment";
 import { toast } from "react-toastify";
 import AlertPopup from "../../component/common/AlertPopup";
+import "./Profile.css";
 
 const TextfieldWrapper = ({ name, ...otherProps }) => {
   const [field, meta] = useField(name);
@@ -81,7 +82,6 @@ const UpdateProfile = () => {
       .test("dateOfBirth", "Nhân viên phải ít nhất 18 tuổi", function (value) {
         return differenceInYears(new Date(), new Date(value)) >= 18;
       }),
-      
   });
   const handleUpdateImage = () => {
     console.log("cập nhật ảnh đại diện");
@@ -172,8 +172,8 @@ const UpdateProfile = () => {
                   <Grid container spacing={2}>
                     <Grid xs={12} item>
                       <Card>
-                        <CardContent className="imgContainer">
-                          <Stack spacing={2}>
+                        <CardContent>
+                          <Stack spacing={3}>
                             <img
                               alt=""
                               name="image"
