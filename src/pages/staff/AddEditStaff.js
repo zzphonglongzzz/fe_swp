@@ -177,15 +177,13 @@ const AddStaff = () => {
           }
         }
       } else {
-        if (formData.has("file")) {
-          const actionResult = await StaffService.updateStaff(staff);
-          if (actionResult.status === 200) {
-            toast.success("Sửa sản thông tin nhân viên thành công!");
-            navigate("/staff/list");
-          } else {
-            navigate(`/staff/list`);
-            toast.success("Sửa sản thông tin nhân viên thành công!");
-          }
+        const actionResult = await StaffService.updateStaff(staff);
+        if (actionResult.status === 200) {
+          toast.success("Sửa sản thông tin nhân viên thành công!");
+          navigate("/staff/list");
+        } else {
+          navigate(`/staff/list`);
+          toast.success("Sửa sản thông tin nhân viên thành công!");
         }
       }
     } catch (error) {
@@ -244,7 +242,11 @@ const AddStaff = () => {
                             <div {...getRootProps()} className="preview">
                               <input {...getInputProps()} />
                               {imageUrl && (
-                                <img name="image" className="imgPreview" src={imageUrl} />
+                                <img
+                                  name="image"
+                                  className="imgPreview"
+                                  src={imageUrl}
+                                />
                               )}
                               <CloudUpload
                                 fontSize="large"
