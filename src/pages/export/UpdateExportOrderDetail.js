@@ -6,28 +6,27 @@ import {
   Button,
   Card,
   CardContent,
-  Divider,
   Grid,
-  IconButton,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Typography,
   TextField,
 } from "@mui/material";
 import FormatDataUtils from "../../utils/FormatDataUtils";
 import { Close, Edit } from "@mui/icons-material";
-import { Form, Formik, useField,FieldArray } from "formik";
+import { Form, Formik, useField, FieldArray } from "formik";
 import * as Yup from "yup";
 import ExportOrderService from "../../service/ExportOrderService";
 import "./UpdateExportTable.scss";
 import AlertPopup from "../../component/common/AlertPopup/index";
 import moment from "moment";
-
+import { styled } from "@mui/material/styles";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 
 const TextfieldWrapper = ({ name, ...otherProps }) => {
   const [field, meta] = useField(name);
@@ -43,6 +42,15 @@ const TextfieldWrapper = ({ name, ...otherProps }) => {
   }
   return <TextField {...configTextfield} />;
 };
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
 const UpdateExportOrderDetail = () => {
   const { exportOrderId } = useParams();
   const navigate = useNavigate();
@@ -115,19 +123,18 @@ const UpdateExportOrderDetail = () => {
             setOpenPopup(true);
             return;
           }
-
           if (!Number.isInteger(consignment.quantity)) {
             setErrorMessage("Vui lòng nhập số lượng sản phẩm là số nguyên");
             setOpenPopup(true);
             return;
           }
-
           if (consignment.quantity > consignment.quantity_sale) {
-            setErrorMessage("Vui lòng nhập số lượng nhỏ hơn số lượng trong kho");
+            setErrorMessage(
+              "Vui lòng nhập số lượng nhỏ hơn số lượng trong kho"
+            );
             setOpenPopup(true);
             return;
           }
-
           if (consignment.quantity > 0) {
             consignmentProductDTOList.push({
               consignmentId: consignment.consignment_id,
@@ -140,7 +147,6 @@ const UpdateExportOrderDetail = () => {
             });
           }
         }
-      
       }
       if (consignmentProductDTOList.length > 0) {
         try {
@@ -200,18 +206,17 @@ const UpdateExportOrderDetail = () => {
   const fetchConsignmentsByExportOrderId = async () => {
     try {
       const params = {
-        // pageIndex: page,
-        // pageSize: rowsPerPage,
         orderId: exportOrderId,
       };
-      const dataResult = await ExportOrderService.getExportOrderById(
-        params
-      );
-      if (dataResult.data) {
+      const dataResult = await ExportOrderService.getExportOrderById(params);
+      if (
+        dataResult.data &&
+        !FormatDataUtils.isEmptyObject(dataResult.data.listExportProduct)
+      ) {
         setProductList(dataResult.data.listExportProduct);
-        console.log(dataResult.data.listExportProduct)
+      } else {
+        navigate("/404");
       }
-      console.log("consignments List", dataResult);
     } catch (error) {
       console.log("Failed to fetch consignment list by exportOder: ", error);
     }
@@ -221,7 +226,6 @@ const UpdateExportOrderDetail = () => {
     if (isNaN(exportOrderId)) {
       navigate("/404");
     } else {
-      //fetchExportOrderDetail();
       fetchConsignmentsByExportOrderId();
     }
   }, []);
@@ -238,16 +242,12 @@ const UpdateExportOrderDetail = () => {
               <Grid item xs={12}>
                 <Card>
                   <Stack direction="row" justifyContent="space-between" p={2}>
-                    <Box>
+                    <Box className="billReferenceContainer">
                       <Typography variant="span">
-                        <strong>Phiếu nhập kho số:</strong>
-                        {/* {"NHAP" + listConsignments[0]?.order_id} */}
+                        <strong>Phiếu xuất kho số:</strong>
+                        {"XUAT" + productList[0]?.order_id}
                       </Typography>{" "}
-                      {/* <span>
-                              {FormatDataUtils.getStatusLabel(listConsignments.statusName)}
-                            </span> */}
                     </Box>
-                    {/* {importOrder[0].confirm_by == null && ( */}
                     <Stack
                       direction="row"
                       justifyContent="flex-end"
@@ -270,7 +270,6 @@ const UpdateExportOrderDetail = () => {
                         Huỷ chỉnh sửa
                       </Button>
                     </Stack>
-                    {/* )} */}
                   </Stack>
                 </Card>
               </Grid>
@@ -300,18 +299,25 @@ const UpdateExportOrderDetail = () => {
                     <Card>
                       {!!productList && productList?.length > 0 ? (
                         <Box>
-                          <TableContainer>
-                            <Table>
+                          <TableContainer component={Paper}>
+                            <Table
+                              sx={{ minWidth: 200 }}
+                              aria-label="customized table"
+                            >
                               <TableHead>
                                 <TableRow>
-                                  <TableCell>STT</TableCell>
-                                  <TableCell>Mã sản phẩm</TableCell>
-                                  <TableCell>Tên sản phẩm</TableCell>
-                                  <TableCell>Đơn vị</TableCell>
-                                  <TableCell>Số lượng</TableCell>
-                                  <TableCell>Số lượng trong kho</TableCell>
-                                  <TableCell>Đơn giá</TableCell>
-                                  <TableCell>Thành tiền</TableCell>
+                                  <StyledTableCell>STT</StyledTableCell>
+                                  <StyledTableCell>Mã sản phẩm</StyledTableCell>
+                                  <StyledTableCell>
+                                    Tên sản phẩm
+                                  </StyledTableCell>
+                                  <StyledTableCell>Đơn vị</StyledTableCell>
+                                  <StyledTableCell>Số lượng</StyledTableCell>
+                                  <StyledTableCell>
+                                    Số lượng trong kho
+                                  </StyledTableCell>
+                                  <StyledTableCell>Đơn giá</StyledTableCell>
+                                  <StyledTableCell>Thành tiền</StyledTableCell>
                                 </TableRow>
                               </TableHead>
                               <TableBody>

@@ -1,5 +1,4 @@
 import "./navbar.scss";
-import SearchIcon from "@mui/icons-material/Search";
 import AuthService from "../../../service/AuthService";
 import React, { useEffect, useState } from "react";
 import {
@@ -8,7 +7,6 @@ import {
   Toolbar,
   Typography,
   Box,
-  Badge,
   Avatar,
   Menu,
   MenuItem,
@@ -107,12 +105,11 @@ const Navbar = () => {
   const [title, setTitle] = useState("");
   const [fullname, setFullname] = useState("");
   const [backUrl, setBackUrl] = useState(null);
-  const [image, setImage] = useState();
+  //const [image, setImage] = useState();
   const [role, setRole] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
   const user = AuthService.getCurrentUser();
-  //console.log(user);
 
   const logOut = () => {
     AuthService.logout();
@@ -149,12 +146,6 @@ const Navbar = () => {
         </Typography>
         <Warehouse sx={{ display: { xs: "block", sm: "none" } }} />
         <Icons>
-          {/* <Badge
-            badgeContent={4}
-            color="error"
-          >
-            <Notifications />
-          </Badge> */}
           <UserBox onClick={(e) => setOpen(true)}>
             <Stack alignItems="flex-end">
               <Typography variant="h5">{fullname}</Typography>

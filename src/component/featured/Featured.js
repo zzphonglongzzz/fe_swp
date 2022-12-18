@@ -47,7 +47,7 @@ const Featured = () => {
   };
   return (
     <div id="chart">
-      Hàng tồn kho
+      Hàng mặt hàng sắp hết hạn
       <ReactApexChart
         options={data.options}
         series={data.series}

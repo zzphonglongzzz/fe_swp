@@ -49,22 +49,18 @@ const getStatusLabel = (exportOrderStatus) => {
 const ImportOrderDetail = () => {
   const { importOrderId } = useParams();
   const [importOrder, setImportOrder] = useState();
-  const [listConsignments, setListConsignments] = useState([]);
+ // const [listConsignments, setListConsignments] = useState([]);
   const [openPopup, setOpenPopup] = useState(false);
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [isConfirm, setIsConfirm] = useState(false);
-  const [createdDate] = useState(new Date().getTime());
-  const [confirmedDate] = useState(new Date().getTime());
   const pages = [5, 10, 20];
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
   const [totalRecord, setTotalRecord] = useState(0);
   const navigate = useNavigate();
   const currentUserRole = AuthService.getCurrentUser().roles[0];
-  //const confirmUserId = AuthService.getCurrentUser().id;
-  console.log(importOrderId);
-  //console.log(confirmUserId);
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -109,40 +105,18 @@ const ImportOrderDetail = () => {
         orderId: importOrderId,
       };
       const dataResult = await importOrderService.getImportOrderById(params);
-      //const dataResult = unwrapResult(actionResult);
       if (
-        dataResult.data.listImportProduct &&
-        !FormatDataUtils.isEmptyObject(dataResult.data.listImportProduct)
+        dataResult.data?.listImportProduct ||
+        dataResult.data !== null
       ) {
         setImportOrder(dataResult.data.listImportProduct);
-        console.log(dataResult.data.listImportProduct);
       } else {
         navigate("/404");
       }
-      console.log("Import Order Detail", dataResult);
     } catch (error) {
       console.log("Failed to fetch importOrder detail: ", error);
     }
   };
-  // const fetchProductListByImportOrderId = async () => {
-  //   try {
-  //     const params = {
-  //       // pageIndex: page,
-  //       // pageSize: rowsPerPage,
-  //       orderId: importOrderId,
-  //     };
-  //     const actionResult = await dispatch(getProductByImportOrderId(params));
-  //     const dataResult = unwrapResult(actionResult);
-  //     if (dataResult.data) {
-  //       setListConsignments(dataResult.data.listProduct);
-  //       setTotalRecord(dataResult.data.totalRecord);
-  //       console.log('totalRecord', dataResult.data.totalRecord);
-  //     }
-  //     console.log('Product List', dataResult);
-  //   } catch (error) {
-  //     console.log('Failed to fetch product list by importOder: ', error);
-  //   }
-  // };
   const handleConfirm = async () => {
     if (isConfirm) {
       console.log("Xác nhận");
@@ -153,7 +127,6 @@ const ImportOrderDetail = () => {
           confirmBy: confirmUserId,
         };
         const result = await importOrderService.confirmImportOrder(params);
-        // const result = unwrapResult(actionResult);
         if (!!result) {
           if (!!result.message) {
             toast.success(result.message);
@@ -161,7 +134,6 @@ const ImportOrderDetail = () => {
             toast.success("Xác nhận nhập kho thành công!");
           }
           fetchImportOrderDetail();
-          // fetchProductListByImportOrderId();
           setOpenPopup(false);
         }
       } catch (error) {
@@ -181,7 +153,6 @@ const ImportOrderDetail = () => {
           confirmBy: confirmUserId,
         };
         const result = await importOrderService.cancelImportOrder(params);
-        // const result = unwrapResult(actionResult);
         if (!!result) {
           if (!!result.message) {
             toast.success(result.message);
@@ -189,7 +160,6 @@ const ImportOrderDetail = () => {
             toast.success("Huỷ nhập kho thành công!");
           }
           fetchImportOrderDetail();
-          // fetchProductListByImportOrderId();
           setOpenPopup(false);
         }
       } catch (error) {
@@ -208,7 +178,6 @@ const ImportOrderDetail = () => {
       navigate("/404");
     } else {
       fetchImportOrderDetail();
-      //fetchProductListByImportOrderId();
     }
   }, [page, rowsPerPage]);
 

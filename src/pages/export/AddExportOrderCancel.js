@@ -6,15 +6,13 @@ import {
   Button,
   Card,
   CardContent,
-  Divider,
   Grid,
-  IconButton,
   Stack,
   Typography,
   TextField,
 } from "@mui/material";
 import FormatDataUtils from "../../utils/FormatDataUtils";
-import { Close, Edit,Done } from "@mui/icons-material";
+import { Close, Done } from "@mui/icons-material";
 import { Form, Formik, useField, FieldArray } from "formik";
 import * as Yup from "yup";
 import ExportOrderService from "../../service/ExportOrderService";
@@ -28,7 +26,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -112,13 +109,13 @@ const AddExportOrderCancel = () => {
             return;
           }
 
-          if (!Number.isInteger(consignment.damagedQuantity)) {
-            setErrorMessage("Vui lòng nhập số lượng sản phẩm là số nguyên");
-            setOpenPopup(true);
-            return;
-          }
+          // if (!Number.isInteger(consignment.damagedQuantity)) {
+          //   setErrorMessage("Vui lòng nhập số lượng sản phẩm là số nguyên");
+          //   setOpenPopup(true);
+          //   return;
+          // }
 
-          if (consignment.damagedQuantity > consignment.quantity) {
+          if (consignment.damagedQuantity >= consignment.quantity) {
             setErrorMessage(
               "Vui lòng nhập số lượng nhỏ hơn số lượng xuất hàng"
             );
@@ -160,7 +157,7 @@ const AddExportOrderCancel = () => {
           }
         } else {
           setErrorMessage(
-            "Bạn không có lô hàng nào thoả mãn điều kiện xuất hàng"
+            "Bạn không có lô hàng nào thoả mãn điều kiện hủy hàng"
           );
           setOpenPopup(true);
           return;
@@ -210,11 +207,7 @@ const AddExportOrderCancel = () => {
                         <strong>Phiếu xuất kho số: </strong>
                         {"XUAT " + productList[0]?.order_id}
                       </Typography>{" "}
-                      {/* <span>
-                              {FormatDataUtils.getStatusLabel(listConsignments.statusName)}
-                            </span> */}
                     </Box>
-                    {/* {importOrder[0].confirm_by == null && ( */}
                     <Stack
                       direction="row"
                       justifyContent="flex-end"
@@ -237,37 +230,19 @@ const AddExportOrderCancel = () => {
                         Quay lại
                       </Button>
                     </Stack>
-                    {/* )} */}
                   </Stack>
                 </Card>
               </Grid>
               <Grid xs={12} item>
-                {/* <Grid xs={12} item>
-                    <Card>
-                      <CardContent>
-                        <Typography variant="h6">
-                          Thông tin nhà cung cấp
-                        </Typography>
-                        <Box className="manufacturer-info">
-                          {listConsignments[0]?.manufactorName}
-                        </Box>
-                        <br />
-                        <Divider />
-                        <br />
-                        <Typography variant="h6"></Typography>
-                        <br />
-                        <Box className="selectbox-warehouse">
-                          {listConsignments[0]?.warehouse_name}
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  </Grid> */}
                 <Grid xs={20} item>
                   <Card>
                     {!!productList && productList?.length > 0 ? (
                       <Box>
                         <TableContainer component={Paper}>
-                          <Table sx={{ minWidth: 200 }} aria-label="customized table">
+                          <Table
+                            sx={{ minWidth: 200 }}
+                            aria-label="customized table"
+                          >
                             <TableHead>
                               <TableRow>
                                 <StyledTableCell>STT</StyledTableCell>
@@ -275,7 +250,9 @@ const AddExportOrderCancel = () => {
                                 <StyledTableCell>Tên sản phẩm</StyledTableCell>
                                 <StyledTableCell>Vị trí</StyledTableCell>
                                 <StyledTableCell>Đơn vị</StyledTableCell>
-                                <StyledTableCell>Số lượng bị lỗi</StyledTableCell>
+                                <StyledTableCell>
+                                  Số lượng bị lỗi
+                                </StyledTableCell>
                                 <StyledTableCell>Số lượng</StyledTableCell>
                                 <StyledTableCell>Đơn giá</StyledTableCell>
                                 <StyledTableCell>Thành tiền</StyledTableCell>
@@ -294,73 +271,74 @@ const AddExportOrderCancel = () => {
                                   return (
                                     <>
                                       {values.consignments.map(
-                                        (consignment, index) => (
-                                          <TableRow
-                                            hover
-                                            key={index}
-                                            //   selected={islistConsignmentselected}
-                                            selected={false}
-                                          >
-                                            <TableCell>{index + 1}</TableCell>
-                                            <TableCell>
-                                              {consignment?.product_code}
-                                            </TableCell>
-                                            <TableCell>
-                                              {consignment?.product_name}
-                                            </TableCell>
-                                            <TableCell>
-                                              {consignment?.warehouse_name}
-                                            </TableCell>
-                                            <TableCell>
-                                              {consignment?.unit_measure}
-                                            </TableCell>
-                                            <TableCell>
-                                              <TextfieldWrapper
-                                                name={`consignments[${index}].damagedQuantity`}
-                                                variant="standard"
-                                                className="text-field-quantity"
-                                                type={"number"}
-                                                InputProps={{
-                                                  inputProps: {
-                                                    min: 0,
-                                                    max: consignment?.quantity,
-                                                    step: 1,
-                                                  },
-                                                }}
-                                              />
-                                            </TableCell>
-                                            <TableCell>
-                                              {consignment?.quantity}
-                                            </TableCell>
-                                            <TableCell>
-                                              {FormatDataUtils.formatCurrency(
-                                                consignment?.unit_price
-                                              )}
-                                            </TableCell>
-                                            <TableCell>
-                                              {FormatDataUtils.formatCurrency(
-                                                values.consignments[index]
-                                                  .damagedQuantity *
-                                                  values.consignments[index]
-                                                    .unit_price
-                                                    || 0) }
-                                            </TableCell>
-
-                                            <TableCell align="center">
-                                              <Stack
-                                                direction="row"
-                                                justifyContent="center"
-                                              >
+                                        (consignment, index) =>
+                                          
+                                            <TableRow
+                                              hover
+                                              key={index}
+                                              //   selected={islistConsignmentselected}
+                                              selected={false}
+                                            >
+                                              <TableCell>{index + 1}</TableCell>
+                                              <TableCell>
+                                                {consignment?.product_code}
+                                              </TableCell>
+                                              <TableCell>
+                                                {consignment?.product_name}
+                                              </TableCell>
+                                              <TableCell>
+                                                {consignment?.warehouse_name}
+                                              </TableCell>
+                                              <TableCell>
+                                                {consignment?.unit_measure}
+                                              </TableCell>
+                                              <TableCell>
                                                 <TextfieldWrapper
-                                                  name={`consignments[${index}].description`}
-                                                  aria-label="minimum height"
-                                                  minRows={3}
-                                                  style={{ width: 300 }}
+                                                  name={`consignments[${index}].damagedQuantity`}
+                                                  variant="standard"
+                                                  className="text-field-quantity"
+                                                  type={"number"}
+                                                  InputProps={{
+                                                    inputProps: {
+                                                      min: 0,
+                                                      max: consignment?.quantity,
+                                                      step: 1,
+                                                    },
+                                                  }}
                                                 />
-                                              </Stack>
-                                            </TableCell>
-                                          </TableRow>
-                                        )
+                                              </TableCell>
+                                              <TableCell>
+                                                {consignment?.quantity}
+                                              </TableCell>
+                                              <TableCell>
+                                                {FormatDataUtils.formatCurrency(
+                                                  consignment?.unit_price
+                                                )}
+                                              </TableCell>
+                                              <TableCell>
+                                                {FormatDataUtils.formatCurrency(
+                                                  values.consignments[index]
+                                                    .damagedQuantity *
+                                                    values.consignments[index]
+                                                      .unit_price || 0
+                                                )}
+                                              </TableCell>
+
+                                              <TableCell align="center">
+                                                <Stack
+                                                  direction="row"
+                                                  justifyContent="center"
+                                                >
+                                                  <TextfieldWrapper
+                                                    name={`consignments[${index}].description`}
+                                                    aria-label="minimum height"
+                                                    minRows={3}
+                                                    style={{ width: 300 }}
+                                                  />
+                                                </Stack>
+                                              </TableCell>
+                                            </TableRow>
+                                          
                                       )}
                                     </>
                                   );
