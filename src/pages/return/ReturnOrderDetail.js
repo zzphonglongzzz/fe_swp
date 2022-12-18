@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ExportOrderService from "../../service/ExportOrderService";
 import {
   Box,
@@ -28,6 +28,7 @@ const ReturnOrderDetail = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
   const [totalRecord, setTotalRecord] = useState(0);
+  const navigate = useNavigate();
 
   const calculateTotalAmount = () => {
     let totalAmount = 0;
@@ -55,17 +56,24 @@ const ReturnOrderDetail = () => {
         orderId: returnOrderId,
       };
       const dataResult = await ExportOrderService.getReturnOrderDetail(params);
-      //const dataResult = unwrapResult(actionResult);
-      if (dataResult.data) {
+      if (
+        dataResult.data &&
+        !FormatDataUtils.isEmptyObject(dataResult.data.listExportProduct)
+      ) {
         setReturnOrder(dataResult.data.listExportProduct);
+      } else {
+        navigate("/404");
       }
-      console.log("Return Order Detail", dataResult);
     } catch (error) {
       console.log("Failed to fetch exportOrder detail: ", error);
     }
   };
   useEffect(() => {
-    fetchReturnOrderDetail();
+    if (isNaN(returnOrderId)) {
+      navigate("/404");
+    } else {
+      fetchReturnOrderDetail();
+    }
   }, []);
 
   return (
@@ -77,11 +85,9 @@ const ReturnOrderDetail = () => {
               <Stack direction="row" justifyContent="space-between" p={2}>
                 <Box className="billReferenceContainer">
                   <Typography variant="span">
-                    <strong>Phiếu trả hàng từ phiếu xuất hàng số:</strong> {"XUAT" + returnOrder[0].order_code}
+                    <strong>Phiếu trả hàng từ phiếu xuất hàng số:</strong>{" "}
+                    {"XUAT" + returnOrder[0]?.order_code}
                   </Typography>{" "}
-                  {/* <span>
-                            {FormatDataUtils.getStatusLabel(importOrder.statusName)}
-                          </span> */}
                 </Box>
               </Stack>
             </Card>
@@ -118,18 +124,14 @@ const ReturnOrderDetail = () => {
                   <CardContent className="confirmInfo">
                     <Typography variant="h6">Thông tin xác nhận</Typography>
                     <Typography>
-                      Người tạo đơn: <i>{"(" + returnOrder[0].creator + ")"}</i>
+                      Người tạo đơn:{" "}
+                      <i>{"(" + returnOrder[0]?.creator + ")"}</i>
                     </Typography>
-                    {/* <Typography>Ngày tạo đơn:</Typography> */}
-                    {/* <Typography>
-                              {FormatDataUtils.formatDateTime(importOrder.createDate)}
-                            </Typography> */}
-
-                    {returnOrder[0].confirm_by && (
+                    {returnOrder[0]?.confirm_by && (
                       <Box>
                         <br />
                         <Typography>
-                          Người xác nhận: <i>{returnOrder[0].confirm_by}</i>
+                          Người xác nhận: <i>{returnOrder[0]?.confirm_by}</i>
                         </Typography>
                       </Box>
                     )}

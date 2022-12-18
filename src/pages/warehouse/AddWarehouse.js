@@ -60,7 +60,7 @@ const AddWarehouse = (props) => {
     } catch (error) {
       setIsSubmitting(false);
       console.log("Failed to save warehouse: ", error);
-      toast.error("Thêm danh nhà kho!");
+      toast.error("Nhà kho đã tồn tại");
     }
   };
   const handleSubmit = async (values) => {

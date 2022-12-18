@@ -40,7 +40,6 @@ const ReturnGoods = () => {
   const arrayHelpersRef = useRef(null);
   const valueFormik = useRef();
   const errorFormik = useRef();
-  
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -102,8 +101,6 @@ const ReturnGoods = () => {
       const values = valueFormik.current;
       let productList = values.consignments;
       let consignmentProductDTOs = [];
-      //console.log("xác nhận", values);
-
       for (let index = 0; index < productList.length; index++) {
         if (productList[index].quantityReturn > productList[index].quantity) {
           setErrorMessage(
@@ -127,17 +124,20 @@ const ReturnGoods = () => {
           setOpenPopup(true);
           return;
         }
-        consignmentProductDTOs.push({
-          consignmentId: productList[index]?.consignment_id,
-          productId: productList[index]?.product_id,
-          unitPrice: productList[index]?.unit_price,
-          expirationDate: moment(productList[index]?.expiration_date)
-            .utc()
-            .format("YYYY-MM-DD hh:mm:ss"),
-           quantity: productList[index]?.quantityReturn,
-           warehouseId: productList[index]?.warehouse_id
-        });
+        if (productList[index] > 0) {
+          consignmentProductDTOs.push({
+            consignmentId: productList[index]?.consignment_id,
+            productId: productList[index]?.product_id,
+            unitPrice: productList[index]?.unit_price,
+            expirationDate: moment(productList[index]?.expiration_date)
+              .utc()
+              .format("YYYY-MM-DD hh:mm:ss"),
+            quantity: productList[index]?.quantityReturn,
+            warehouseId: productList[index]?.warehouse_id,
+          });
+        }
       }
+      console.log(consignmentProductDTOs);
       if (consignmentProductDTOs.length > 0) {
         try {
           const resultResponse = await ExportOrderService.createReturnOrder(
@@ -186,12 +186,11 @@ const ReturnGoods = () => {
         orderId: exportOrderId,
       };
       const dataResult = await ExportOrderService.getExportOrderById(params);
-      if (dataResult.data) {
+      if (dataResult.data && !FormatDataUtils.isEmptyObject(dataResult.data.listExportProduct)) {
         setProductList(dataResult.data.listExportProduct);
-        console.log(dataResult.data.listExportProduct);
-        // if (dataResult.data.productList?.status_id === 4) {
-        //   navigate(`/export/detail/${exportOrderId}`);
-        // }
+        //console.log(dataResult.data.listExportProduct);
+      }else{
+        navigate("/404")
       }
     } catch (error) {
       console.log("Failed to fetch consignment list by exportOder: ", error);
@@ -201,8 +200,6 @@ const ReturnGoods = () => {
     if (isNaN(exportOrderId)) {
       navigate("/404");
     } else {
-      //getAllWarehouse();
-      //fetchImportOrderDetail();
       fetchConsignmentsByExportOrderId();
     }
   }, []);
@@ -223,14 +220,10 @@ const ReturnGoods = () => {
                   <Stack direction="row" justifyContent="space-between" p={2}>
                     <Box>
                       <Typography variant="span">
-                        <strong>Phiếu nhập kho số:</strong>
-                        {/* {"NHAP" + listConsignments[0]?.order_id} */}
+                        <strong>Phiếu trả hàng từ phiếu xuất hàng số: </strong>{" "}
+                        {"XUAT" + productList[0]?.order_id}
                       </Typography>{" "}
-                      {/* <span>
-                            {FormatDataUtils.getStatusLabel(listConsignments.statusName)}
-                          </span> */}
                     </Box>
-                    {/* {importOrder[0].confirm_by == null && ( */}
                     <Stack
                       direction="row"
                       justifyContent="flex-end"
@@ -264,12 +257,17 @@ const ReturnGoods = () => {
                       {!!productList && productList?.length > 0 ? (
                         <Box>
                           <TableContainer component={Paper}>
-                            <Table sx={{ minWidth: 200 }} aria-label="customized table">
+                            <Table
+                              sx={{ minWidth: 200 }}
+                              aria-label="customized table"
+                            >
                               <TableHead>
                                 <TableRow>
                                   <StyledTableCell>STT</StyledTableCell>
                                   <StyledTableCell>Mã sản phẩm</StyledTableCell>
-                                  <StyledTableCell>Tên sản phẩm</StyledTableCell>
+                                  <StyledTableCell>
+                                    Tên sản phẩm
+                                  </StyledTableCell>
                                   <StyledTableCell>Vị trí</StyledTableCell>
                                   <StyledTableCell>Đơn vị</StyledTableCell>
                                   <StyledTableCell>Đơn giá</StyledTableCell>
@@ -290,57 +288,60 @@ const ReturnGoods = () => {
                                     return (
                                       <>
                                         {values.consignments.map(
-                                          (consignment, index) => (
-                                            <TableRow
-                                              hover
-                                              key={index}
-                                              //   selected={islistConsignmentselected}
-                                              selected={false}
-                                            >
-                                              <TableCell>{index + 1}</TableCell>
-                                              <TableCell>
-                                                {consignment?.product_code}
-                                              </TableCell>
-                                              <TableCell>
-                                                {consignment?.product_name}
-                                              </TableCell>
-                                              <TableCell>
-                                                {consignment?.warehouse_name}
-                                              </TableCell>
-                                              <TableCell>
-                                                {consignment?.unit_measure}
-                                              </TableCell>
-                                              <TableCell>
-                                                {consignment?.unit_price}
-                                              </TableCell>
-                                              <TableCell>
-                                                <TextfieldWrapper
-                                                  name={`consignments[${index}].quantityReturn`}
-                                                  variant="standard"
-                                                  className="text-field-quantityReturn"
-                                                  type={"number"}
-                                                  InputProps={{
-                                                    inputProps: {
-                                                      min: 0,
-                                                      max: consignment?.quantity,
-                                                      step: 1,
-                                                    },
-                                                  }}
-                                                />
-                                              </TableCell>
-                                              <TableCell align="center">
-                                                {consignment?.quantity}
-                                              </TableCell>
-                                              <TableCell>
-                                                {FormatDataUtils.formatCurrency(
-                                                  values.consignments[index]
-                                                    .quantityReturn *
+                                          (consignment, index) =>
+                                            
+                                              <TableRow
+                                                hover
+                                                key={index}
+                                                //   selected={islistConsignmentselected}
+                                                selected={false}
+                                              >
+                                                <TableCell>
+                                                  {index + 1}
+                                                </TableCell>
+                                                <TableCell>
+                                                  {consignment?.product_code}
+                                                </TableCell>
+                                                <TableCell>
+                                                  {consignment?.product_name}
+                                                </TableCell>
+                                                <TableCell>
+                                                  {consignment?.warehouse_name}
+                                                </TableCell>
+                                                <TableCell>
+                                                  {consignment?.unit_measure}
+                                                </TableCell>
+                                                <TableCell>
+                                                  {consignment?.unit_price}
+                                                </TableCell>
+                                                <TableCell>
+                                                  <TextfieldWrapper
+                                                    name={`consignments[${index}].quantityReturn`}
+                                                    variant="standard"
+                                                    className="text-field-quantityReturn"
+                                                    type={"number"}
+                                                    InputProps={{
+                                                      inputProps: {
+                                                        min: 0,
+                                                        max: consignment?.quantity,
+                                                        step: 1,
+                                                      },
+                                                    }}
+                                                  />
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                  {consignment?.quantity}
+                                                </TableCell>
+                                                <TableCell>
+                                                  {FormatDataUtils.formatCurrency(
                                                     values.consignments[index]
-                                                      .unit_price
-                                                || 0)}
-                                              </TableCell>
-                                            </TableRow>
-                                          )
+                                                      .quantityReturn *
+                                                      values.consignments[index]
+                                                        .unit_price || 0
+                                                  )}
+                                                </TableCell>
+                                              </TableRow>
+                                            
                                         )}
                                       </>
                                     );

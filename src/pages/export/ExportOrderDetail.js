@@ -8,7 +8,6 @@ import {
   Button,
   Card,
   CardContent,
-  Divider,
   Grid,
   Stack,
   Typography,
@@ -98,7 +97,6 @@ const ExportOrderDetail = () => {
 
   const handleOnClickConfirm = () => {
     setTitle("Bạn có chắc chắn muốn xác nhận xuất hàng hay không?");
-    //setMessage("Hãy kiểm tra kỹ hàng hóa trước khi xác nhận.");
     setIsConfirm(true);
     setOpenPopup(true);
   };
@@ -219,8 +217,6 @@ const ExportOrderDetail = () => {
       navigate("/404");
     } else {
       fetchExportOrderDetail();
-      //handleConfirm();
-      //handleConfirmDeliveredExport()
     }
   }, []);
   return (
@@ -234,25 +230,7 @@ const ExportOrderDetail = () => {
                   <Typography variant="span">
                     <strong>Phiếu xuất kho số:</strong> {"XUAT" + exportOrderId}
                   </Typography>{" "}
-                  {/* <span>
-                    {exportOrder[0].status_id &&
-                      getStatusLabel(exportOrder[0].status_id)}
-                  </span>
-                  <Typography variant="span"> </Typography>
-                  {exportOrder[0].confirm_by !== null && (
-                    <span>
-                      {getStatusDeliver(
-                        exportOrder[0].is_return === null
-                          ? null
-                          : exportOrder[0].is_return === true
-                          ? 1
-                          : exportOrder[0].is_return === false
-                          ? 0
-                          : undefined
-                      )}
-                    </span>
-                  )} */}
-                  {exportOrder[0].status_id === 4|| exportOrder[0].status_id === 1
+                  {exportOrder[0].status_id === 4|| exportOrder[0].status_id === 1 || exportOrder[0].status_id === 3
                       ? getStatusLabel(exportOrder[0].status_id)
                       : exportOrder[0].status_id !== 1 && (
                           <span>
@@ -413,14 +391,6 @@ const ExportOrderDetail = () => {
                           Người tạo đơn:{" "}
                           <i>{"(" + exportOrder[0].creator + ")"}</i>
                         </Typography>
-                        {/* <Typography>Ngày tạo đơn:</Typography>
-                      <Typography>
-                        <i>
-                          {exportOrder?.createDate
-                            ? FormatDataUtils.formatDateTime(exportOrder.createDate)
-                            : null}
-                        </i>
-                      </Typography> */}
                       </Box>
                       {exportOrder[0].confirm_by !== null && (
                         <Box>
@@ -428,37 +398,13 @@ const ExportOrderDetail = () => {
                             Người xác nhận:{" "}
                             <i>{"(" + exportOrder[0].confirm_by + ")"}</i>
                           </Typography>
-                          {/* <Typography>Ngày xác nhận:</Typography>
-                          <Typography>
-                          <i>
-                            {exportOrder.confirmDate
-                              ? FormatDataUtils.formatDateTime(
-                                  exportOrder.confirmDate,
-                                )
-                              : null}
-                          </i>
-                        </Typography> */}
                         </Box>
                       )}
                     </Stack>
                   </CardContent>
                 </Card>
               </Grid>
-              {/* <Grid xs={12} item>
-                <Card>
-                  <CardContent className="warehourseInfo">
-                    <Typography variant="h6">Kho lấy hàng</Typography>
-                    <Stack spacing={2}>
-                      {exportOrder.length > 0 &&
-                        exportOrder.map((address, index) => (
-                          <Box key={index} className="warehouseContainer">
-                            <Typography>{address.warehouse_name}</Typography>
-                          </Box>
-                        ))}
-                    </Stack>
-                  </CardContent>
-                </Card>
-              </Grid> */}
+              
               <Grid xs={12} item>
                 <Card>
                   <CardContent className="totalAmount">
