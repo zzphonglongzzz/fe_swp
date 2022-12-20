@@ -251,7 +251,7 @@ const ExportGood = () => {
           //const resultResponse = unwrapResult(response);
           if (resultResponse) {
             if (resultResponse.data.message) {
-              toast.success(resultResponse.data.message);
+              toast.success("Tạo phiếu xuất hàng thành công");
             } else {
               toast.success("Tạo phiếu xuất hàng thành công");
             }

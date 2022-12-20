@@ -26,7 +26,9 @@ const ManufacturerDetail = () => {
       const actionResult = await ManufacturerService.getManufacturerById(
         manufacturerId
       );
-      if (actionResult.data) {
+      if (actionResult.status === 500) {
+        navigate('/404')
+      }else{
         setManufacturer(actionResult.data.manufacturer);
       }
     } catch (error) {

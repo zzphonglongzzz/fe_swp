@@ -135,9 +135,8 @@ const AddStaff = () => {
       //   staffId: staffId,
       // };
       const dataResult = await StaffService.getStaffById(staffId);
-      if (dataResult.data) {
+      if (dataResult.data && dataResult.data.staff != null) {
         setStaff(dataResult.data.staff);
-
         setDob(dataResult.data.staff.dob);
         if (dataResult.data.staff.image) {
           setImageUrl("/image/" + dataResult.data.staff.image);

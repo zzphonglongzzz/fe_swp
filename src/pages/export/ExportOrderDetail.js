@@ -18,6 +18,7 @@ import ExportProductTable from "./ExportProductTable";
 import ExportOrderService from "../../service/ExportOrderService";
 import Label from "../../component/common/Label";
 import AlertPopup1 from "../../component/common/AlertPopup1/index";
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
 const getStatusLabel = (exportOrderStatus) => {
   const map = {
@@ -148,8 +149,10 @@ const ExportOrderDetail = () => {
         if (!!result) {
           if (!!result.message) {
             toast.success(result.message);
+            navigate("/export/list");
           } else {
             toast.success("Huỷ xuất kho thành công!");
+            navigate("/export/list");
           }
           fetchExportOrderDetail();
           setOpenPopup(false);
@@ -285,8 +288,8 @@ const ExportOrderDetail = () => {
                     </Button>
                   </Stack>
                 )}
-                {exportOrder[0].confirm_by === "admin" &&
-                  exportOrder[0].status_id !== 4 &&
+                {exportOrder[0].confirm_by !== null &&
+                  exportOrder[0].status_id != 4 &&
                   exportOrder[0].is_return == null && (
                     <Stack
                       direction="row"
@@ -319,7 +322,7 @@ const ExportOrderDetail = () => {
                     </Stack>
                   )}
 
-                {exportOrder[0].confirm_by === "admin" &&
+                {exportOrder[0].confirm_by !== null &&
                   exportOrder[0].status_id != 4 &&
                   exportOrder[0].is_return == 1 &&
                   currentUserRole === "ROLE_ADMIN" && (
@@ -341,7 +344,7 @@ const ExportOrderDetail = () => {
                       </Button>
                     </Stack>
                   )}
-                {exportOrder[0].confirm_by === "admin" &&
+                {exportOrder[0].confirm_by !== null &&
                   exportOrder[0].status_id != 4 &&
                   exportOrder[0].is_return == 0 &&
                   currentUserRole === "ROLE_ADMIN" && (
@@ -353,7 +356,7 @@ const ExportOrderDetail = () => {
                     >
                       <Button
                         variant="contained"
-                        startIcon={<KeyboardReturn />}
+                        startIcon={<RemoveRedEyeIcon />}
                         color="warning"
                         onClick={() =>
                           navigate(`/export/cancel/detail/${exportOrderId}`)

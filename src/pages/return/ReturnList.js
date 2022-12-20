@@ -236,7 +236,7 @@ const ReturnList = () => {
           <CardContent>
             
               <Box>
-                {/* {totalRecord > 0 ? ( */}
+                {totalRecord > 0 ? (
                   <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 200 }} aria-label="customized table">
                       <TableHead>
@@ -278,9 +278,9 @@ const ReturnList = () => {
                       handleChangeRowsPerPage={handleChangeRowsPerPage}
                     />
                   </TableContainer>
-                {/* ) : (
+                 ) : (
                   <Box>Không tìm thấy kết quả nào</Box>
-                )} */}
+                )} 
               </Box>
           </CardContent>
         </Card>

@@ -26,6 +26,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import "./UpdateExportTable.scss"
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -103,7 +104,7 @@ const AddExportOrderCancel = () => {
             setOpenPopup(true);
             return;
           }
-          if (consignment.damagedQuantity <= 0) {
+          if (consignment.damagedQuantity < 0) {
             setErrorMessage("Vui lòng nhập sản phẩm với số lượng lớn hơn 0");
             setOpenPopup(true);
             return;
@@ -115,7 +116,7 @@ const AddExportOrderCancel = () => {
           //   return;
           // }
 
-          if (consignment.damagedQuantity >= consignment.quantity) {
+          if (consignment.damagedQuantity > consignment.quantity) {
             setErrorMessage(
               "Vui lòng nhập số lượng nhỏ hơn số lượng xuất hàng"
             );
@@ -173,8 +174,10 @@ const AddExportOrderCancel = () => {
         await ExportOrderService.getOrderDetailForCancelDeliveredOrder(
           exportOrderId
         );
-      if (dataResult.data) {
+      if (dataResult.data && !FormatDataUtils.isEmptyObject(dataResult.data.listExportProduct)) {
         setProductList(dataResult.data.listExportProduct);
+      }else{
+        navigate('/404')
       }
       console.log("consignments List", dataResult);
     } catch (error) {
@@ -202,7 +205,7 @@ const AddExportOrderCancel = () => {
               <Grid item xs={12}>
                 <Card>
                   <Stack direction="row" justifyContent="space-between" p={2}>
-                    <Box>
+                    <Box className="billReferenceContainer">
                       <Typography variant="span">
                         <strong>Phiếu xuất kho số: </strong>
                         {"XUAT " + productList[0]?.order_id}
