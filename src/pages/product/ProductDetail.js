@@ -32,6 +32,8 @@ const ProductDetail = () => {
       if (actionResult.data) {
         setProduct(actionResult.data.product);
         setImageUrl("/image/" + actionResult.data.product.image);
+      }else{
+        navigate('/404')
       }
     } catch (error) {
       console.log("Failed to fetch category list: ", error);

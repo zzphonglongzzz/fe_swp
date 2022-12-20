@@ -124,7 +124,7 @@ const ReturnGoods = () => {
           setOpenPopup(true);
           return;
         }
-        if (productList[index] > 0) {
+        if (productList[index].quantityReturn > 0) {
           consignmentProductDTOs.push({
             consignmentId: productList[index]?.consignment_id,
             productId: productList[index]?.product_id,

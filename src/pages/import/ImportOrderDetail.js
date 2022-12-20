@@ -29,7 +29,7 @@ const getStatusLabel = (exportOrderStatus) => {
       color: "error",
     },
     2: {
-      text: "Đã xuất kho",
+      text: "Đã nhập kho",
       color: "success",
     },
     1: {
@@ -49,7 +49,7 @@ const getStatusLabel = (exportOrderStatus) => {
 const ImportOrderDetail = () => {
   const { importOrderId } = useParams();
   const [importOrder, setImportOrder] = useState();
- // const [listConsignments, setListConsignments] = useState([]);
+  // const [listConsignments, setListConsignments] = useState([]);
   const [openPopup, setOpenPopup] = useState(false);
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
@@ -60,7 +60,6 @@ const ImportOrderDetail = () => {
   const [totalRecord, setTotalRecord] = useState(0);
   const navigate = useNavigate();
   const currentUserRole = AuthService.getCurrentUser().roles[0];
-
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -106,8 +105,8 @@ const ImportOrderDetail = () => {
       };
       const dataResult = await importOrderService.getImportOrderById(params);
       if (
-        dataResult.data?.listImportProduct ||
-        dataResult.data !== null
+        dataResult.data &&
+        !FormatDataUtils.isEmptyObject(dataResult.data.listImportProduct)
       ) {
         setImportOrder(dataResult.data.listImportProduct);
       } else {
@@ -156,8 +155,10 @@ const ImportOrderDetail = () => {
         if (!!result) {
           if (!!result.message) {
             toast.success(result.message);
+            navigate("/import/list");
           } else {
             toast.success("Huỷ nhập kho thành công!");
+            navigate("/import/list");
           }
           fetchImportOrderDetail();
           setOpenPopup(false);

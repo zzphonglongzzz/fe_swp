@@ -122,7 +122,7 @@ const UpdateProfile = () => {
     };
     console.log(staff);
     try {
-      const dataResult = await StaffService.updateStaff(staff);
+      const dataResult = await StaffService.updateProfile(staff);
       if (dataResult) {
         // let currentUser = AuthService.getCurrentUser();
         // currentUser.username = staff.username;

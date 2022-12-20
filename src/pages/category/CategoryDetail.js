@@ -53,6 +53,7 @@ const CategoryDetail = () => {
   const [editSubCategory, setSubEditCategory] = useState();
   const [openPopupEdit, setOpenPopupEdit] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState();
+  const navigate= useNavigate();
 
   const handleOnClickAddNewSubCategory = (categoryId) => {
     setSelectedCategory(categoryId);
@@ -74,9 +75,11 @@ const CategoryDetail = () => {
         categoryId: categoryId
       };
       const actionResult = await CategoryService.getCategoryDetail(params);
-      if (actionResult.data) {
+      if (actionResult.data && actionResult.data != null) {
         setCategory(actionResult.data.category);
         setSubCategoryList(actionResult.data.subCategory);
+      }else{
+        navigate('/404')
       }
     } catch (error) {
       console.log("Failed to fetch category list: ", error);

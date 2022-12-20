@@ -350,7 +350,7 @@ const AddEditProduct = () => {
                               </Grid>
                               <Grid xs={6} item>
                                 <Typography className="wrapIcon">
-                                  Đơn xuất nhập:
+                                  Đơn giá nhập:
                                   {/* <Info className={classes.iconStyle} /> */}
                                 </Typography>
                                 <TextfieldWrapper
@@ -374,7 +374,7 @@ const AddEditProduct = () => {
                               </Grid>
                               <Grid xs={6} item>
                                 <Typography className="wrapIcon">
-                                  Đơn xuất bán:
+                                  Đơn giá bán:
                                 </Typography>
                                 <TextfieldWrapper
                                   name="unitprice"

@@ -20,6 +20,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import FormatDataUtils from "../../utils/FormatDataUtils";
+import "./UpdateExportTable.scss"
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -57,8 +60,10 @@ const ExportOrderCancelDetail = () => {
         await ExportOrderService.getDetailCancelDeliveredOrder(
           exportOrderId
         );
-      if (dataResult.data) {
+      if (dataResult.data && !FormatDataUtils.isEmptyObject(dataResult.data.listExportProduct)) {
         setProductList(dataResult.data.listExportProduct);
+      }else{
+        navigate('/404')
       }
       console.log("consignments List", dataResult);
     } catch (error) {
@@ -69,7 +74,6 @@ const ExportOrderCancelDetail = () => {
     if (isNaN(exportOrderId)) {
       navigate("/404");
     } else {
-      //fetchExportOrderDetail();
       fetchConsignmentsByExportOrderId();
     }
   }, []);
@@ -85,7 +89,7 @@ const ExportOrderCancelDetail = () => {
               <Grid item xs={12}>
                 <Card>
                   <Stack direction="row" justifyContent="space-between" p={2}>
-                    <Box>
+                    <Box className="billReferenceContainer">
                       <Typography variant="span">
                         <strong>Phiếu xuất kho số: </strong>
                         {"XUAT " + productList[0]?.order_id}
