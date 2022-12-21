@@ -164,110 +164,122 @@ const ExportGood = () => {
   };
   const handleSubmit = async (values) => {
     //if (isConfirm) {
-      console.log("submit value", values);
-      let productList = values.productList;
-      if (productList.length === 0) {
-        setErrorMessage(" Vui lòng chọn ít nhất 1 sản phẩm để xuất hàng");
+    console.log("submit value", values);
+    let productList = values.productList;
+    if (productList.length === 0) {
+      setErrorMessage(" Vui lòng chọn ít nhất 1 sản phẩm để xuất hàng");
+      setOpenPopup(true);
+      return;
+    }
+    if (productList.unitPrice < productList.importPrice) {
+      setErrorMessage("Đơn giá nhập đang lớn hơn đơn giá bán.Vui lòng xem lại");
+      setOpenPopup(true);
+      return;
+    }
+    for (let index = 0; index < productList.length; index++) {
+      if (calculateTotalQuantityOfProduct(productList[index]) === 0) {
+        setErrorMessage("Bạn có sản phẩm chưa nhập số lượng");
         setOpenPopup(true);
         return;
       }
-      if (productList.unitPrice < productList.importPrice) {
+      const product = productList[index];
+
+      if (product.unitPrice < product.importPrice) {
         setErrorMessage(
           "Đơn giá nhập đang lớn hơn đơn giá bán.Vui lòng xem lại"
         );
         setOpenPopup(true);
         return;
       }
-      for (let index = 0; index < productList.length; index++) {
-        if (calculateTotalQuantityOfProduct(productList[index]) === 0) {
-          setErrorMessage("Bạn có sản phẩm chưa nhập số lượng");
-          setOpenPopup(true);
-          return;
-        }
-        const product = productList[index];
-        if (product.unitPrice < product.importPrice) {
+      const consignments = productList[index]?.consignments;
+
+      for (
+        let indexConsignment = 0;
+        indexConsignment < consignments.length;
+        indexConsignment++
+      ) {
+        let consignment = consignments[indexConsignment];
+        if (consignment.quantity > consignment.quantityInstock) {
           setErrorMessage(
-            "Đơn giá nhập đang lớn hơn đơn giá bán.Vui lòng xem lại"
+            "Bạn không thể nhập số lượng lớn hơn số lượng tồn kho của lô hàng"
           );
           setOpenPopup(true);
           return;
         }
-        const consignments = productList[index]?.consignments;
-        for (
-          let indexConsignment = 0;
-          indexConsignment < consignments.length;
-          indexConsignment++
-        ) {
-          let consignment = consignments[indexConsignment];
-          if (consignment.quantity > consignment.quantityInstock) {
-            setErrorMessage(
-              "Bạn không thể nhập số lượng lớn hơn số lượng tồn kho của lô hàng"
-            );
-            setOpenPopup(true);
-            return;
-          }
-          if (consignment.quantity < 0) {
-            setErrorMessage("Bạn không thể nhập số lượng nhỏ hơn 0");
-            setOpenPopup(true);
-            return;
-          }
+        if (consignment.quantity < 0) {
+          setErrorMessage("Bạn không thể nhập số lượng nhỏ hơn 0");
+          setOpenPopup(true);
+          return;
         }
+        // if (consignment.quantity > 0) {
+        //   consignmentProductExportList.push({
+        //     product_id: product.productId,
+        //     consignment_id: consignment.id,
+        //     wareHouseId: consignment.warehouseId,
+        //     expirationDate: moment(consignment.expirationDate).format(
+        //       "YYYY-MM-DD hh:mm:ss"
+        //     ),
+        //     quantity: consignment.quantity
+        //   });
+        // }
       }
-      const productForExport = values.productList.reduce(
-        (exportProductResult, productListItem) => {
-          const productForExportItem = {
-            product_id: productListItem.productId,
-            consignmentProductExportList: productListItem.consignments.reduce(
-              (returnConsignments, consignmentItem) => {
-                const consignmentProductExportListItem = {
-                  consignment_id: consignmentItem.id,
-                  wareHouseId: consignmentItem.warehouseId,
-                  expirationDate: moment(consignmentItem.expirationDate).format(
-                    "YYYY-MM-DD hh:mm:ss"
-                  ),
-                  quantity: consignmentItem.quantity,
-                };
+    }
+    const productForExport = values.productList.reduce(
+      (exportProductResult, productListItem) => {
+        const productForExportItem = {
+          product_id: productListItem.productId,
+          consignmentProductExportList: productListItem.consignments.reduce(
+            (returnConsignments, consignmentItem) => {
+              const consignmentProductExportListItem = {
+                consignment_id: consignmentItem.id,
+                wareHouseId: consignmentItem.warehouseId,
+                expirationDate: moment(consignmentItem.expirationDate).format(
+                  "YYYY-MM-DD hh:mm:ss"
+                ),
+                quantity: consignmentItem.quantity,
+              };
+              if (consignmentItem.quantity > 0)
                 returnConsignments.push(consignmentProductExportListItem);
-                return returnConsignments;
-              },
-              []
-            ),
-          };
-          exportProductResult.push(productForExportItem);
-          return exportProductResult;
-        },
-        []
-      );
-      console.log(productForExport);
-      const dataSubmit = {
-        user_Id: currentUser.id,
-        productForExport: productForExport,
-      };
-      if (productForExport.length > 0) {
-        try {
-          const resultResponse = await ExportOrderService.createExportOrder(
-            dataSubmit
-          );
-          //const resultResponse = unwrapResult(response);
-          if (resultResponse) {
-            if (resultResponse.data.message) {
-              toast.success("Tạo phiếu xuất hàng thành công");
-            } else {
-              toast.success("Tạo phiếu xuất hàng thành công");
-            }
-            navigate("/export/list");
-          }
-        } catch (error) {
-          console.log("Failed to save export order: ", error);
-          toast.error("Tạo phiếu xuất hàng thất bại");
-        }
-      } else {
-        setErrorMessage(
-          "Bạn không có lô hàng nào thoả mãn điều kiện xuất hàng"
+              return returnConsignments;
+            },
+            []
+          ),
+        };
+        exportProductResult.push(productForExportItem);
+        return exportProductResult;
+      },
+      []
+    );
+    console.log(productForExport);
+    const dataSubmit = {
+      user_Id: currentUser.id,
+      productForExport: productForExport,
+    };
+    if (productForExport.length > 0) {
+      try {
+        const resultResponse = await ExportOrderService.createExportOrder(
+          dataSubmit
         );
-        setOpenPopup(true);
-        return;
+        //const resultResponse = unwrapResult(response);
+        if (resultResponse) {
+          if (resultResponse.data.message) {
+            toast.success("Tạo phiếu xuất hàng thành công");
+          } else {
+            toast.success("Tạo phiếu xuất hàng thành công");
+          }
+          navigate("/export/list");
+        }
+      } catch (error) {
+        console.log("Failed to save export order: ", error);
+        toast.error("Tạo phiếu xuất hàng thất bại");
       }
+    } else {
+      setErrorMessage(
+        "Bạn không có lô hàng nào thoả mãn điều kiện xuất hàng"
+      );
+      setOpenPopup(true);
+      return;
+    }
   };
   const fetchProductInstock = async () => {
     try {
@@ -491,7 +503,7 @@ const ExportGood = () => {
                                                           type={"number"}
                                                           InputProps={{
                                                             inputProps: {
-                                                              min: 1,
+                                                              min: 0,
                                                               max: consignment?.quantityInstock,
                                                               step: 1,
                                                             },
@@ -552,7 +564,7 @@ const ExportGood = () => {
                 </Card>
               </Grid>
             </Grid>
-            <AlertPopup
+            {/* <AlertPopup
               maxWidth="sm"
               title={title}
               openPopup={openPopup}
@@ -563,7 +575,7 @@ const ExportGood = () => {
               <Box component={"span"} className="popupMessageContainer">
                 {message}
               </Box>
-            </AlertPopup>
+            </AlertPopup> */}
           </Form>
         )}
       </Formik>
