@@ -186,13 +186,12 @@ const ExportGood = () => {
 
       if (product.unitPrice < product.importPrice) {
         setErrorMessage(
-          "Đơn giá nhập đang lớn hơn đơn giá bán.Vui lòng xem lại"
+          "Đơn giá nhập đang lớn hơn đơn giá bán. Bạn vui lòng xem lại đơn giá bán"
         );
         setOpenPopup(true);
         return;
       }
       const consignments = productList[index]?.consignments;
-
       for (
         let indexConsignment = 0;
         indexConsignment < consignments.length;
@@ -274,9 +273,7 @@ const ExportGood = () => {
         toast.error("Tạo phiếu xuất hàng thất bại");
       }
     } else {
-      setErrorMessage(
-        "Bạn không có lô hàng nào thoả mãn điều kiện xuất hàng"
-      );
+      setErrorMessage("Bạn không có lô hàng nào thoả mãn điều kiện xuất hàng");
       setOpenPopup(true);
       return;
     }
@@ -564,18 +561,15 @@ const ExportGood = () => {
                 </Card>
               </Grid>
             </Grid>
-            {/* <AlertPopup
-              maxWidth="sm"
-              title={title}
+            <AlertPopup
+              title="Chú ý"
               openPopup={openPopup}
               setOpenPopup={setOpenPopup}
-              isConfirm={true}
-              handleConfirm={handleSubmit}
             >
-              <Box component={"span"} className="popupMessageContainer">
-                {message}
+              <Box component={"span"} className="popup-message-container">
+                {errorMessage}
               </Box>
-            </AlertPopup> */}
+            </AlertPopup>
           </Form>
         )}
       </Formik>

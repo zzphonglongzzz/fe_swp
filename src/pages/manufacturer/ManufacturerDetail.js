@@ -32,7 +32,7 @@ const ManufacturerDetail = () => {
         setManufacturer(actionResult.data.manufacturer);
       }
     } catch (error) {
-      console.log("Failed to fetch category list: ", error);
+      navigate('/404')
     }
   };
   useEffect(() => {

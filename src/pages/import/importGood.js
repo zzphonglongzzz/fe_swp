@@ -319,13 +319,13 @@ const ImportGoods = () => {
                       {errors.wareHouseId}
                     </FormHelperText>
                   </Box>
-                  <div className="label">Thông tin nhà cung cấp</div>
+                  <div className="label">Thông tin nhà sản xuất</div>
                   <Box>
                     <Select
                       classNamePrefix="select"
                       placeholder="Chọn nhà cung cấp..."
                       noOptionsMessage={() => (
-                        <>Không có tìm thấy nhà cung cấp nào</>
+                        <>Không có tìm thấy nhà sản xuất nào</>
                       )}
                       isClearable={true}
                       isSearchable={true}
