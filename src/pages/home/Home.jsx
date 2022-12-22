@@ -32,7 +32,7 @@ const Home = () => {
         </div>
         <Grid container spacing={2}>
           <Grid xs={5} item textAlign="center">
-            <Featured />
+            {/* <Featured /> */}
           </Grid>
           <Grid xs={7} item>
             <Chart/>
