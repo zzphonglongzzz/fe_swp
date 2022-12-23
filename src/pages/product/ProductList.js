@@ -22,6 +22,7 @@ import {
   InputAdornment,
   Box,
   Toolbar,
+  AppBar,
 } from "@mui/material";
 import { Add, Search } from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
@@ -197,102 +198,115 @@ const ProductList = () => {
         </Stack>
         <Grid xs={12} item>
           <Card className="panelFilter">
-            <Box className="filterTitle">
-              <Typography variant="p">Tìm kiếm thông tin sản phẩm</Typography>
-            </Box>
-            <Formik
-              initialValues={{
-                productCode: "",
-                categoryId: "",
-                manufactorId: "1",
-                sort: "asc",
-              }}
-            >
-              <Form>
-                <Box className="toolbarContainer">
-                  <Box className="searchField">
-                    <TextfieldWrapper
-                      id="outlined-basic"
-                      name="productName"
-                      placeholder="Tìm kiếm theo tên sản phẩm"
-                      fullWidth
-                      label={null}
-                      variant="outlined"
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <Search />
-                          </InputAdornment>
-                        ),
-                      }}
-                      onKeyDown={handleSearch}
-                      // onChange={handleSearchChange}
-                    />
+            <Toolbar className="toolbarMenu">
+              <Box className="filterTitle">
+                <Typography variant="p">Tìm kiếm thông tin sản phẩm</Typography>
+              </Box>
+            </Toolbar>
+            <Box>
+              <Formik
+                initialValues={{
+                  productCode: "",
+                  categoryId: "",
+                  manufactorId: "1",
+                  sort: "asc",
+                }}
+              >
+                <Form>
+                  <Box className="toolbarContainer">
+                    <Toolbar className="toolbarMenu">
+                      <TextfieldWrapper
+                        id="outlined-basic"
+                        name="productName"
+                        placeholder="Tìm kiếm theo mã"
+                        fullWidth
+                        label={null}
+                        variant="outlined"
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <Search />
+                            </InputAdornment>
+                          ),
+                        }}
+                        onKeyDown={handleSearch}
+                        // onChange={handleSearchChange}
+                      />
+                    </Toolbar>
+                    <Stack
+                      direction="row"
+                      justifyContent="flex-end"
+                      className="selectBoxContainer"
+                    >
+                      <Toolbar>
+                        {categoryList && (
+                          <Select
+                            classNamePrefix="select"
+                            className="selectBox"
+                            placeholder="Danh mục"
+                            noOptionsMessage={() => (
+                              <>Không có tìm thấy danh mục phù hợp</>
+                            )}
+                            isClearable={true}
+                            isSearchable={true}
+                            name="categoryId"
+                            value={selectedCategory}
+                            options={FormatDataUtils.getOptionWithIdandName(
+                              categoryList
+                            )}
+                            menuPortalTarget={document.body}
+                            styles={{
+                              menuPortal: (base) => ({
+                                ...base,
+                                zIndex: 9999,
+                              }),
+                              control: (base) => ({
+                                ...base,
+                                height: 56,
+                                minHeight: 56,
+                              }),
+                            }}
+                            onChange={(e) => handleChangeCategory(e)}
+                          />
+                        )}
+                      </Toolbar>
+                      <Toolbar>
+                        {manufacturerList && (
+                          <Select
+                            classNamePrefix="select"
+                            className="selectBox"
+                            placeholder="Nhà cung cấp"
+                            noOptionsMessage={() => (
+                              <>Không có tìm thấy nhà cung cấp phù hợp</>
+                            )}
+                            isClearable={true}
+                            isSearchable={true}
+                            name="categoryId"
+                            value={selectedManufactor}
+                            options={FormatDataUtils.getOptionWithIdandName(
+                              manufacturerList
+                            )}
+                            menuPortalTarget={document.body}
+                            styles={{
+                              menuPortal: (base) => ({
+                                ...base,
+                                zIndex: 9999,
+                              }),
+                              control: (base) => ({
+                                ...base,
+                                height: 56,
+                                minHeight: 56,
+                              }),
+                            }}
+                            onChange={(e) => handleChangeManufactor(e)}
+                          />
+                        )}
+                      </Toolbar>
+                    </Stack>
                   </Box>
-                  <Stack
-                    direction="row"
-                    spacing={2}
-                    justifyContent="flex-end"
-                    className="selectBoxContainer"
-                  >
-                    {categoryList && (
-                      <Select
-                        classNamePrefix="select"
-                        className="selectBox"
-                        placeholder="Danh mục"
-                        noOptionsMessage={() => (
-                          <>Không có tìm thấy danh mục phù hợp</>
-                        )}
-                        isClearable={true}
-                        isSearchable={true}
-                        name="categoryId"
-                        value={selectedCategory}
-                        options={FormatDataUtils.getOptionWithIdandName(
-                          categoryList
-                        )}
-                        menuPortalTarget={document.body}
-                        styles={{
-                          menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                          control: (base) => ({
-                            ...base,
-                            height: 56,
-                            minHeight: 56,
-                          }),
-                        }}
-                        onChange={(e) => handleChangeCategory(e)}
-                      />
-                    )}
-                    {manufacturerList && (
-                      <Select
-                        classNamePrefix="select"
-                        className="selectBox"
-                        placeholder="Nhà cung cấp"
-                        noOptionsMessage={() => (
-                          <>Không có tìm thấy nhà cung cấp phù hợp</>
-                        )}
-                        isClearable={true}
-                        isSearchable={true}
-                        name="categoryId"
-                        value={selectedManufactor}
-                        options={FormatDataUtils.getOptionWithIdandName(
-                          manufacturerList
-                        )}
-                        menuPortalTarget={document.body}
-                        styles={{
-                          menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                          control: (base) => ({
-                            ...base,
-                            height: 56,
-                            minHeight: 56,
-                          }),
-                        }}
-                        onChange={(e) => handleChangeManufactor(e)}
-                      />
-                    )}
-                  </Stack>
-                </Box>
-              </Form>
-            </Formik>
+                </Form>
+              </Formik>
+            </Box>
           </Card>
         </Grid>
         <Grid xs={12} item>

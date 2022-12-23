@@ -179,7 +179,6 @@ const AddEditProduct = () => {
   const saveProductDetail = async (product) => {
     try {
       if (!productId) {
-        if (formData.has("file")) {
           const actionResult = await ProductService.saveProduct(product);
           if (actionResult.status === 200) {
             toast.success("Thêm sản phẩm thành công!");
@@ -188,7 +187,6 @@ const AddEditProduct = () => {
             navigate("/product");
             toast.success("Thêm sản phẩm thành công!");
           }
-        }
       } else {
         const actionResult = await ProductService.updateProduct(product);
         if (actionResult.status === 200) {
@@ -201,8 +199,8 @@ const AddEditProduct = () => {
       }
     } catch (error) {
       console.log("Failed to save product: ", error);
-      if (error.message) {
-        toast.error(error.message);
+      if (error.response.data.message) {
+        toast.error(error.response.data.message);
       } else {
         if (isAdd) {
           toast.error("Thêm sản phẩm thất bại");
