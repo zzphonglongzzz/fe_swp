@@ -1,53 +1,54 @@
-.CardHeader{
-    display: flex;
-    padding: 20px 20px;
-    margin-bottom: 20px;
-    justify-content: space-between;
+.CardHeader {
+  display: flex;
+  padding: 20px 20px;
+  margin-bottom: 20px;
+  justify-content: space-between;
 }
-.infoContainer{
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    margin-bottom: 20px;
+.infoContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  margin-bottom: 20px;
 }
-.searchField {
-    width: 30%;
-}
-.toolbar{
-    width: 200%;
+.toolbar {
+  width: 100%;
 }
 .toolbarContainer {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
-.selectBoxContainer{
-    width: 40%;
+.selectBoxContainer {
+  width: 40%;
 }
-.selectBox{
-    width: 250px;
-    height: 56px;
-    min-height: 56px;
+.selectBox {
+  width: 250px;
+  height: 56px;
+  min-height: 56px;
 }
-.tableStyle{
-    text-align: center;
+.tableStyle {
+  text-align: center;
 }
-.panelFilter{
-    padding: 24px 0;
-    margin-bottom: 24px;
+.panelFilter {
+  padding: 24px 0;
+  margin-bottom: 24px;
 }
-.cardStyle{
-    padding: 12px;
+.cardStyle {
+  padding: 12px;
 }
-.filterTitle{
-    font-size: 24px;
-    padding: 0 24px;
-    margin-bottom: 8px;
+.filterTitle {
+  font-size: 24px;
+  padding: 20 24px;
+  margin-bottom: 10px;
 }
-.imageStyle{
-    width: 250px;
-    height: 250px;
-    object-fit: cover;
-    border-radius: 15px;
-    border: 1px solid black;
-    aspect-ratio: 1 / 1;
+.imageStyle {
+  width: 250px;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 15px;
+  border: 1px solid black;
+  aspect-ratio: 1 / 1;
+}
+.toolbarMenu {
+  display: flex;
+  justify-content: space-between;
 }
