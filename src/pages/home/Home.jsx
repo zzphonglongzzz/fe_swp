@@ -31,10 +31,7 @@ const Home = () => {
           <Widget type="earning" />
         </div>
         <Grid container spacing={2}>
-          <Grid xs={5} item textAlign="center">
-            {/* <Featured /> */}
-          </Grid>
-          <Grid xs={7} item>
+          <Grid xs={8} item>
             <Chart/>
           </Grid>
         </Grid>

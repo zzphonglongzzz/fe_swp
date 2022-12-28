@@ -51,10 +51,10 @@ const ImportOrdersTable = ({ importOrderList }) => {
       <Table sx={{ minWidth: 200 }} aria-label="customized table">
         <TableHead>
           <TableRow>
-            <StyledTableCell>Mã nhập kho</StyledTableCell>
+            <StyledTableCell>Mã nhập hàng</StyledTableCell>
             <StyledTableCell>Ngày tạo</StyledTableCell>
             {/* <StyledTableCell>Ngày nhập</StyledTableCell> */}
-            <StyledTableCell>Nhà cung cấp</StyledTableCell>
+            <StyledTableCell>Nhà sản xuất</StyledTableCell>
             <StyledTableCell>Người tạo đơn</StyledTableCell>
             <StyledTableCell>Trạng thái</StyledTableCell>
             <StyledTableCell align="center">Giá trị đơn hàng</StyledTableCell>

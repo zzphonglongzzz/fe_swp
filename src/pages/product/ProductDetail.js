@@ -193,7 +193,7 @@ const ProductDetail = () => {
                       alt="Ảnh sản phẩm"
                       // src={image}
                       loading="lazy"
-                      src={imageUrl ? imageUrl : "/image/default-avatar.jpg"}
+                      src={imageUrl !== "/image/null" ? imageUrl : "/image/default_avatar.jpg"}
                     />
                   </Stack>
                 </Grid>

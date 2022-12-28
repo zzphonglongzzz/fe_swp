@@ -179,14 +179,14 @@ const AddEditProduct = () => {
   const saveProductDetail = async (product) => {
     try {
       if (!productId) {
-          const actionResult = await ProductService.saveProduct(product);
-          if (actionResult.status === 200) {
-            toast.success("Thêm sản phẩm thành công!");
-            navigate("/product");
-          } else {
-            navigate("/product");
-            toast.success("Thêm sản phẩm thành công!");
-          }
+        const actionResult = await ProductService.saveProduct(product);
+        if (actionResult.status === 200) {
+          toast.success("Thêm sản phẩm thành công!");
+          navigate("/product");
+        } else {
+          navigate("/product");
+          toast.success("Thêm sản phẩm thành công!");
+        }
       } else {
         const actionResult = await ProductService.updateProduct(product);
         if (actionResult.status === 200) {
@@ -493,6 +493,12 @@ const AddEditProduct = () => {
                                     }}
                                   />
                                 )}
+                                <FormHelperText
+                                  error={true}
+                                  className="errorTextHelper"
+                                >
+                                  {errors.subCategoryId}
+                                </FormHelperText>
                               </Grid>
                               <Grid xs={12} item>
                                 <Typography className="wrapIcon">
@@ -563,7 +569,11 @@ const AddEditProduct = () => {
                                     <img
                                       name="image"
                                       className="imgPreview"
-                                      src={imageUrl}
+                                      src={
+                                        imageUrl !== "/image/null"
+                                          ? imageUrl
+                                          : "/image/default_avatar.jpg"
+                                      }
                                       accept="image/*"
                                     />
                                   )}
@@ -758,6 +768,12 @@ const AddEditProduct = () => {
                                   }}
                                 />
                               )}
+                               <FormHelperText
+                                  error={true}
+                                  className="errorTextHelper"
+                                >
+                                  {errors.subCategoryId}
+                                </FormHelperText>
                             </Grid>
                             <Grid xs={12} item>
                               <Typography className="wrapIcon">

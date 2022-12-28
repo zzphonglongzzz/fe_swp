@@ -98,7 +98,7 @@ const ImportGoods = () => {
 
   const FORM_VALIDATION = Yup.object().shape({
     wareHouseId: Yup.number().required("Bạn chưa chọn kho để nhập hàng"),
-    manufactorId: Yup.number().required("Bạn chưa chọn nhà cung cấp"),
+    manufactorId: Yup.number().required("Bạn chưa chọn nhà sản xuất"),
   });
   const handleOnChangeManufacturer = (e) => {
     console.log(e);
@@ -323,7 +323,7 @@ const ImportGoods = () => {
                   <Box>
                     <Select
                       classNamePrefix="select"
-                      placeholder="Chọn nhà cung cấp..."
+                      placeholder="Chọn nhà sản xuất..."
                       noOptionsMessage={() => (
                         <>Không có tìm thấy nhà sản xuất nào</>
                       )}
@@ -353,7 +353,7 @@ const ImportGoods = () => {
                   {/* {!!productList && !!values.manufactorId && ( */}
                   <Select
                     classNamePrefix="select"
-                    placeholder="Chọn sản phẩm của nhà cung cấp phía trên..."
+                    placeholder="Chọn sản phẩm của nhà sản xuất phía trên..."
                     noOptionsMessage={() => <>Không có tìm thấy sản phẩm nào</>}
                     isClearable={true}
                     isSearchable={true}

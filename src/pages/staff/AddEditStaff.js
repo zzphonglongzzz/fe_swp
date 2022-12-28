@@ -138,9 +138,7 @@ const AddStaff = () => {
       if (dataResult.data && dataResult.data.staff != null) {
         setStaff(dataResult.data.staff);
         setDob(dataResult.data.staff.dob);
-        if (dataResult.data.staff.image) {
-          setImageUrl("/image/" + dataResult.data.staff.image);
-        }
+        setImageUrl("/image/" + dataResult.data.staff.image);
       } else {
         navigate("/404");
       }
@@ -165,15 +163,13 @@ const AddStaff = () => {
   const saveStaffDetail = async (staff) => {
     try {
       if (!staffId) {
-        if (formData.has("file")) {
-          const actionResult = await StaffService.createStaff(staff);
-          if (actionResult.status === 200) {
-            toast.success("Thêm thông tin nhân viên thành công!");
-            navigate("/staff/list");
-          } else {
-            navigate("/staff/list");
-            toast.success("Thêm thông tin nhân viên thành công!");
-          }
+        const actionResult = await StaffService.createStaff(staff);
+        if (actionResult.status === 200) {
+          toast.success("Thêm thông tin nhân viên thành công!");
+          navigate("/staff/list");
+        } else {
+          navigate("/staff/list");
+          toast.success("Thêm thông tin nhân viên thành công!");
         }
       } else {
         const actionResult = await StaffService.updateStaff(staff);
@@ -409,7 +405,17 @@ const AddStaff = () => {
                             <div {...getRootProps()} className="preview">
                               <input {...getInputProps()} />
                               {imageUrl && (
-                                <img className="imgPreview" src={imageUrl} />
+                                <img
+                                  alt=""
+                                  name="image"
+                                  className="imgPreview"
+                                  src={
+                                    imageUrl !== "/image/null"
+                                      ? imageUrl
+                                      : "/image/default_avatar.jpg"
+                                  }
+                                  accept="image/*"
+                                />
                               )}
                               <CloudUpload
                                 fontSize="large"

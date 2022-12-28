@@ -244,7 +244,7 @@ const UpdateExportOrderDetail = () => {
                   <Stack direction="row" justifyContent="space-between" p={2}>
                     <Box className="billReferenceContainer">
                       <Typography variant="span">
-                        <strong>Phiếu xuất kho số:</strong>
+                        <strong>Phiếu xuất hàng số:</strong>
                         {"XUAT" + productList[0]?.order_id}
                       </Typography>{" "}
                     </Box>
