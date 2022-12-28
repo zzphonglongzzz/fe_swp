@@ -191,7 +191,7 @@ const ImportOrderDetail = () => {
               <Stack direction="row" justifyContent="space-between" p={2}>
                 <Box className="billReferenceContainer">
                   <Typography variant="span">
-                    <strong>Phiếu nhập kho số:</strong> {"NHAP" + importOrderId}
+                    <strong>Phiếu nhập hàng số:</strong> {"NHAP" + importOrderId}
                   </Typography>{" "}
                   <span>{getStatusLabel(importOrder[0]?.status_id)}</span>
                 </Box>
@@ -240,7 +240,7 @@ const ImportOrderDetail = () => {
               <Grid xs={12} item>
                 <Card>
                   <CardContent>
-                    <Typography variant="h6">Thông tin nhà cung cấp</Typography>
+                    <Typography variant="h6">Thông tin nhà sản xuất</Typography>
                     <Typography>{importOrder[0].name}</Typography>
                     <br />
                     <Divider />

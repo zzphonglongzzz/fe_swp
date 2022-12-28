@@ -291,7 +291,7 @@ const UpdateImportOrder = () => {
                   <Stack direction="row" justifyContent="space-between" p={2}>
                     <Box>
                       <Typography variant="span">{" "}
-                        <strong>Phiếu nhập kho số:</strong>
+                        <strong>Phiếu nhập hàng số:</strong>
                         {"NHAP " + listConsignments[0]?.order_id}
                       </Typography>{" "}
                       {/* <span>

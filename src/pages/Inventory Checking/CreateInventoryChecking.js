@@ -67,7 +67,7 @@ const CreateInventoryChecking = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const user = AuthService.getCurrentUser();
-  const arrayHelpersRef = useRef(null); /*  */
+  const arrayHelpersRef = useRef(null);
   const valueFormik = useRef();
 
   const initialExportOrder = {
@@ -125,7 +125,7 @@ const CreateInventoryChecking = () => {
         ) {
           const consignment = consignments[indexConsignment];
           const realityQuantity = consignment.quantity;
-          console.log(consignment.quantity);
+          console.log(consignment.realityQuantity);
           if (realityQuantity === "" || isNaN(realityQuantity)) {
             setErrorMessage("Bạn có sản phẩm chưa nhập số lượng thực tế");
             setSubmitting(false);
@@ -403,8 +403,6 @@ const CreateInventoryChecking = () => {
                                   {values.productList.map((product, index) => (
                                     <Fragment key={index}>
                                       <TableRow
-                                        // hover
-                                        //   selected={islistProductselected}
                                         selected={false}
                                       >
                                         <TableCell

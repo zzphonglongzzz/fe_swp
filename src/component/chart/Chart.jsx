@@ -9,9 +9,7 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-// import "./chart.scss"
 import DashboardService from "../../service/DashboardService";
-import { object } from "yup";
 
 ChartJS.register(
   CategoryScale,

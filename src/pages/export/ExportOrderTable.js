@@ -72,7 +72,7 @@ const ExportOrderTable = ({ exportOrders }) => {
       <Table sx={{ minWidth: 200 }} aria-label="customized table">
         <TableHead>
           <TableRow>
-            <StyledTableCell>Mã xuất kho</StyledTableCell>
+            <StyledTableCell>Mã xuất hàng</StyledTableCell>
             <StyledTableCell>Ngày tạo</StyledTableCell>
             <StyledTableCell>Người tạo đơn</StyledTableCell>
             <StyledTableCell align="center">Trạng thái</StyledTableCell>

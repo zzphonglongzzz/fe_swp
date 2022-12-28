@@ -16,6 +16,7 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowBackIosNew, Warehouse } from "@mui/icons-material";
 import Label from "../../common/Label";
+import StaffService from "../../../service/StaffService";
 
 const titles = [
   { url: '/dashboard', title: 'Hệ thống quản lý kho vật tư nông nghiệp', backUrl: '' },
@@ -36,13 +37,13 @@ const titles = [
   { url: '/manufacturer/add', title: 'Thêm mới nhà sản xuất', backUrl: null },
   { url: '/manufacturer/edit', title: 'Chỉnh sửa thông tin nhà sản xuất', backUrl: null },
   { url: '/import/list', title: 'Danh sách phiếu nhập kho', backUrl: null },
-  { url: '/import/detail', title: 'Thông tin phiếu nhập kho', backUrl: '/import/list' },
+  { url: '/import/detail', title: 'Thông tin phiếu nhập hàng', backUrl: '/import/list' },
   { url: '/import/create-order', title: 'Nhập kho', backUrl: null },
-  { url: '/import/edit', title: 'Thông tin phiếu nhập kho', backUrl: null },
-  { url: '/export/list', title: 'Danh sách phiếu xuất kho', backUrl: null },
-  { url: '/export/detail', title: 'Thông tin phiếu xuất kho', backUrl: '/export/list' },
+  { url: '/import/edit', title: 'Thông tin phiếu nhập hàng', backUrl: null },
+  { url: '/export/list', title: 'Danh sách phiếu xuất hàng', backUrl: null },
+  { url: '/export/detail', title: 'Thông tin phiếu xuất hàng', backUrl: '/export/list' },
   { url: '/export/create-order', title: 'Xuất kho', backUrl: null },
-  { url: '/export/edit', title: 'Thông tin phiếu xuất kho', backUrl: null },
+  { url: '/export/edit', title: 'Thông tin phiếu xuất hàng', backUrl: null },
   { url: '/export/return', title: 'Trả hàng', backUrl: null },
   { url: '/export/return/list', title: 'Phiếu trả hàng', backUrl: null },
   { url: '/export/return/detail', title: 'Thông tin phiếu trả hàng', backUrl: null },
@@ -115,15 +116,26 @@ const Navbar = () => {
     AuthService.logout();
     navigate("/login");
   };
+  const fetchStaffDetail = async () => {
+    try {
+      const dataResult = await StaffService.getProfile();
+      console.log("dataResult", dataResult);
+      if (dataResult) {
+        setFullname(dataResult.data.fullName);
+      }
+    } catch (error) {
+      console.log("Failed to fetch staff detail: ", error);
+    }
+  };
   useEffect(() => {
+    fetchStaffDetail()
     titles.forEach((item) => {
       if (location.pathname.includes(item.url)) {
         setTitle(item.title);
         setBackUrl(item.backUrl);
       }
     });
-
-    setFullname(user.username);
+    //setFullname(user.username);
     setRole(user.roles[0]);
   }, [location.pathname]);
   return (    

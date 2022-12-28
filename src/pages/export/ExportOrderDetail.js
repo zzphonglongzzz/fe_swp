@@ -122,8 +122,10 @@ const ExportOrderDetail = () => {
         if (!!result) {
           if (!!result.message) {
             toast.success(result.message);
+            navigate('/export/list')
           } else {
             toast.success("Xác nhận xuất kho thành công!");
+            navigate('/export/list')
           }
           fetchExportOrderDetail();
           setOpenPopup(false);
@@ -131,7 +133,7 @@ const ExportOrderDetail = () => {
       } catch (error) {
         console.log("Failed to confirm importOder: ", error);
         if (error.message) {
-          toast.error(error.message);
+          toast.error("Lỗi! Xác nhận xuất kho thất bại!");
         } else {
           toast.error("Lỗi! Xác nhận xuất kho thất bại!");
         }
@@ -160,7 +162,7 @@ const ExportOrderDetail = () => {
       } catch (error) {
         console.log("Failed to cancel importOder: ", error);
         if (error.message) {
-          toast.error(error.message);
+          toast.error("Lỗi! Huỷ xuất kho thất bại!");
         } else {
           toast.error("Lỗi! Huỷ xuất kho thất bại!");
         }
@@ -210,7 +212,7 @@ const ExportOrderDetail = () => {
       } else {
         navigate("/404");
       }
-      console.log("Export Order Detail", dataResult);
+      //console.log("Export Order Detail", dataResult);
     } catch (error) {
       console.log("Failed to fetch exportOrder detail: ", error);
     }
@@ -231,7 +233,7 @@ const ExportOrderDetail = () => {
               <Stack direction="row" justifyContent="space-between" p={2}>
                 <Box className="billReferenceContainer">
                   <Typography variant="span">
-                    <strong>Phiếu xuất kho số:</strong> {"XUAT" + exportOrderId}
+                    <strong>Phiếu xuất hàng số:</strong> {"XUAT" + exportOrderId}
                   </Typography>{" "}
                   {exportOrder[0].status_id === 4|| exportOrder[0].status_id === 1 || exportOrder[0].status_id === 3
                       ? getStatusLabel(exportOrder[0].status_id)
